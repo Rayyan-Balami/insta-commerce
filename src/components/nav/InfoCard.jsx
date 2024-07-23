@@ -11,18 +11,17 @@ import { Button } from "@/components/ui/button";
 
 function InfoCard() {
   return (
-    <div className="mt-auto p-4">
+    <div className="mt-auto md:px-4 md:pb-4">
           <Card x-chunk="dashboard-02-chunk-0">
-            <CardHeader className="p-2 pt-0 md:p-4">
-              <CardTitle>Upgrade to ProP</CardTitle>
+            <CardHeader>
+              <CardTitle>Follow Us</CardTitle>
               <CardDescription>
-                Unlock all features and get unlimited access to our support
-                team.
+              Join our community and gain full access to premium features and dedicated support.
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
+            <CardContent>
               <Button size="sm" className="w-full">
-                Upgrade
+                Website By Balami
               </Button>
             </CardContent>
           </Card>

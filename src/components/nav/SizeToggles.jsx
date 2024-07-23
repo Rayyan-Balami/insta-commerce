@@ -17,14 +17,14 @@ export default function SizeToggles({ className }) {
 
   return (
     <div className={className}>
-      <p className="max-md:mx-[-0.65rem] flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground">
+      <p className="flex items-center gap-3 px-3 py-2 text-muted-foreground">
         <Scaling className="h-[1.15rem] w-[1.15rem]" />
         <span>Size</span>
       </p>
       <ToggleGroup
         type="single"
         variant="outline"
-        className="justify-start flex-wrap max-md:mx-[-0.65rem] px-3 py-2"
+        className="justify-start flex-wrap px-3 py-2 gap-2"
         value={selectedSize}
         onValueChange={setSelectedSize}
       >
@@ -33,10 +33,10 @@ export default function SizeToggles({ className }) {
             key={size}  // Adding a unique key
             value={label}
             aria-label={size}
-            className={`px-3 py-1 border rounded-md transition-colors duration-300 cursor-pointer ${
+            className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
               label === selectedSize
                 ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                : "border-muted-foreground text-muted-foreground"
+                : " text-muted-foreground"
             }`}
           >
             {label}

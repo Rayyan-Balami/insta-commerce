@@ -10,6 +10,7 @@ import Logo from "./Logo";
 import InfoCard from "./InfoCard";
 import Categories from "./Categories";
 import SizeToggles from "./SizeToggles";
+import PriceRange from "./PriceRange";
 
 function DesktopNav() {
   return (
@@ -30,6 +31,7 @@ function DesktopNav() {
           </nav>
           <Categories className="pt-4 space-y-2 px-2 lg:px-4"/>
           <SizeToggles className="pt-4 space-y-2 px-2 lg:px-4"/>
+          <PriceRange className="pt-4 space-y-2 px-2 lg:px-4"/>
         </div>
        <InfoCard />
       </div>

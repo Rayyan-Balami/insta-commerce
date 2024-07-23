@@ -8,6 +8,7 @@ import Product from "./pages/Product";
 import AddProduct from "./pages/AddProduct";
 import Order from "./pages/Order";
 import Home from "./pages/Home";
+import Setting from "./pages/Setting";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ export const router = createBrowserRouter(
         <Route path="add-product" element={<AddProduct />} />
       {/* <Route path="customer" element={<Customer />} /> */}
       {/* <Route path="analytic" element={<Analytic />} /> */}
+      <Route path="setting" element={<Setting />} />
     </Route>
   )
 );

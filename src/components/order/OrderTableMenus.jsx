@@ -71,7 +71,7 @@ function OrderTableMenus() {
       </Popover>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="h-7 gap-1 text-sm">
+          <Button variant="outline" size="sm" className="h-7 gap-2">
             <ListFilter className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only">Filter</span>
           </Button>
@@ -84,7 +84,7 @@ function OrderTableMenus() {
           <DropdownMenuCheckboxItem>Refunded</DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
+      <Button size="sm" variant="outline" className="h-7 gap-2">
         <File className="h-3.5 w-3.5" />
         <span className="sr-only sm:not-sr-only">Export</span>
       </Button>

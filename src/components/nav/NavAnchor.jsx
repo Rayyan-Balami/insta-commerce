@@ -9,7 +9,7 @@ function NavAnchor({ menu }) {
       key={menu.name}
       to={menu.to}
       className={({ isActive, isPending }) =>
-        `max-md:mx-[-0.65rem] flex items-center gap-3 rounded-lg px-3 py-2 ${isActive ? navMenuStyle.active : navMenuStyle.nonActive} transition-all hover:text-primary`
+        `flex items-center gap-3 rounded-lg px-3 py-2 ${isActive ? navMenuStyle.active : navMenuStyle.nonActive} transition-all hover:text-primary`
       }
     >
       {React.createElement(menu.icon, { className: "h-[1.15rem] w-[1.15rem]" })}
