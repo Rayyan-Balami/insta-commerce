@@ -35,6 +35,8 @@ export default function General() {
     // Simulate asynchronous submission (e.g., API call)
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(data); // Handle form submission logic here
+    //reset the form
+    form.reset();
   };
 
   return (

@@ -1,16 +1,32 @@
-import { Wallet } from "lucide-react";
+import { Wallet, Loader2 } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
+import { priceRangeSchema } from "@/schemas/priceRange";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
 function PriceRange({ className }) {
-  const { register, handleSubmit } = useForm();
+  const form = useForm({
+    resolver: zodResolver(priceRangeSchema),
+    defaultValues: {
+      min: "",
+      max: "",
+    },
+  });
 
-  const onSubmit = (data) => {
-    console.log(data); // This will log the form data on submission
-    // You can add further logic here to handle form submission
+  const onSubmit = async (data) => {
+    // Simulate asynchronous submission (e.g., API call)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log(data); // Handle form submission logic here
   };
 
   return (
@@ -19,34 +35,49 @@ function PriceRange({ className }) {
         <Wallet className="h-[1.15rem] w-[1.15rem]" />
         <span>Price</span>
       </p>
-      <form
-        className="px-3 py-2 grid grid-cols-2 gap-2 text-muted-foreground"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div>
-          <Label htmlFor="min" className="text-xs inline-block mb-1.5">
-            Min
-          </Label>
-          <Input
-            type="number"
-            id="min"
-            {...register("min", { required: true, min: 0 })}
+      <Form {...form}>
+        <form
+          className="px-3 py-2 grid grid-cols-2 gap-2 text-muted-foreground"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="min"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">Min</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </div>
-        <div>
-          <Label htmlFor="max" className="text-xs inline-block mb-1.5">
-            Max
-          </Label>
-          <Input
-            type="number"
-            id="max"
-            {...register("max", { required: true, min: 0 })}
+          <FormField
+            control={form.control}
+            name="max"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">Max</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </div>
-        <Button type="submit" variant="outline" className="col-span-2">
-          Apply
-        </Button>
-      </form>
+
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            variant="outline"
+            className="col-span-2"
+          >
+            {form.formState.isSubmitting && (
+              <Loader2 className="size-4 mr-2 animate-spin" />
+            )}
+            Apply
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }
