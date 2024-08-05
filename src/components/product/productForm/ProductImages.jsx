@@ -1,57 +1,46 @@
-import { Upload } from "lucide-react"
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import FileUploadDropzone from "@/components/FileUploadDropzone";
+import { useFormContext } from "react-hook-form";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+} from "@/components/ui/form";
 
 export default function ProductImages() {
+  const form = useFormContext(); // Use form context to get control
+
   return (
-    <Card className="overflow-hidden bg-muted/40">
+    <Card className="bg-muted/40">
       <CardHeader>
-        <CardTitle>Product imgs</CardTitle>
+        <CardTitle>Product Images</CardTitle>
         <CardDescription>
-          Lipsum dolor sit amet, consectetur adipiscing elit
+          Upload images for the product here.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-2">
-          <img
-            alt="Product img"
-            className="aspect-square w-full rounded-md object-cover"
-            height="300"
-            src="/placeholder.svg"
-            width="300"
-          />
-          <div className="grid grid-cols-3 gap-2">
-            <button>
-              <img
-                alt="Product img"
-                className="aspect-square w-full rounded-md object-cover"
-                height="84"
-                src="/placeholder.svg"
-                width="84"
-              />
-            </button>
-            <button>
-              <img
-                alt="Product img"
-                className="aspect-square w-full rounded-md object-cover"
-                height="84"
-                src="/placeholder.svg"
-                width="84"
-              />
-            </button>
-            <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-              <Upload className="h-4 w-4 text-muted-foreground" />
-              <span className="sr-only">Upload</span>
-            </button>
-          </div>
-        </div>
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Images</FormLabel>
+              <FormControl>
+                <FileUploadDropzone
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  accept={{ "image/*": [".jpg", ".jpeg", ".png"] }}
+                  maxFiles={8}
+                  maxSize={1 * 1024 * 1024} // 1MB
+                />
+              </FormControl>
+              <FormMessage className="font-light" />
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
-  )
+  );
 }

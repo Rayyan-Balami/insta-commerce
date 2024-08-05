@@ -9,18 +9,23 @@ import AddProduct from "./pages/AddProduct";
 import Order from "./pages/Order";
 import Home from "./pages/Home";
 import Setting from "./pages/Setting";
+import Promotion from "./pages/Promotion";
+import { AdminLogin } from "./pages/AdminLogin";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route path="" element={<Home />} />
-      {/* <Route path="dashboard" element={<Dashboard />} /> */}
-      <Route path="order" element={<Order />} />
-      <Route path="product" element={<Product />} />
+    <>
+      <Route path="/" element={<App />}>
+        <Route path="" element={<Home />} />
+        {/* <Route path="dashboard" element={<Dashboard />} /> */}
+        <Route path="order" element={<Order />} />
+        <Route path="product" element={<Product />} />
         <Route path="add-product" element={<AddProduct />} />
-      {/* <Route path="customer" element={<Customer />} /> */}
-      {/* <Route path="analytic" element={<Analytic />} /> */}
-      <Route path="setting" element={<Setting />} />
-    </Route>
+        <Route path="promotion" element={<Promotion />} />
+        {/* <Route path="analytic" element={<Analytic />} /> */}
+        <Route path="setting" element={<Setting />} />
+      </Route>
+      <Route path="admin/login" element={<AdminLogin />} />
+    </>
   )
 );

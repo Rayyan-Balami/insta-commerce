@@ -8,8 +8,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { useFormContext } from "react-hook-form"
+import { FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form"
 
 export default function ProductDetails() {
+
+  const form = useFormContext()
+
   return (
     <Card className="bg-muted/40">
       <CardHeader>
@@ -20,23 +25,32 @@ export default function ProductDetails() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              type="text"
-              className="w-full"
-              defaultValue="Gamer Gear Pro Controller"
+        <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Wollen T-shirt" {...field} />
+                  </FormControl>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-              className="min-h-32"
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description </FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Wollen T-shirt is made with love" {...field} />
+                  </FormControl>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
             />
-          </div>
         </div>
       </CardContent>
     </Card>

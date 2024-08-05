@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { navMenus } from "./navMenus";
 import NavAnchor from "./NavAnchor";
 import Logo from "./Logo";
-import InfoCard from "./InfoCard";
+import PromoCard from "./PromoCard";
 import Categories from "./Categories";
 import SizeToggles from "./SizeToggles";
 import PriceRange from "./PriceRange";
@@ -38,7 +38,7 @@ function MobileNav() {
           <SizeToggles className="pt-4 space-y-2 px-2 lg:px-4"/>
           <PriceRange className="pt-4 space-y-2 px-2 lg:px-4"/>
         </div>
-       <InfoCard/>
+       <PromoCard/>
       </SheetContent>
     </Sheet>
   );

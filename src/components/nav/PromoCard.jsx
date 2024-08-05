@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 
-function InfoCard() {
+function PromoCard() {
   return (
     <div className="mt-auto md:px-4 md:pb-4">
           <Card x-chunk="dashboard-02-chunk-0">
@@ -29,4 +29,4 @@ function InfoCard() {
   );
 }
 
-export default InfoCard;
+export default PromoCard;

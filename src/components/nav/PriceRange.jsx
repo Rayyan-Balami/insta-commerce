@@ -1,4 +1,4 @@
-import { Wallet, Loader2 } from "lucide-react";
+import { Wallet, Loader2, UndoDot } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -37,14 +37,14 @@ function PriceRange({ className }) {
       </p>
       <Form {...form}>
         <form
-          className="px-3 py-2 grid grid-cols-2 gap-2 text-muted-foreground"
+          className="px-3 py-2 grid grid-cols-4 gap-2 text-muted-foreground"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
             control={form.control}
             name="min"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel className="text-xs">Min</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
@@ -56,7 +56,7 @@ function PriceRange({ className }) {
             control={form.control}
             name="max"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel className="text-xs">Max</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
@@ -65,16 +65,27 @@ function PriceRange({ className }) {
             )}
           />
 
+          {/* Apply Button */}
           <Button
             type="submit"
             disabled={!form.formState.isValid || form.formState.isSubmitting}
             variant="outline"
-            className="col-span-2"
+            className="col-span-3"
           >
             {form.formState.isSubmitting && (
               <Loader2 className="size-4 mr-2 animate-spin" />
             )}
             Apply
+          </Button>
+
+          {/* clear button  */}
+          <Button
+            type="button"
+            onClick={form.reset}
+            variant="ghost"
+            disabled={form.formState.isSubmitting}
+          >
+            <UndoDot />
           </Button>
         </form>
       </Form>

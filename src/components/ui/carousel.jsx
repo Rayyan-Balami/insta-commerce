@@ -1,193 +1,404 @@
-import * as React from "react"
+import React, {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Button } from "@/components/ui/button";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ChevronRightIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ChevronLeftIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+const CarouselContext = React.createContext(null);
 
-const CarouselContext = React.createContext(null)
-
-function useCarousel() {
-  const context = React.useContext(CarouselContext)
-
+const useCarousel = () => {
+  const context = useContext(CarouselContext);
   if (!context) {
-    throw new Error("useCarousel must be used within a <Carousel />")
+    throw new Error("useCarousel must be used within a CarouselProvider");
   }
+  return context;
+};
 
-  return context
-}
+const Carousel = forwardRef(
+  (
+    {
+      carouselOptions,
+      orientation = "horizontal",
+      dir,
+      plugins,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [emblaMainRef, emblaMainApi] = useEmblaCarousel(
+      {
+        ...carouselOptions,
+        axis: orientation === "vertical" ? "y" : "x",
+        direction: carouselOptions?.direction ?? dir,
+      },
+      plugins
+    );
 
-const Carousel = React.forwardRef((
-  {
-    orientation = "horizontal",
-    opts,
-    setApi,
-    plugins,
-    className,
-    children,
-    ...props
-  },
-  ref
-) => {
-  const [carouselRef, api] = useEmblaCarousel({
-    ...opts,
-    axis: orientation === "horizontal" ? "x" : "y",
-  }, plugins)
-  const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-  const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel(
+      {
+        ...carouselOptions,
+        axis: orientation === "vertical" ? "y" : "x",
+        direction: carouselOptions?.direction ?? dir,
+        containScroll: "keepSnaps",
+        dragFree: true,
+      },
+      plugins
+    );
 
-  const onSelect = React.useCallback((api) => {
-    if (!api) {
-      return
-    }
+    const [canScrollPrev, setCanScrollPrev] = useState(false);
+    const [canScrollNext, setCanScrollNext] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
 
-    setCanScrollPrev(api.canScrollPrev())
-    setCanScrollNext(api.canScrollNext())
-  }, [])
+    const ScrollNext = useCallback(() => {
+      if (!emblaMainApi) return;
+      emblaMainApi.scrollNext();
+    }, [emblaMainApi]);
 
-  const scrollPrev = React.useCallback(() => {
-    api?.scrollPrev()
-  }, [api])
+    const ScrollPrev = useCallback(() => {
+      if (!emblaMainApi) return;
+      emblaMainApi.scrollPrev();
+    }, [emblaMainApi]);
 
-  const scrollNext = React.useCallback(() => {
-    api?.scrollNext()
-  }, [api])
+    const direction = carouselOptions?.direction ?? dir;
 
-  const handleKeyDown = React.useCallback((event) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault()
-      scrollPrev()
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault()
-      scrollNext()
-    }
-  }, [scrollPrev, scrollNext])
+    const handleKeyDown = useCallback(
+      (event) => {
+        event.preventDefault();
+        if (!emblaMainApi) return;
+        switch (event.key) {
+          case "ArrowLeft":
+            if (orientation === "horizontal") {
+              if (direction === "rtl") {
+                ScrollNext();
+                return;
+              }
+              ScrollPrev();
+            }
+            break;
+          case "ArrowRight":
+            if (orientation === "horizontal") {
+              if (direction === "rtl") {
+                ScrollPrev();
+                return;
+              }
+              ScrollNext();
+            }
+            break;
+          case "ArrowUp":
+            if (orientation === "vertical") {
+              ScrollPrev();
+            }
+            break;
+          case "ArrowDown":
+            if (orientation === "vertical") {
+              ScrollNext();
+            }
+            break;
+        }
+      },
+      [emblaMainApi, orientation, direction]
+    );
 
-  React.useEffect(() => {
-    if (!api || !setApi) {
-      return
-    }
+    const onThumbClick = useCallback(
+      (index) => {
+        if (!emblaMainApi || !emblaThumbsApi) return;
+        emblaMainApi.scrollTo(index);
+      },
+      [emblaMainApi, emblaThumbsApi]
+    );
 
-    setApi(api)
-  }, [api, setApi])
+    const onSelect = useCallback(() => {
+      if (!emblaMainApi || !emblaThumbsApi) return;
+      const selected = emblaMainApi.selectedScrollSnap();
+      setActiveIndex(selected);
+      emblaThumbsApi.scrollTo(selected);
+      setCanScrollPrev(emblaMainApi.canScrollPrev());
+      setCanScrollNext(emblaMainApi.canScrollNext());
+    }, [emblaMainApi, emblaThumbsApi]);
 
-  React.useEffect(() => {
-    if (!api) {
-      return
-    }
+    useEffect(() => {
+      if (!emblaMainApi) return;
+    
+      const startAutoplay = () => {
+        emblaMainApi.reInit();
+        onSelect();  // Ensure the select event is set correctly
+        if (emblaMainApi.plugins && emblaMainApi.plugins.length > 0) {
+          emblaMainApi.plugins.forEach(plugin => {
+            if (plugin.name === "autoplay") {
+              plugin.play(); // Start autoplay
+            }
+          });
+        }
+      };
+    
+      startAutoplay();
+    
+      emblaMainApi.on("select", onSelect);
+      emblaMainApi.on("reInit", onSelect);
+    
+      return () => {
+        emblaMainApi.off("select", onSelect);
+        emblaMainApi.off("reInit", onSelect);
+      };
+    }, [emblaMainApi, onSelect]);
+    
 
-    onSelect(api)
-    api.on("reInit", onSelect)
-    api.on("select", onSelect)
+    return (
+      <CarouselContext.Provider
+        value={{
+          emblaMainApi,
+          mainRef: emblaMainRef,
+          thumbsRef: emblaThumbsRef,
+          scrollNext: ScrollNext,
+          scrollPrev: ScrollPrev,
+          canScrollNext,
+          canScrollPrev,
+          activeIndex,
+          onThumbClick,
+          handleKeyDown,
+          carouselOptions,
+          direction,
+          orientation:
+            orientation ||
+            (carouselOptions?.axis === "y" ? "vertical" : "horizontal"),
+        }}
+      >
+        <div
+          {...props}
+          tabIndex={0}
+          ref={ref}
+          onKeyDownCapture={handleKeyDown}
+          className={cn(
+            "grid gap-2 w-full relative focus:outline-none",
+            className
+          )}
+          dir={direction}
+        >
+          {children}
+        </div>
+      </CarouselContext.Provider>
+    );
+  }
+);
 
-    return () => {
-      api?.off("select", onSelect)
-    };
-  }, [api, onSelect])
+Carousel.displayName = "Carousel";
 
-  return (
-    (<CarouselContext.Provider
-      value={{
-        carouselRef,
-        api: api,
-        opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-      }}>
-      <div
-        ref={ref}
-        onKeyDownCapture={handleKeyDown}
-        className={cn("relative", className)}
-        role="region"
-        aria-roledescription="carousel"
-        {...props}>
-        {children}
+const CarouselMainContainer = forwardRef(
+  ({ className, dir, children, ...props }, ref) => {
+    const { mainRef, orientation, direction } = useCarousel();
+
+    return (
+      <div {...props} ref={mainRef} className="overflow-hidden" dir={direction}>
+        <div
+          ref={ref}
+          className={cn(
+            "flex",
+            `${orientation === "vertical" ? "flex-col" : ""}`,
+            className
+          )}
+        >
+          {children}
+        </div>
       </div>
-    </CarouselContext.Provider>)
-  );
-})
-Carousel.displayName = "Carousel"
+    );
+  }
+);
 
-const CarouselContent = React.forwardRef(({ className, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel()
+CarouselMainContainer.displayName = "CarouselMainContainer";
 
-  return (
-    (<div ref={carouselRef} className="overflow-hidden">
+const CarouselThumbsContainer = forwardRef(
+  ({ className, dir, children, ...props }, ref) => {
+    const { thumbsRef, orientation, direction } = useCarousel();
+
+    return (
       <div
-        ref={ref}
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
-          className
-        )}
-        {...props} />
-    </div>)
-  );
-})
-CarouselContent.displayName = "CarouselContent"
+        {...props}
+        ref={thumbsRef}
+        className="overflow-hidden"
+        dir={direction}
+      >
+        <div
+          ref={ref}
+          className={cn(
+            "flex",
+            `${orientation === "vertical" ? "flex-col" : ""}`,
+            className
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
+);
 
-const CarouselItem = React.forwardRef(({ className, ...props }, ref) => {
-  const { orientation } = useCarousel()
+CarouselThumbsContainer.displayName = "CarouselThumbsContainer";
 
+const SliderMainItem = forwardRef(({ className, children, ...props }, ref) => {
+  const { orientation } = useCarousel();
   return (
-    (<div
+    <div
+      {...props}
       ref={ref}
-      role="group"
-      aria-roledescription="slide"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
+        `min-w-0 shrink-0 grow-0 basis-full bg-background p-1 ${
+          orientation === "vertical" ? "pb-1" : "pr-1"
+        }`,
         className
       )}
-      {...props} />)
+    >
+      {children}
+    </div>
   );
-})
-CarouselItem.displayName = "CarouselItem"
+});
 
-const CarouselPrevious = React.forwardRef(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+SliderMainItem.displayName = "SliderMainItem";
 
-  return (
-    (<Button
-      ref={ref}
-      variant={variant}
-      size={size}
-      className={cn("h-8 w-8 rounded-full", orientation === "horizontal"
-        ? ""
-        : "rotate-90", className)}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
-      {...props}>
-      <ArrowLeft className="h-4 w-4" />
-      <span className="sr-only">Previous slide</span>
-    </Button>)
-  );
-})
-CarouselPrevious.displayName = "CarouselPrevious"
+const SliderThumbItem = forwardRef(
+  ({ className, index, children, ...props }, ref) => {
+    const { activeIndex, onThumbClick, orientation } = useCarousel();
+    const isSlideActive = activeIndex === index;
+    return (
+      <div
+        {...props}
+        ref={ref}
+        onClick={() => onThumbClick(index)}
+        className={cn(
+          "flex min-w-0 shrink-0 grow-0 basis-1/3 bg-background p-1",
+          `${orientation === "vertical" ? "pb-1" : "pr-1"}`,
+          className
+        )}
+      >
+        <div
+          className={`relative aspect-square h-20 w-full opacity-40 rounded-md transition-opacity ${
+            isSlideActive ? "!opacity-100" : ""
+          }`}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
+);
 
-const CarouselNext = React.forwardRef(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollNext, canScrollNext } = useCarousel()
+SliderThumbItem.displayName = "SliderThumbItem";
 
-  return (
-    (<Button
-      ref={ref}
-      variant={variant}
-      size={size}
-      className={cn("h-8 w-8 rounded-full", orientation === "horizontal"
-        ? ""
-        : "rotate-90", className)}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
-      {...props}>
-      <ArrowRight className="h-4 w-4" />
-      <span className="sr-only">Next slide</span>
-    </Button>)
-  );
-})
-CarouselNext.displayName = "CarouselNext"
+const CarouselIndicator = forwardRef(
+  ({ className, index, children, ...props }, ref) => {
+    const { activeIndex, onThumbClick } = useCarousel();
+    const isSlideActive = activeIndex === index;
+    return (
+      <Button
+        ref={ref}
+        size="icon"
+        className={cn(
+          "h-1 w-6 rounded-full",
+          "data-[active='false']:bg-primary/50 data-[active='true']:bg-primary",
+          className
+        )}
+        data-active={isSlideActive}
+        onClick={() => onThumbClick(index)}
+        {...props}
+      >
+        <span className="sr-only">slide {index + 1} </span>
+      </Button>
+    );
+  }
+);
 
-export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };
+CarouselIndicator.displayName = "CarouselIndicator";
+
+const CarouselPrevious = forwardRef(
+  ({ className, dir, variant = "outline", size = "icon", ...props }, ref) => {
+    const {
+      canScrollNext,
+      canScrollPrev,
+      scrollNext,
+      scrollPrev,
+      orientation,
+      direction,
+    } = useCarousel();
+
+    const scroll = direction === "rtl" ? scrollNext : scrollPrev;
+    const canScroll = direction === "rtl" ? canScrollNext : canScrollPrev;
+    return (
+      <Button
+        ref={ref}
+        variant={variant}
+        size={size}
+        className={cn(
+          "absolute h-6 w-6 rounded-full z-10",
+          orientation === "vertical"
+            ? "-top-2 left-1/2 -translate-x-1/2 rotate-90"
+            : "-left-2 top-1/2 -translate-y-1/2",
+          className
+        )}
+        onClick={scroll}
+        disabled={!canScroll}
+        {...props}
+      >
+        <ChevronLeftIcon className="h-4 w-4" />
+        <span className="sr-only">Previous slide</span>
+      </Button>
+    );
+  }
+);
+CarouselPrevious.displayName = "CarouselPrevious";
+
+const CarouselNext = forwardRef(
+  ({ className, dir, variant = "outline", size = "icon", ...props }, ref) => {
+    const {
+      canScrollNext,
+      canScrollPrev,
+      scrollNext,
+      scrollPrev,
+      orientation,
+      direction,
+    } = useCarousel();
+    const scroll = direction === "rtl" ? scrollPrev : scrollNext;
+    const canScroll = direction === "rtl" ? canScrollPrev : canScrollNext;
+    return (
+      <Button
+        ref={ref}
+        variant={variant}
+        size={size}
+        className={cn(
+          "absolute h-6 w-6 rounded-full z-10",
+          orientation === "vertical"
+            ? "-bottom-2 left-1/2 -translate-x-1/2 rotate-90"
+            : "-right-2 top-1/2 -translate-y-1/2",
+          className
+        )}
+        onClick={scroll}
+        disabled={!canScroll}
+        {...props}
+      >
+        <ChevronRightIcon className="h-4 w-4" />
+        <span className="sr-only">Next slide</span>
+      </Button>
+    );
+  }
+);
+
+CarouselNext.displayName = "CarouselNext";
+
+export {
+  Carousel,
+  CarouselMainContainer,
+  CarouselThumbsContainer,
+  SliderMainItem,
+  SliderThumbItem,
+  CarouselIndicator,
+  CarouselPrevious,
+  CarouselNext,
+  useCarousel,
+};
