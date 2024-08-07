@@ -23,7 +23,7 @@ function ProductFormMenus() {
         type="submit"
         size="sm"
         className="h-8 gap-1"
-        disabled={!form.formState.isValid || form.formState.isSubmitting}
+        disabled={form.formState.isSubmitting}
       >
         {form.formState.isSubmitting ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />

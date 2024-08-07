@@ -22,7 +22,7 @@ export default function SizeToggles({ className }) {
         <span>Size</span>
       </p>
       <ToggleGroup
-        type="single"
+        type="multiple"
         variant="outline"
         className="justify-start flex-wrap px-3 py-2 gap-2"
         value={selectedSize}
@@ -34,7 +34,7 @@ export default function SizeToggles({ className }) {
             value={label}
             aria-label={size}
             className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-              label === selectedSize
+              selectedSize.includes(label)
                 ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 : " text-muted-foreground"
             }`}

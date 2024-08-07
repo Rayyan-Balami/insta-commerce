@@ -8,12 +8,24 @@ export const promoSchema = z.object({
   promoDescription: z
     .string()
     .min(1, { message: "Promo description is required and cannot be empty." })
-    .max(50, { message: "Promo description cannot exceed 500 characters." }),
+    .max(500, { message: "Promo description cannot exceed 500 characters." }),
   promoCTA: z
     .string()
-    .min(1, { message: "Promo CTA is required and cannot be empty." })
-    .max(25, { message: "Promo CTA cannot exceed 50 characters." }),
+    .max(25, { message: "Promo CTA cannot exceed 25 characters." })
+    .or(z.literal("")),
   promoURL: z
     .string()
-    .url({ message: "Promo URL must be a valid URL." }),
-});
+    .url({ message: "Promo URL must be a valid URL." })
+    .or(z.literal("")),
+})
+.refine(
+  (data) => {
+    if (data.promoCTA && !data.promoURL) {
+      return false;
+    }
+    if (!data.promoCTA && data.promoURL) {
+      return false;
+    }
+    return true;
+  }
+);

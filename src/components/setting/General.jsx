@@ -78,7 +78,7 @@ export default function General() {
             />
             <Button
               type="submit"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
                 <Loader2 className="size-4 mr-2 animate-spin" />

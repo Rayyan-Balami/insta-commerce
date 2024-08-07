@@ -68,7 +68,7 @@ function PriceRange({ className }) {
           {/* Apply Button */}
           <Button
             type="submit"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
             variant="outline"
             className="col-span-3"
           >

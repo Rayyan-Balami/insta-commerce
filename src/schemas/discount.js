@@ -1,19 +1,18 @@
 import { z } from "zod";
 
-export const codeSchema = z
+export const discountSchema = z
   .object({
-    code: z
+    name: z
       .string()
-      .min(5, "Minimum 5 characters")
-      .max(10, "Maximum 10 characters"),
+      .min(1, "Minimum 1 characters")
+      .max(25, "Maximum 25 characters"),
     type: z.enum(["all", "specific", "category"]).default("all"),
     products: z.array(z.string()).optional(),
     usagePeriod: z
-      .enum(["noLimit", "limitedCount", "limitedDay"])
+      .enum(["noLimit", "limitedDay"])
       .default("noLimit"),
     limitedUsage: z.coerce.number().optional(),
-    discountRate: z.enum(["percentage", "amount"]).default("percentage"),
-    discountRateValue: z.coerce.number().min(1, "Minimum value is 1"),
+    discountRate: z.coerce.number().min(1, "Minimum value is 1 %").max(100, "Maximum value is 100 %"),
     minimumPurchaseAmount: z.coerce.number().min(0).optional(),
     maximumPurchaseAmount: z.coerce.number().min(0).optional(),
     maximumDiscountAmount: z.coerce.number().min(0).optional(),
@@ -33,14 +32,6 @@ export const codeSchema = z
     {
       path: ["limitedUsage"],
       message: "Limited usage must be at least 1",
-    }
-  )
-  .refine(
-    (data) =>
-      data.discountRate !== "percentage" || data.discountRateValue <= 100,
-    {
-      message: "Percentage discount cannot exceed 100%",
-      path: ["discountRateValue"],
     }
   )
   .refine(

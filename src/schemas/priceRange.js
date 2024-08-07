@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const priceRangeSchema = z
   .object({
-    min: z.coerce.number().int().min(1).or(z.literal("")).optional(),
-    max: z.coerce.number().int().min(1).or(z.literal("")).optional(),
+    min: z.coerce.number().int().min(1).or(z.literal("")),
+    max: z.coerce.number().int().min(1).or(z.literal("")),
   })
   .refine((data) => {
     // Check if both fields are empty

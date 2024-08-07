@@ -41,13 +41,32 @@ export default function Code() {
       type: "all",
       products: [],
       usagePeriod: "noLimit",
-      limitedUsage: 0,
+      limitedUsage: "",
       discountRate: "percentage",
-      discountRateValue: 0,
-      minimumPurchaseAmount: 0,
-      maximumDiscountAmount: 0,
+      discountRateValue: "",
+      minimumPurchaseAmount: "",
+      maximumPurchaseAmount: "",
+      maximumDiscountAmount: "",
     },
   });
+
+  const types = [
+    { value: "all", label: "All" },
+    { value: "specific", label: "Specific" },
+    { value: "category", label: "Category" },
+  ]
+
+  const usagePeriods = [
+    { value: "noLimit", label: "No Limit" },
+    { value: "limitedCount", label: "Limited Count" },
+    { value: "limitedDay", label: "Limited Day" },
+  ]
+
+  const discountRates = [
+    { value: "percentage", label: "Percentage" },
+    { value: "amount", label: "Amount" },
+  ]
+
 
   const type = form.watch("type");
   const usagePeriod = form.watch("usagePeriod");
@@ -79,7 +98,11 @@ export default function Code() {
                 <FormItem>
                   <FormLabel>Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="BALAMI20" {...field} className="uppercase" />
+                    <Input
+                      placeholder="BALAMI20"
+                      {...field}
+                      className="uppercase"
+                    />
                   </FormControl>
                   <FormMessage className="font-light" />
                 </FormItem>
@@ -98,30 +121,18 @@ export default function Code() {
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+                      {types.map(({value, label}) => (
+                      <FormItem 
+                      key={value}
+                      className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="all" />
+                          <RadioGroupItem value={value} />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          All products
+                          {label}
                         </FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="product" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Specific products
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="category" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Specific category
-                        </FormLabel>
-                      </FormItem>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -133,15 +144,14 @@ export default function Code() {
                 control={form.control}
                 name="products"
                 render={({ field }) => (
+                  <FormItem>
                   <FormControl>
                     <MultiSelector
                       values={field.value || []}
                       onValuesChange={(products) => field.onChange(products)}
                     >
                       <MultiSelectorTrigger className={`uppercase`}>
-                        <MultiSelectorInput
-                          placeholder={`Select ${type} products`}
-                        />
+                        <MultiSelectorInput placeholder={`Select ${type}s`} />
                       </MultiSelectorTrigger>
                       <MultiSelectorContent>
                         <MultiSelectorList>
@@ -159,6 +169,8 @@ export default function Code() {
                       </MultiSelectorContent>
                     </MultiSelector>
                   </FormControl>
+                  <FormMessage className="font-light" />
+                </FormItem>
                 )}
               />
             )}
@@ -175,28 +187,18 @@ export default function Code() {
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+                      {usagePeriods.map(({value, label}) => (
+                      <FormItem 
+                      key={value}
+                      className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="noLimit" />
-                        </FormControl>
-                        <FormLabel className="font-normal">No limit</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="limitedTimes" />
+                          <RadioGroupItem value={value} />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          Limited times
+                          {label}
                         </FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="limitedDays" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Limited days
-                        </FormLabel>
-                      </FormItem>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -212,8 +214,8 @@ export default function Code() {
                     <FormControl>
                       <div className="flex items-center gap-3">
                         <Input type="number" {...field} />
-                        <p className="text-sm text-gray-500">
-                          {usagePeriod === "limitedTimes" ? "times" : "days"}
+                        <p className="text-sm text-gray-500 w-1/6 text-center">
+                          {usagePeriod === "limitedCount" ? "COUNTS" : "DAYS"}
                         </p>
                       </div>
                     </FormControl>
@@ -237,22 +239,18 @@ export default function Code() {
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+                       {discountRates.map(({value, label}) => (
+                      <FormItem 
+                      key={value}
+                      className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="percentage" />
+                          <RadioGroupItem value={value} />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          Percentage
+                          {label}
                         </FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="fixedAmount" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Fixed Amount
-                        </FormLabel>
-                      </FormItem>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -268,8 +266,8 @@ export default function Code() {
                   <FormControl>
                     <div className="flex items-center gap-3">
                       <Input type="number" {...field} />
-                      <p className="text-sm text-gray-500">
-                        {discountRate === "percentage" ? "%" : "Currency"}
+                      <p className="text-sm text-gray-500 w-1/6 text-center">
+                        {discountRate === "percentage" ? "%" : "AMOUNT"}
                       </p>
                     </div>
                   </FormControl>
@@ -283,7 +281,7 @@ export default function Code() {
               name="minimumPurchaseAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Minimum Purchase Amount</FormLabel>
+                  <FormLabel>Minimum Purchase Amount (Optional)</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
@@ -292,13 +290,12 @@ export default function Code() {
               )}
             />
 
-            {discountRate !== "fixedAmount" && (
             <FormField
               control={form.control}
-              name="maximumDiscountAmount"
+              name="maximumPurchaseAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Maximum Discount Amount</FormLabel>
+                  <FormLabel>Maximum Purchase Amount (Optional)</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
@@ -306,11 +303,26 @@ export default function Code() {
                 </FormItem>
               )}
             />
-            )}
 
+            {discountRate !== "amount" && (
+              <FormField
+                control={form.control}
+                name="maximumDiscountAmount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Maximum Discount Amount (Optional)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage className="font-light" />
+                  </FormItem>
+                )}
+              />
+            )}
+            
             <Button
               type="submit"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              // disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
                 <Loader2 className="size-4 mr-2 animate-spin" />

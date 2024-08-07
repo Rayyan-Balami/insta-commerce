@@ -28,7 +28,7 @@ export default function PromoCard() {
     defaultValues: {
       promoTitle: "",
       promoDescription: "",
-      promaCTA: "",
+      promoCTA: "",
       promoURL: "",
     },
   });
@@ -57,7 +57,7 @@ export default function PromoCard() {
               name="promoTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name </FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input placeholder="Christmas Sale" {...field} />
                   </FormControl>
@@ -105,9 +105,13 @@ export default function PromoCard() {
                 </FormItem>
               )}
             />
+            {/* //a small note to the user  */}
+            <FormMessage className="text-xs text-muted-foreground">
+              Note: Both CTA and URL are required together.
+            </FormMessage>
             <Button
               type="submit"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
                 <Loader2 className="size-4 mr-2 animate-spin" />

@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Setting from "./pages/Setting";
 import Promotion from "./pages/Promotion";
 import { AdminLogin } from "./pages/AdminLogin";
+import ProductPage from "./pages/ProductPage";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         <Route path="promotion" element={<Promotion />} />
         {/* <Route path="analytic" element={<Analytic />} /> */}
         <Route path="setting" element={<Setting />} />
+        <Route path="view-product" element={<ProductPage />} />
       </Route>
       <Route path="admin/login" element={<AdminLogin />} />
     </>

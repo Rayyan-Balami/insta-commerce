@@ -7,7 +7,7 @@ import Product from "@/pages/Product"
 
 export default function ProductCard({product}) {
   return (
-    <Link to="/product">
+    <Link to="/view-product">
       <Card className="w-full 2xl:max-w-sm overflow-hidden group">
         <div className="relative overflow-hidden">
           <img src={product} alt="Product Image" className="aspect-square w-full object-cover object-center xl:group-hover:scale-105 transition-all duration-300" />

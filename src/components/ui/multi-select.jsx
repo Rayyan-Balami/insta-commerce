@@ -118,7 +118,7 @@ const MultiSelector = ({
       <Command
         onKeyDown={handleKeyDown}
         className={cn(
-          "overflow-visible bg-transparent flex flex-col space-y-2",
+          "h-auto overflow-visible bg-transparent flex flex-col",
           className
         )}
         dir={dir}
@@ -222,7 +222,7 @@ const MultiSelectorList = forwardRef(
       <CommandList
         ref={ref}
         className={cn(
-          "p-1 flex flex-col gap-2 rounded-md scrollbar-thin scrollbar-track-transparent transition-colors scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg w-full absolute bg-background shadow-md z-10 border border-muted top-0",
+          "p-1 flex flex-col gap-2 rounded-md scrollbar-thin scrollbar-track-transparent transition-colors scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg w-full absolute bg-background shadow-md z-10 border border-muted top-2",
           className
         )}
       >
