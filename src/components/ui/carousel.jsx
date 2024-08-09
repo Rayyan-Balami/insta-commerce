@@ -250,7 +250,7 @@ const SliderMainItem = forwardRef(({ className, children, ...props }, ref) => {
       {...props}
       ref={ref}
       className={cn(
-        `min-w-0 shrink-0 grow-0 basis-full bg-background p-1 ${
+        `min-w-0 shrink-0 grow-0 basis-full bg-background ${
           orientation === "vertical" ? "pb-1" : "pr-1"
         }`,
         className
@@ -273,13 +273,13 @@ const SliderThumbItem = forwardRef(
         ref={ref}
         onClick={() => onThumbClick(index)}
         className={cn(
-          "flex shrink-0 grow-0 bg-background p-1 cursor-pointer",
+          "flex shrink-0 grow-0 basis-1/3 bg-background p-1 cursor-pointer",
           `${orientation === "vertical" ? "pb-1" : "pr-1"}`,
           className
         )}
       >
         <div
-          className={`relative size-36 aspect-square border overflow-hidden w-full opacity-40 rounded-md transition-opacity ${
+          className={`relative border overflow-hidden w-full opacity-40 rounded-md transition-opacity ${
             isSlideActive ? "!opacity-100" : ""
           }`}
         >

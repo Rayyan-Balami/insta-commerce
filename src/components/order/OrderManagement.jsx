@@ -12,6 +12,5 @@ export default function OrderManagement() {
         <OrderSummary />
       </div>
     </div>
-    // <OrderTable />
   );
 }

@@ -27,6 +27,7 @@ const ProductCarousel = () => {
     "https://marketplace.canva.com/EAFIMHQ5yhE/1/0/1600w/canva-orange-and-teal-summer-sale-kids-fashion-bright-website-banner-L6kUMOWkkho.jpg", // Placeholder image 2
     "https://images.all-free-download.com/images/thumbjpg/ecommerce_website_banner_template_customers_sketch_flat_design_6920122.jpg", // Placeholder image 3
     "https://images.template.net/108566/mens-fashion-banner-obt4g.jpg", // Placeholder image 4,
+    
   ];
   return (
     <Carousel
@@ -39,23 +40,21 @@ const ProductCarousel = () => {
         <CarouselNext />
         <CarouselPrevious />
 
-        <div className="relative border rounded-md overflow-hidden">
+        <div className="relative border rounded-md overflow-hidden h-fit">
           <CarouselMainContainer className="aspect-square">
             {dummyImages.map((_, index) => (
               <SliderMainItem key={index} className="bg-transparent p-0">
-                <div className="size-full">
                   <img
                     src={dummyImages[index]}
                     alt="promotion"
                     className="object-cover object-center w-full h-full"
                   />
-                </div>
               </SliderMainItem>
             ))}
           </CarouselMainContainer>
           {/* //YT video preview */}
 
-          <Drawer className="dark">
+          <Drawer>
             <DrawerTrigger
               className="group absolute bottom-2 right-2 w-28 hover:w-48 transition-all aspect-video
              shadow-md rounded-md overflow-hidden"
@@ -93,14 +92,12 @@ const ProductCarousel = () => {
       </div>
       <CarouselThumbsContainer>
         {dummyImages.map((_, index) => (
-          <SliderThumbItem key={index} index={index} className="bg-transparent">
-            <div className="size-full">
+          <SliderThumbItem key={index} index={index} className="bg-transparent basis-1/4 max-w-sm aspect-square">
               <img
                 src={dummyImages[index]}
                 alt="promotion"
                 className="object-cover object-center w-full h-full"
               />
-            </div>
           </SliderThumbItem>
         ))}
       </CarouselThumbsContainer>
