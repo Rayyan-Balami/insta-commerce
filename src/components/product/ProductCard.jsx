@@ -36,10 +36,10 @@ export default function ProductCard({ product }) {
               </Badge>
             </div>
           </div>
-          <div className="flex items-center gap-4 justify-between flex-wrap">
+          <div className="flex items-center gap-4 justify-between">
             <div>
-              <span className="text-xl font-bold">$100000</span>
-              <span className="text-sm text-muted-foreground line-through ml-2">
+              <span className="text-lg font-semibold">$100000</span>
+              <span className="text-xs text-muted-foreground line-through ml-2">
                 10000000
               </span>
             </div>

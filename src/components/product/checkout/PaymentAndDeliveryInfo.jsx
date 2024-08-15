@@ -22,14 +22,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 function PaymentAndDeliveryInfo() {
   const form = useFormContext();
   const paymentMethods = [
-    { method: "credit_card", label: "Credit Card" },
-    { method: "paypal", label: "PayPal" },
-    { method: "bank_transfer", label: "Bank Transfer" },
-    { method: "cash_on_delivery", label: "Cash on Delivery" },
+    { value: "credit_card", label: "Credit Card" },
+    { value: "paypal", label: "PayPal" },
+    { value: "bank_transfer", label: "Bank Transfer" },
+    { value: "cash_on_delivery", label: "Cash on Delivery" },
   ];
   const deliveryMethods = [
-    { method: "standard", label: "Standard" },
-    { method: "express", label: "Express" },
+    { value: "standard", label: "Standard" },
+    { value: "express", label: "Express" },
   ];
   return (
     <Card className="bg-muted/40">
@@ -54,13 +54,13 @@ function PaymentAndDeliveryInfo() {
                   value={field.value}
                   onValueChange={field.onChange}
                 >
-                  {paymentMethods.map(({ method, label }) => (
+                  {paymentMethods.map(({ value, label }) => (
                     <ToggleGroupItem
-                      key={method}
-                      value={method}
-                      aria-label={method}
+                      key={value}
+                      value={value}
+                      aria-label={value}
                       className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                        form.watch("paymentMethod") === method
+                        form.watch("paymentMethod") === value
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : " text-muted-foreground"
                       }`}
@@ -87,13 +87,13 @@ function PaymentAndDeliveryInfo() {
                   value={field.value}
                   onValueChange={field.onChange}
                 >
-                  {deliveryMethods.map(({ method, label }) => (
+                  {deliveryMethods.map(({ value, label }) => (
                     <ToggleGroupItem
-                      key={method}
-                      value={method}
-                      aria-label={method}
+                      key={value}
+                      value={value}
+                      aria-label={value}
                       className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                        form.watch("deliveryMethod") === method
+                        form.watch("deliveryMethod") === value
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : " text-muted-foreground"
                       }`}

@@ -13,6 +13,7 @@ import Promotion from "./pages/Promotion";
 import { AdminLogin } from "./pages/AdminLogin";
 import ProductPage from "./pages/ProductPage";
 import Checkout from "./pages/Checkout";
+import Cart from "./pages/Cart";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,7 @@ export const router = createBrowserRouter(
         <Route path="setting" element={<Setting />} />
         <Route path="view-product" element={<ProductPage />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="cart" element={<Cart />} />
       </Route>
       <Route path="admin/login" element={<AdminLogin />} />
     </>

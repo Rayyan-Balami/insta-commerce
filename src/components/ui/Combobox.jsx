@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function Combobox({ list, value, onChange }) {
+export function Combobox({ list, value, onChange, placeholder = "Select Item", className }) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -28,18 +28,18 @@ export function Combobox({ list, value, onChange }) {
           className={cn(
             "w-[200px] justify-between",
             !value && "text-muted-foreground"
-          )}
+          , className)}
           onClick={() => setOpen(!open)}
         >
           {value
             ? list.find((item) => item.value === value)?.label
-            : "Select item"}
+            : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search item..." />
+          <CommandInput placeholder="Search..." />
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
@@ -48,7 +48,7 @@ export function Combobox({ list, value, onChange }) {
                   value={item.label}
                   key={item.value}
                   onSelect={() => {
-                    onChange(item.value);
+                    onChange(item.value === value ? "" : item.value);
                     setOpen(false);
                   }}
                 >

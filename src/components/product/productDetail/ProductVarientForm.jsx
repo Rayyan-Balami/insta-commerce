@@ -2,109 +2,189 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon, Wallet, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
-import BuyNowForm from "../checkout/CheckoutForm";
+import { useForm } from "react-hook-form";
 
 function ProductVarientForm() {
-  const [selectedSize, setSelectedSize] = useState("");
+  const form = useForm({
+    defaultValues: {
+      color: "",
+      size: "",
+      quantity: 1,
+    },
+  });
+  const onSubmit = async (data) => {
+    // Simulate asynchronous submission (e.g., API call)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log(data); // Handle form submission logic here
+    //reset the form
+    form.reset();
+  };
   const sizes = [
-    { size: "free size", label: "Free Size" },
-    { size: "small", label: "S" },
-    { size: "medium", label: "M" },
-    { size: "large", label: "L" },
-    { size: "extra-large", label: "XL" },
-    { size: "2x-large", label: "XXL" },
+    { value: "free size", label: "Free Size" },
+    { value: "small", label: "S" },
+    { value: "medium", label: "M" },
+    { value: "large", label: "L" },
+    { value: "extra-large", label: "XL" },
+    { value: "2x-large", label: "XXL" },
   ];
-  const [selectedColor, setSelectedColor] = useState("");
   const colors = [
-    "Red","Blue","Green","Yellow","Black","White","Grey","Brown","Pink","Purple"
+    { value: "black", label: "Black" },
+    { value: "white", label: "White" },
+    { value: "red", label: "Red" },
+    { value: "blue", label: "Blue" },
+    { value: "green", label: "Green" },
+    { value: "yellow", label: "Yellow" },
   ];
   return (
     <>
-      {/* //color options */}
-      <div>
-        <h2 className="font-semibold mb-2">Colors</h2>
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          className="justify-start flex-wrap gap-2"
-          value={selectedColor}
-          onValueChange={setSelectedColor}
-        >
-          {colors.map((color) => (
-            <ToggleGroupItem
-              key={color} // Adding a unique key
-              value={color}
-              aria-label={color}
-              className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                selectedColor.includes(color)
-                  ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                  : " text-muted-foreground"
-              }`}
-            >
-              {color}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
-      {/* //size options */}
-      <div>
-        <h2 className="font-semibold mb-2">Size</h2>
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          className="justify-start flex-wrap gap-2"
-          value={selectedSize}
-          onValueChange={setSelectedSize}
-        >
-          {sizes.map(({ size, label }) => (
-            <ToggleGroupItem
-              key={size} // Adding a unique key
-              value={label}
-              aria-label={size}
-              className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                selectedSize.includes(label)
-                  ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                  : " text-muted-foreground"
-              }`}
-            >
-              {label}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
-      {/* //quantity options */}
-      <div>
-        <h2 className="font-semibold mb-2">Quantity</h2>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" className="p-1">
-            <MinusIcon className="w-4 h-4" />
-          </Button>
-          <Input
-            type="number"
-            min="1"
-            max="5"
-            defaultValue="1"
-            className="w-1/4 text-center"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+          {/* //color options */}
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Color </FormLabel>
+                <FormControl>
+                  <ToggleGroup
+                    type="single"
+                    variant="outline"
+                    className="justify-start flex-wrap gap-2"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    {colors.map(({ value, label }) => (
+                      <ToggleGroupItem
+                        key={value}
+                        value={value}
+                        aria-label={value}
+                        className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
+                          form.watch("color") === value
+                            ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                            : " text-muted-foreground"
+                        }`}
+                      >
+                        {label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </FormControl>
+              </FormItem>
+            )}
           />
-          <Button variant="outline" size="icon" className="p-1">
-            <PlusIcon className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-      {/* //buy now and add to cart buttons  */}
-      <div className="flex items-center gap-4">
-        <Button className="w-full">
-          <Wallet className="size-4 mr-2" />
-          Buy Now
-        </Button>
-        <Button variant="outline" className="w-full">
-          <ShoppingCart className="size-4 mr-2" />
-          Add to Cart
-        </Button>
-        <BuyNowForm />
-      </div>
+
+          {/* //size options */}
+          <FormField
+            control={form.control}
+            name="size"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Size </FormLabel>
+                <FormControl>
+                  <ToggleGroup
+                    type="single"
+                    variant="outline"
+                    className="justify-start flex-wrap gap-2"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    {sizes.map(({ value, label }) => (
+                      <ToggleGroupItem
+                        key={value}
+                        value={value}
+                        aria-label={value}
+                        className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
+                          form.watch("size") === value
+                            ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                            : " text-muted-foreground"
+                        }`}
+                      >
+                        {label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          {/* //quantity options */}
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity </FormLabel>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="p-1"
+                    disabled={field.value <= 1}
+                    onClick={() => {
+                      if (field.value > 1) {
+                        field.onChange(field.value - 1);
+                      }
+                    }}
+                  >
+                    <MinusIcon className="w-4 h-4" />
+                  </Button>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={field.value}
+                      onChange={(e) => {
+                        const parsedValue = parseInt(e.target.value, 10);
+                        if (!isNaN(parsedValue)) {
+                          field.onChange(parsedValue);
+                        } else {
+                          field.onChange(1);
+                        }
+                      }}
+                      className="w-1/4 text-center"
+                    />
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="p-1"
+                    onClick={() => {
+                      field.onChange(field.value + 1);
+                    }}
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                  </Button>
+                </div>
+                <FormMessage className="font-light" />
+              </FormItem>
+            )}
+          />
+
+          {/* //buy now and add to cart buttons  */}
+          <div className="flex items-center gap-4">
+            <Button className="w-full">
+              <Wallet className="size-4 mr-2" />
+              Buy Now
+            </Button>
+            <Button variant="outline" className="w-full">
+              <ShoppingCart className="size-4 mr-2" />
+              Add to Cart
+            </Button>
+          </div>
+        </form>
+      </Form>
     </>
   );
 }
