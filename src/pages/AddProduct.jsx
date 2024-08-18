@@ -13,10 +13,13 @@ function AddProduct() {
     defaultValues: {
       name: "",
       description: "",
-      skus: [],
+      skus: [
+        { color: "", price: "", stock: "", size: [] },
+      ],
       category: "",
       status: "",
       images: [],
+      video: "",
     },
   });
 

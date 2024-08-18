@@ -28,7 +28,7 @@ export const router = createBrowserRouter(
         {/* <Route path="analytic" element={<Analytic />} /> */}
         <Route path="setting" element={<Setting />} />
         <Route path="view-product" element={<ProductPage />} />
-        <Route path="checkout" element={<Checkout />} />
+        <Route path="checkout/:type" element={<Checkout />} />
         <Route path="cart" element={<Cart />} />
       </Route>
       <Route path="admin/login" element={<AdminLogin />} />

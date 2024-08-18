@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 function ProductVarientForm() {
   const form = useForm({
@@ -174,9 +175,11 @@ function ProductVarientForm() {
 
           {/* //buy now and add to cart buttons  */}
           <div className="flex items-center gap-4">
-            <Button className="w-full">
-              <Wallet className="size-4 mr-2" />
-              Buy Now
+            <Button className="w-full" asChild>
+              <Link to="/checkout/buy-now" className="flex items-center gap-2">
+                <Wallet className="size-4" />
+                Buy Now
+              </Link>
             </Button>
             <Button variant="outline" className="w-full">
               <ShoppingCart className="size-4 mr-2" />

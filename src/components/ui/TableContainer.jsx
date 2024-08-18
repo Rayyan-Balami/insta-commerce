@@ -10,10 +10,9 @@ import {
 import { flexRender } from "@tanstack/react-table";
 
 export function TableContainer({ table }) {
-  console.log('Rows:', table.getRowModel().rows); // Should show the rows if data is processed correctly
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-auto">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -32,7 +31,6 @@ export function TableContainer({ table }) {
           ))}
         </TableHeader>
         <TableBody>
-          {console.log(table.getRowModel().rows)          }
           {table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

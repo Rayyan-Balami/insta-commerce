@@ -30,7 +30,7 @@ const FileUploadDropzone = ({
       orientation="horizontal"
     >
       <FileInput>
-        <div className="p-4 grid place-items-center gap-3 w-full rounded-md text-sm border-2 border-dashed cursor-pointer transition-colors hover:border-primary text-muted-foreground hover:text-primary">
+        <div className="p-4 grid place-items-center gap-3 w-full rounded-md text-sm border-2 border-dashed cursor-pointer transition-colors bg-background hover:border-primary text-muted-foreground hover:text-primary">
           <Upload className="size-5" />
           <span className="block">Drag and drop files here</span>
           <span className="block">or</span>
@@ -39,7 +39,7 @@ const FileUploadDropzone = ({
           </Button>
         </div>
       </FileInput>
-      <FileUploaderContent className="mt-4 grid grid-cols-3 gap-3">
+      <FileUploaderContent className="grid grid-cols-3 gap-3">
         {value?.map((file, index) => (
           <FileUploaderItem
             key={index}

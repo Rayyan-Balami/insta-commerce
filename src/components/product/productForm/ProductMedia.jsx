@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import FileUploadDropzone from "@/components/FileUploadDropzone";
 import { useFormContext } from "react-hook-form";
 import {
@@ -8,17 +14,16 @@ import {
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
-export default function ProductImages() {
+export default function ProductMedia() {
   const form = useFormContext(); // Use form context to get control
 
   return (
     <Card className="bg-muted/40">
       <CardHeader>
-        <CardTitle>Product Images</CardTitle>
-        <CardDescription>
-          Upload images for the product here.
-        </CardDescription>
+        <CardTitle>Media</CardTitle>
+        <CardDescription>Upload product images and video link </CardDescription>
       </CardHeader>
       <CardContent>
         <FormField
@@ -34,6 +39,24 @@ export default function ProductImages() {
                   accept={{ "image/*": [".jpg", ".jpeg", ".png"] }}
                   maxFiles={8}
                   maxSize={1 * 1024 * 1024} // 1MB
+                />
+              </FormControl>
+              <FormMessage className="font-light" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="video"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Video (Optional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="https://www.youtube.com/watch?v=video-id"
+                  className="input w-full"
+                  {...field}
                 />
               </FormControl>
               <FormMessage className="font-light" />

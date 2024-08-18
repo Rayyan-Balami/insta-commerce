@@ -18,9 +18,9 @@ export default function ProductDetails() {
   return (
     <Card className="bg-muted/40">
       <CardHeader>
-        <CardTitle>Product Details</CardTitle>
+        <CardTitle>Details</CardTitle>
         <CardDescription>
-          Lipsum dolor sit amet, consectetur adipiscing elit
+          Basic information about the product
         </CardDescription>
       </CardHeader>
       <CardContent>

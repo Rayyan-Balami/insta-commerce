@@ -60,7 +60,7 @@ const ProductCarousel = () => {
              shadow-md rounded-md overflow-hidden"
             >
               <img
-                src="https://img.youtube.com/vi/-P_bf-PnocE/maxresdefault.jpg"
+                src="https://img.youtube.com/vi/1XFDbBAO_o0/maxresdefault.jpg"
                 alt="Video Preview"
                 className="size-full object-cover object-center
                   brightness-75 group-hover:brightness-100 transition-all duration-300
@@ -75,7 +75,7 @@ const ProductCarousel = () => {
               <DrawerDescription className="px-4">
                 <iframe
                   className="w-full max-w-screen-sm mx-auto aspect-video border-none rounded-lg"
-                  src="https://www.youtube.com/embed/-P_bf-PnocE"
+                  src="https://www.youtube.com/embed/1XFDbBAO_o0"
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

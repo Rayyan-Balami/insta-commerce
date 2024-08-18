@@ -1,6 +1,6 @@
-import ProductGrid from "@/components/Home/ProductGrid";
-import PromotionCarousel from "@/components/Home/PromotionCarousel";
-import { getRandomWelcomeMessage } from "@/components/Home/welcomeMesseges";
+import ProductGrid from "@/components/home/ProductGrid";
+import PromotionCarousel from "@/components/home/PromotionCarousel";
+import { getRandomWelcomeMessage } from "@/components/home/welcomeMesseges";
 import NoDataPlaceholder from "@/components/NoDataPlaceholder";
 import PageTitle from "@/components/PageTitle";
 import React from "react";

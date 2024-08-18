@@ -18,6 +18,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
@@ -106,9 +107,9 @@ export default function PromoCard() {
               )}
             />
             {/* //a small note to the user  */}
-            <FormMessage className="text-xs text-muted-foreground">
+            <FormDescription className="text-xs">
               Note: Both CTA and URL are required together.
-            </FormMessage>
+            </FormDescription>
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}

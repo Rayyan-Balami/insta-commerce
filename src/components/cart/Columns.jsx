@@ -1,25 +1,11 @@
+// Columns.js
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MinusIcon, PlusIcon, ArrowUpDown } from "lucide-react";
 import * as React from "react";
-import { Combobox } from "../ui/Combobox";
+import { Input } from "@/components/ui/input";
 
-const status = [
-  { value: "pending", label: "Pending" },
-  { value: "paid", label: "Paid" },
-  { value: "failed", label: "Failed" },
-];
-
-export const columns = [
+export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -28,14 +14,20 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => {
+          handleCheckboxChange("selectAll", !!value); // Use the combined function
+          table.toggleAllPageRowsSelected(!!value);
+        }}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onCheckedChange={(value) => {
+          handleCheckboxChange(row.original.id, !!value); // Use the combined function
+          row.toggleSelected(!!value);
+        }}
         aria-label="Select row"
       />
     ),
@@ -43,82 +35,78 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "email",
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => (
+      <img
+        src={row.original.image}
+        alt=""
+        className="border rounded-md min-h-20 min-w-20 max-h-20 max-w-20 aspect-square object-cover object-center"
+      />
+    ),
+  },
+  {
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center gap-1 whitespace-nowrap">
-        <p>Status :</p>
-        <Combobox
-          list={status}
-          value={column.getFilterValue()}
-          onChange={column.setFilterValue}
-          placeholder="All"
-          className="border-none bg-inherit w-auto"
-        />
-        </div>
-      );
-    },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="min-w-40 space-y-1">
+        <p className="capitalize line-clamp-2">{row.original.name}</p>
+        <p className="text-muted-foreground">
+          Rs {row.original.price.toFixed(2)}
+        </p>
+      </div>
+    ),
+    enableSorting: true,
+  },
+  {
+    id: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => (
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={row.original.quantity <= 1}
+          onClick={() => handleQuantityChange(row.original, "decrement")}
+        >
+          <MinusIcon className="w-4 h-4" />
+        </Button>
+        <Input
+          type="number"
+          value={row.original.quantity}
+          onChange={(e) => {
+            const parsedValue = parseInt(e.target.value, 10);
+            if (!isNaN(parsedValue)) {
+              handleQuantityChange(row.original, "set", parsedValue);
+            }
+          }}
+          className="h-9 w-16 text-center"
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleQuantityChange(row.original, "increment")}
+        >
+          <PlusIcon className="w-4 h-4" />
+        </Button>
+      </div>
     ),
   },
   {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    id: "total",
+    header: "Total",
+    cell: ({ row }) => (
+      <p className="whitespace-nowrap font-semibold">Rs {(row.original.price * row.original.quantity).toFixed(2)}</p>
+    ),
   },
 ];

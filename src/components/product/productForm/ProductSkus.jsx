@@ -1,4 +1,4 @@
-import {PlusCircle, Trash } from "lucide-react";
+import { PlusCircle, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,10 +35,17 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "@/components/ui/multi-select";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const sizes = ["s", "m", "l", "xl", "xxl"]; // Define your sizes here
 
-export default function ProductStocks() {
+export default function ProductSkus() {
   const form = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -47,7 +54,7 @@ export default function ProductStocks() {
 
   const handleAddSKU = (e) => {
     e.preventDefault();
-    append({ sku: "", price: "", stock: "", size: [] }); // Initialize size as an empty array
+    append({ color: "", price: "", stock: "", size: [] });
   };
 
   return (
@@ -58,36 +65,80 @@ export default function ProductStocks() {
           Manage the product's SKUs and their respective details.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-2">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">SKU</TableHead>
+              <TableHead>Color</TableHead>
+              <TableHead>Size</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Price</TableHead>
-              <TableHead>Size</TableHead>
-              <TableHead className="w-[50px]">Actions</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {fields.map((item, index) => {
               // Access the errors for the current index
-              const { sku, stock, price, size } = form.formState.errors.skus?.[index] || {};
+              const { color, stock, price, size } =
+                form.formState.errors.skus?.[index] || {};
 
               return (
                 <TableRow key={item.id}>
                   <TableCell>
                     <FormField
                       control={form.control}
-                      name={`skus.${index}.sku`}
+                      name={`skus.${index}.color`}
                       render={({ field }) => (
-                          <FormControl>
-                            <Input
-                              placeholder="SKU"
-                              {...field}
-                              className={sku ? "border-red-500" : ""}
-                            />
-                          </FormControl>
+                        <FormControl>
+                          <Input
+                            placeholder="color"
+                            {...field}
+                            className={`min-w-20 ${color ? "border-red-500" : ""}`}
+                          />
+                        </FormControl>
+                      )}
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    <FormField
+                      control={form.control}
+                      name={`skus.${index}.size`}
+                      render={({ field }) => (
+                        <FormControl>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={`font-normal ${
+                                  size ? "border-red-500" : ""
+                                }`}
+                              >
+                                Size <ChevronDown className="ml-2 h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              {sizes.map((size) => (
+                                <DropdownMenuCheckboxItem
+                                  key={size}
+                                  className="uppercase"
+                                  checked={field.value?.includes(size)}
+                                  onCheckedChange={(value) => {
+                                    if (value) {
+                                      field.onChange([...field.value, size]);
+                                    } else {
+                                      field.onChange(
+                                        field.value.filter((v) => v !== size)
+                                      );
+                                    }
+                                  }}
+                                >
+                                  {size}
+                                </DropdownMenuCheckboxItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </FormControl>
                       )}
                     />
                   </TableCell>
@@ -101,7 +152,7 @@ export default function ProductStocks() {
                             type="number"
                             placeholder="Stock"
                             {...field}
-                            className={stock ? "border-red-500" : ""}
+                            className={`min-w-20 ${stock ? "border-red-500" : ""}`}
                           />
                         </FormControl>
                       )}
@@ -117,35 +168,8 @@ export default function ProductStocks() {
                             type="number"
                             placeholder="Price"
                             {...field}
-                            className={price ? "border-red-500" : ""}
+                            className={`min-w-20 ${price ? "border-red-500" : ""}`}
                           />
-                        </FormControl>
-                      )}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormField
-                      control={form.control}
-                      name={`skus.${index}.size`}
-                      render={({ field }) => (
-                        <FormControl>
-                          <MultiSelector
-                            values={field.value || []}
-                            onValuesChange={(sizes) => field.onChange(sizes)}
-                          >
-                            <MultiSelectorTrigger className={`uppercase ${size ? "border-red-500" : ""}`}>
-                              <MultiSelectorInput placeholder="Select sizes" />
-                            </MultiSelectorTrigger>
-                            <MultiSelectorContent>
-                              <MultiSelectorList>
-                                {sizes.map((size) => (
-                                  <MultiSelectorItem key={size} value={size} className="uppercase">
-                                    {size}
-                                  </MultiSelectorItem>
-                                ))}
-                              </MultiSelectorList>
-                            </MultiSelectorContent>
-                          </MultiSelector>
                         </FormControl>
                       )}
                     />
@@ -162,7 +186,12 @@ export default function ProductStocks() {
         </Table>
       </CardContent>
       <CardFooter className="border-t pt-6 grid place-items-center">
-        <Button size="sm" variant="ghost" className="gap-1" onClick={(e) => handleAddSKU(e)}>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="gap-1"
+          onClick={(e) => handleAddSKU(e)}
+        >
           <PlusCircle className="h-3.5 w-3.5" />
           Add Variant
         </Button>
@@ -170,5 +199,3 @@ export default function ProductStocks() {
     </Card>
   );
 }
-
-

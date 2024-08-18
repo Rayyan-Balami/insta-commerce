@@ -1,5 +1,5 @@
 import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs";
-import General from "./General";
+import General from "./general/General";
 import Contact from "./Contact";
 import Social from "./Social";
 

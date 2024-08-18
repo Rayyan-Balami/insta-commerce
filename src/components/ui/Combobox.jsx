@@ -26,8 +26,7 @@ export function Combobox({ list, value, onChange, placeholder = "Select Item", c
           variant="outline"
           role="combobox"
           className={cn(
-            "w-[200px] justify-between",
-            !value && "text-muted-foreground"
+            "w-full justify-between flex font-normal hover:bg-popover"
           , className)}
           onClick={() => setOpen(!open)}
         >
@@ -37,7 +36,7 @@ export function Combobox({ list, value, onChange, placeholder = "Select Item", c
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>

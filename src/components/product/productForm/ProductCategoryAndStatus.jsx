@@ -1,13 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
+import { Combobox } from "@/components/ui/Combobox";
 import { useFormContext } from "react-hook-form";
 import {
   FormField,
@@ -16,16 +8,43 @@ import {
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function ProductStatus() {
+export default function ProductCategoryAndStatus() {
   const form = useFormContext();
+  
+  const items = [
+    { value: "clothing", label: "Clothing" },
+    { value: "electronics", label: "Electronics" },
+    { value: "accessories", label: "Accessories" },
+  ];
+
   return (
     <Card className="bg-muted/40">
       <CardHeader>
-        <CardTitle>Product Status</CardTitle>
+        <CardTitle>Category & Status</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid grid-cols-2 gap-4">
         <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <Combobox list={items} value={field.value} onChange={field.onChange} placeholder="Select Category"/>
+              </FormControl>
+              <FormMessage className="font-light"/>
+            </FormItem>
+          )}
+        />
+         <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
@@ -34,7 +53,7 @@ export default function ProductStatus() {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Select Status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
