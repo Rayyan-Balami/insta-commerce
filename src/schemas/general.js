@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+// Define allowed payment methods
+const paymentMethods = [
+  "credit_card",
+  "paypal",
+  "bank_transfer",
+  "e_sewa",
+  "khalti",
+  "imepay",
+  "prabhu_pay",
+  "connect_ips",
+  "cash_on_delivery",
+];
+
+// Define allowed delivery methods
+const deliveryMethods = ["pickup", "delivery"];
+
 // Define schema for pickup and delivery locations
 const locationSchema = z.object({
   address: z
@@ -35,6 +51,16 @@ export const generalSchema = z
     maximumOrder: z.coerce
       .number()
       .min(1, { message: "Maximum order must be at least 1." }),
+    currencySymbol: z
+      .string()
+      .min(1, { message: "Currency symbol is required and cannot be empty." })
+      .max(5, { message: "Currency symbol cannot exceed 5 characters." }),
+    paymentMethod: z
+      .array(z.enum(paymentMethods))
+      .nonempty({ message: "At least one payment method must be selected." }),
+    deliveryMethod: z
+      .array(z.enum(deliveryMethods))
+      .nonempty({ message: "At least one delivery method must be selected." }),
   })
   .refine((data) => data.maximumOrder >= data.minimumOrder, {
     message: "Maximum order can't be less than minimum order.",

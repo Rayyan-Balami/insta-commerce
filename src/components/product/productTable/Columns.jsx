@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import {TableColumnSort } from "@/components/ui/TableColumnSort";
 
 // data structure reference for the table
 // {
@@ -107,17 +108,7 @@ export const createColumns = (handleCheckboxChange) => [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <TableColumnSort column={column}/>,
     cell: ({ row }) => (
       <div className="min-w-40">
         <p className="capitalize line-clamp-1">{row.original.name}</p>

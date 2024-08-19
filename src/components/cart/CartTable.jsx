@@ -165,9 +165,16 @@ export default function ProductTable() {
     getRowId: (row) => row.id,
   });
 
+  const searchColumns = [
+    {
+      label: "Name",
+      column: "name",
+    },
+  ];
+
   return (
     <>
-      <TableControls table={table} searchColumns={["name"]}>
+      <TableControls table={table} searchColumns={searchColumns}>
         <AlertDialog
           title="Remove Cart Items"
           description="This action will remove all the checked items from the cart. Are you sure you want to proceed?"
@@ -176,7 +183,7 @@ export default function ProductTable() {
           acceptLabel="Delete"
           onClick={removeCheckedItems}
           disabled={Object.keys(rowSelection).length === 0}
-          triggerLabel={<Trash className="size-3.5" />}
+          triggerLabel={<Trash className="size-4" />}
         />
       </TableControls>
       <TableContainer table={table} />

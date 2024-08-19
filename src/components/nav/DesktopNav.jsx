@@ -18,10 +18,6 @@ function DesktopNav() {
       <div className="flex max-h-screen flex-col gap-4">
         <div className="flex-shrink-0 flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Logo />
-          <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
-          </Button>
         </div>
         <div className="flex-1 overflow-y-scroll space-y-4 divide-y text-base font-medium">
           <nav className="space-y-2 px-2 lg:px-4">

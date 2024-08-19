@@ -39,30 +39,40 @@ function CheckoutSummary() {
         <CardContent className="p-6 text-sm">
           <div className="grid gap-3">
             <ul className="grid gap-3">
-              <li className="grid grid-cols-2 gap-2">
-                <p>Shoes with Laces</p>
-                <p className="text-muted-foreground text-right">
-                  Rs 250.00 x <span>2</span>
-                </p>
+              <li className="flex items-center justify-between gap-2">
                 <img
                   src="https://i.pinimg.com/564x/4c/01/56/4c01564b2bb728c2d34873b3cf317f48.jpg"
                   alt=""
                   className="border rounded-md size-20 aspect-square object-cover object-center"
                 />
-                <span className="text-right">$250.00</span>
+                <div className="space-y-1 text-right">
+                  <p>Shoes with Laces</p>
+                  <p className="text-muted-foreground text-xs italic">
+                    Varient: Black (M)
+                  </p>
+                  <p className="text-muted-foreground text-xs italic">
+                    Rs 250.00 x <span>2</span>
+                  </p>
+                  <p className="mt-4">Rs 250.00</p>
+                </div>
               </li>
               <Separator className="my-2" />
-              <li className="grid grid-cols-2 gap-2">
-                <p>Shoes with Laces</p>
-                <p className="text-muted-foreground text-right">
-                  Rs 250.00 x <span>2</span>
-                </p>
+              <li className="flex items-center justify-between gap-2">
                 <img
                   src="https://i.pinimg.com/564x/4c/01/56/4c01564b2bb728c2d34873b3cf317f48.jpg"
                   alt=""
                   className="border rounded-md size-20 aspect-square object-cover object-center"
                 />
-                <span className="text-right">$250.00</span>
+                <div className="space-y-1 text-right">
+                  <p>Shoes with Laces</p>
+                  <p className="text-muted-foreground text-xs italic">
+                    Varient: Black (M)
+                  </p>
+                  <p className="text-muted-foreground text-xs italic">
+                    Rs 250.00 x <span>2</span>
+                  </p>
+                  <p className="mt-4">Rs 250.00</p>
+                </div>
               </li>
               <Separator className="my-2" />
             </ul>
@@ -116,12 +126,22 @@ function CheckoutSummary() {
         <TicketPercent className="h-4 w-4" />
         <AlertTitle className="mb-2"> Single Promocode Limit</AlertTitle>
         <AlertDescription>
-          <Button type="button" variant="ghost" size="sm" className="gap-2 w-full">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="gap-2 w-full"
+          >
             Use code <strong>HUKUT500</strong> for Rs. 500 off
           </Button>
         </AlertDescription>
         <AlertDescription>
-          <Button type="button" variant="ghost" size="sm" className="gap-2 w-full">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="gap-2 w-full"
+          >
             Use code <strong>HUKUT500</strong> for Rs. 500 off
           </Button>
         </AlertDescription>

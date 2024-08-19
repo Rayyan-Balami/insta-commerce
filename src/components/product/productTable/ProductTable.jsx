@@ -200,9 +200,17 @@ export default function ProductTable() {
     // Add more filters as needed
   ];
 
+  const searchColumns = [
+    {
+      label: "Name",
+      column: "name",
+    },
+    // Add more search columns as needed
+  ];
+
   return (
     <>
-      <TableControls table={table} searchColumns={["name"]} filters={filters}>
+      <TableControls table={table} searchColumns={searchColumns} filters={filters}>
         <AlertDialog
           title="Delete Selected Items"
           description="This action will remove selected items from Database. Are you sure you want to proceed?"
@@ -211,7 +219,7 @@ export default function ProductTable() {
           acceptLabel="Delete"
           onClick={removeCheckedItems}
           disabled={Object.keys(rowSelection).length === 0}
-          triggerLabel={<Trash className="size-3.5" />}
+          triggerLabel={<Trash className="size-4" />}
         />
       </TableControls>
       <TableContainer table={table} />

@@ -1,12 +1,11 @@
-import { Home, ShoppingCart, Package, ArrowUpNarrowWide, LineChart } from 'lucide-react';
+import { ScanBarcode, Store, Package, LineChart, ArrowUpNarrowWide, } from 'lucide-react';
 
 export const navMenus = [
-  { name: 'Home', to: '/', icon: Home },
-  { name: 'Dashboard', to: '/dashboard', icon: Home },
-  { name: 'Order', to: '/order', icon: ShoppingCart, badge: true },
-  { name: 'Product', to: '/product', icon: Package },
+  { name: 'Home', to: '/', icon: Store },
+  { name: 'Analytic', to: '/analytic', icon: LineChart },
+  { name: 'Product', to: '/product', icon: ScanBarcode },
+  { name: 'Order', to: '/order', icon: Package, badge: true },
   { name: 'Promotion', to: '/promotion', icon: ArrowUpNarrowWide },
-  { name: 'Analytic', to: '/analytic', icon: LineChart }
 ];
 
 export const navMenuStyle = {

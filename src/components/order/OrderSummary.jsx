@@ -38,20 +38,23 @@ function OrderSummary() {
         <div className="grid gap-3">
           <p className="font-semibold">Order Details</p>
           <ul className="grid gap-3">
-            <li className="flex items-center justify-between">
+            <li className="grid grid-cols-2 gap-2">
               <span className="text-muted-foreground">
                 Glimmer Lamps x <span>2</span>
               </span>
-              <span>$250.00</span>
+              <span className="text-right">$250.00</span>
+              <span  className="text-muted-foreground text-xs italic">Varient: Black (M)</span>
             </li>
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">
-                Aqua Filters x <span>1</span>
-              </span>
-              <span>$49.00</span>
-            </li>
-          </ul>
           <Separator className="my-2" />
+          <li className="grid grid-cols-2 gap-2">
+              <span className="text-muted-foreground">
+                Glimmer Lamps x <span>2</span>
+              </span>
+              <span className="text-right">$250.00</span>
+              <span  className="text-muted-foreground text-xs italic">Varient: Black (M)</span>
+            </li>
+          <Separator className="my-2" />
+          </ul>
           <ul className="grid gap-3">
             <li className="flex items-center justify-between">
               <span className="text-muted-foreground">Subtotal</span>

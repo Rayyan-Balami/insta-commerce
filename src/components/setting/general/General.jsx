@@ -8,6 +8,8 @@ import Locations from "./Locations";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import PurchaseLimit from "./PurchaseLimit";
+import Currency from "./Currency";
+import PaymentAndDelivery from "./PaymentAndDelivery";
 
 function General() {
   const form = useForm({
@@ -20,6 +22,9 @@ function General() {
       storePromises: [],
       minimumOrder: 1,
       maximumOrder: 5,
+      currencySymbol: "Rs",
+      paymentMethod: [],
+      deliveryMethod: [],
     },
   });
 
@@ -41,6 +46,7 @@ function General() {
           <div className="grid gap-4 xl:grid-cols-3 xl:gap-8">
             <div className="grid auto-rows-max gap-4 xl:col-span-2 xl:gap-8">
               <StoreDetails />
+              <PaymentAndDelivery />
               <Locations />
               <Button
                 type="submit"
@@ -55,6 +61,7 @@ function General() {
             </div>
             <div className="grid auto-rows-max gap-4 xl:gap-8">
               <PurchaseLimit />
+              <Currency />
             </div>
           </div>
         </form>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon, ArrowUpDown } from "lucide-react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
+import {TableColumnSort} from "../ui/TableColumnSort";
 
 export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
   {
@@ -47,17 +48,7 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <TableColumnSort column={column}/>,
     cell: ({ row }) => (
       <div className="min-w-40 space-y-1">
         <p className="capitalize line-clamp-2">{row.original.name}</p>
@@ -67,6 +58,11 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
       </div>
     ),
     enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const nameA = rowA.original.name.toLowerCase();
+      const nameB = rowB.original.name.toLowerCase();
+      return nameA.localeCompare(nameB);
+    },
   },
   {
     id: "quantity",

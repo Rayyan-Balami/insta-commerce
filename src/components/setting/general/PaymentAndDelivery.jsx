@@ -19,7 +19,7 @@ import { Textarea } from "../../ui/textarea";
 import { useFormContext } from "react-hook-form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-function PaymentAndDeliveryInfo() {
+function PaymentAndDelivery() {
   const form = useFormContext();
   const paymentMethods = [
     { value: "credit_card", label: "Credit Card" },
@@ -53,7 +53,7 @@ function PaymentAndDeliveryInfo() {
                 <FormLabel>Payment Method </FormLabel>
                 <FormControl>
                 <ToggleGroup
-                  type="single"
+                  type="multiple"
                   variant="outline"
                   className="justify-start flex-wrap gap-2"
                   value={field.value}
@@ -65,7 +65,7 @@ function PaymentAndDeliveryInfo() {
                       value={value}
                       aria-label={value}
                       className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                        form.watch("paymentMethod") === value
+                        form.watch("paymentMethod").includes(value)
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : " text-muted-foreground"
                       }`}
@@ -75,6 +75,7 @@ function PaymentAndDeliveryInfo() {
                   ))}
                 </ToggleGroup>
                 </FormControl>
+                <FormMessage className="font-light" />
               </FormItem>
             )}
           />
@@ -86,7 +87,7 @@ function PaymentAndDeliveryInfo() {
                 <FormLabel>Delivery Method </FormLabel>
                 <FormControl>
                 <ToggleGroup
-                  type="single"
+                  type="multiple"
                   variant="outline"
                   className="justify-start flex-wrap gap-2"
                   value={field.value}
@@ -98,7 +99,7 @@ function PaymentAndDeliveryInfo() {
                       value={value}
                       aria-label={value}
                       className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                        form.watch("deliveryMethod") === value
+                        form.watch("deliveryMethod").includes(value)
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : " text-muted-foreground"
                       }`}
@@ -108,6 +109,7 @@ function PaymentAndDeliveryInfo() {
                   ))}
                 </ToggleGroup>
                 </FormControl>
+                <FormMessage className="font-light" />
               </FormItem>
             )}
           />
@@ -117,4 +119,4 @@ function PaymentAndDeliveryInfo() {
   );
 }
 
-export default PaymentAndDeliveryInfo;
+export default PaymentAndDelivery;

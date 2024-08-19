@@ -1,4 +1,16 @@
+// Columns.js
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import {
+  Video,
+  ArrowUpDown,
+  Image,
+  MoreHorizontal,
+  Eye,
+  SquarePen,
+} from "lucide-react";
+import * as React from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -8,18 +20,54 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import * as React from "react";
-import { Combobox } from "../ui/Combobox";
+import { Link } from "react-router-dom";
+import { TableColumnSort } from "../ui/TableColumnSort";
 
-const status = [
-  { value: "pending", label: "Pending" },
-  { value: "paid", label: "Paid" },
-  { value: "failed", label: "Failed" },
-];
+// data structure reference for the table
+// {
+//   orderId: "Oe31b70H",
+//   careatedDate: "2023-11-23",
+//   lastUpdated: "2023-11-23",
+//   status: "Delivered",
+//   orderDetails: [
+//     {
+//       productId: "GLM-123",
+//       productName: "Glimmer Lamps",
+//       quantity: 2,
+//       price: 250.0,
+//       variant: {
+//         color: "Black",
+//         size: "M",
+//       },
+//     },
+//   ],
+//   subtotal: 500.0,
+//   delivery: 0.0,
+//   discount: 25.0,
+//   promoCode: {
+//     code: "HuKut500",
+//     discount: 25.0,
+//   },
+//   total: 475.0,
+//   customerInformation: {
+//     name: "Liam Johnson",
+//     email: "liam@acme.com",
+//     phone: "+1 234 567 890",
+//   },
+//   shippingInformation: {
+//     address: "Nayabazar 16",
+//     city: "Kathmandu",
+//     landmark: "Near Bhatbhateni Supermarket",
+//     deliveryZone: "KTM, inside ringroad",
+//     deliveryNote: "Please deliver the package before 6 PM.",
+//   },
+//   paymentAndDelivery: {
+//     paymentMethod: "e-Sewa",
+//     deliveryMethod: "Pickup",
+//   },
+// },
 
-export const columns = [
+export const createColumns = (handleCheckboxChange) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -28,14 +76,20 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => {
+          handleCheckboxChange("selectAll", !!value); // Use the combined function
+          table.toggleAllPageRowsSelected(!!value);
+        }}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onCheckedChange={(value) => {
+          handleCheckboxChange(row.original.id, !!value); // Use the combined function
+          row.toggleSelected(!!value);
+        }}
         aria-label="Select row"
       />
     ),
@@ -43,54 +97,70 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
+    accessorKey: "customerInformation",
+    header: ({ column }) => <TableColumnSort column={column} />,
+    cell: ({ row }) => {
+      const { name, email, phone } = row.original.customerInformation;
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="space-y-1">
+          <p className="font-semibold">{name}</p>
+          <p className="text-muted-foreground">{email}</p>
+          <p className="text-muted-foreground">{phone}</p>
+        </div>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const nameA = rowA.original.customerInformation.name.toLowerCase();
+      const nameB = rowB.original.customerInformation.name.toLowerCase();
+      return nameA.localeCompare(nameB);
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const name = row.original.customerInformation.name.toLowerCase();
+      const email = row.original.customerInformation.email.toLowerCase();
+      const phone = row.original.customerInformation.phone.toLowerCase();
+      return (
+        name.includes(filterValue.toLowerCase()) ||
+        email.includes(filterValue.toLowerCase()) ||
+        phone.includes(filterValue.toLowerCase())
+      );
+    },
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "shippingInformation",
+    header: "Shipping",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+      const { address, city } = row.original.shippingInformation;
+      return (
+        <div className="space-y-1">
+          <p>{address}</p>
+          <p>{city}</p>
+        </div>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const address = row.original.shippingInformation.address.toLowerCase();
+      const city = row.original.shippingInformation.city.toLowerCase();
+      return (
+        address.includes(filterValue.toLowerCase()) ||
+        city.includes(filterValue.toLowerCase())
+      );
     },
   },
   {
     accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center gap-1 whitespace-nowrap">
-        <p>Status :</p>
-        <Combobox
-          list={status}
-          value={column.getFilterValue()}
-          onChange={column.setFilterValue}
-          placeholder="All"
-          className="border-none bg-inherit w-auto"
-        />
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    header: "Status",
+    cell: ({ row }) => <Badge variant="outline">{row.original.status}</Badge>,
+  },
+  {
+    accessorKey: "total",
+    header: "Total",
+    cell: ({ row }) => <span>{row.original.total}</span>,
+  },
+  {
+    accessorKey: "createdDate",
+    header: "Date",
+    cell: ({ row }) => <span>{row.original.createdDate}</span>,
   },
   {
     id: "actions",
@@ -108,14 +178,19 @@ export const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copy payment ID
+              <Eye className="size-3.5 mr-2" />
+              Summary
             </DropdownMenuItem>
+            <DropdownMenuLabel>Status</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>Pending</DropdownMenuItem>
+            <DropdownMenuItem>Delivered</DropdownMenuItem>
+            <DropdownMenuItem>Cancelled</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -51,9 +51,15 @@ function Locations() {
     e.preventDefault();
     appendDelivery({ address: "", fee: 0 });
   };
+
+  const deliveryMethods = form.watch("deliveryMethod");
+
   return (
     <>
       {/* Pickup Locations Table */}
+      {
+        deliveryMethods.includes("pickup") && (
+      
       <Card className="bg-muted/40">
         <CardHeader>
           <CardTitle>Pickup Locations</CardTitle>
@@ -125,7 +131,12 @@ function Locations() {
         </CardFooter>
       </Card>
 
+      )}
+
+
       {/* Delivery Locations Table */}
+      {
+        deliveryMethods.includes("delivery") && (
       <Card className="bg-muted/40">
         <CardHeader>
           <CardTitle>Delivery Locations</CardTitle>
@@ -196,6 +207,7 @@ function Locations() {
           </Button>
         </CardFooter>
       </Card>
+      )}
     </>
   );
 }
