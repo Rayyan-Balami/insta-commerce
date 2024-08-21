@@ -81,7 +81,6 @@ export default function StoreDetails() {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Enter values, comma separated..."
-                  className="max-w-[500px]"
                 />
               </FormControl>
               <FormMessage className="font-light" />

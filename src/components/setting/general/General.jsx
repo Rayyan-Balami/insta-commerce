@@ -17,8 +17,8 @@ function General() {
     defaultValues: {
       storeName: "",
       storeDescription: "",
-      pickup: [{ address: "", fee: 0 }],
-      delivery: [{ address: "", fee: 0 }],
+      pickupLocations: [],
+      deliveryLocations: [],
       storePromises: [],
       minimumOrder: 1,
       maximumOrder: 5,
@@ -48,6 +48,10 @@ function General() {
               <StoreDetails />
               <PaymentAndDelivery />
               <Locations />
+            </div>
+            <div className="grid auto-rows-max gap-4 xl:gap-8">
+              <PurchaseLimit />
+              <Currency />
               <Button
                 type="submit"
                 className="w-full"
@@ -58,10 +62,6 @@ function General() {
                 )}
                 Save
               </Button>
-            </div>
-            <div className="grid auto-rows-max gap-4 xl:gap-8">
-              <PurchaseLimit />
-              <Currency />
             </div>
           </div>
         </form>

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -53,16 +53,20 @@ export default function Discount() {
     { value: "all", label: "All" },
     { value: "specific", label: "Specific" },
     { value: "category", label: "Category" },
-  ]
+  ];
 
   const usagePeriods = [
     { value: "noLimit", label: "No Limit" },
     { value: "limitedDay", label: "Limited Day" },
-  ]
-
+  ];
 
   const type = form.watch("type");
   const usagePeriod = form.watch("usagePeriod");
+
+  useEffect(() => {
+    // Reset products field when type changes
+    form.setValue("products", []);
+  }, [type, form]);
 
   const onSubmit = async (data) => {
     // Simulate asynchronous submission (e.g., API call)
@@ -90,10 +94,7 @@ export default function Discount() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="New Year Sale"
-                      {...field}
-                    />
+                    <Input placeholder="New Year Sale" {...field} />
                   </FormControl>
                   <FormMessage className="font-light" />
                 </FormItem>
@@ -112,17 +113,16 @@ export default function Discount() {
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      {types.map(({value, label}) => (
-                      <FormItem 
-                      key={value}
-                      className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value={value} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {label}
-                        </FormLabel>
-                      </FormItem>
+                      {types.map(({ value, label }) => (
+                        <FormItem
+                          key={value}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={value} />
+                          </FormControl>
+                          <FormLabel className="font-normal">{label}</FormLabel>
+                        </FormItem>
                       ))}
                     </RadioGroup>
                   </FormControl>
@@ -136,32 +136,32 @@ export default function Discount() {
                 name="products"
                 render={({ field }) => (
                   <FormItem>
-                  <FormControl>
-                    <MultiSelector
-                      values={field.value || []}
-                      onValuesChange={(products) => field.onChange(products)}
-                    >
-                      <MultiSelectorTrigger className={`uppercase`}>
-                        <MultiSelectorInput placeholder={`Select ${type}s`} />
-                      </MultiSelectorTrigger>
-                      <MultiSelectorContent>
-                        <MultiSelectorList>
-                          {(type === "category"
-                            ? categories
-                            : type === "specific"
-                            ? products
-                            : []
-                          ).map((item) => (
-                            <MultiSelectorItem key={item} value={item}>
-                              {item}
-                            </MultiSelectorItem>
-                          ))}
-                        </MultiSelectorList>
-                      </MultiSelectorContent>
-                    </MultiSelector>
-                  </FormControl>
-                  <FormMessage className="font-light" />
-                </FormItem>
+                    <FormControl>
+                      <MultiSelector
+                        values={field.value || []}
+                        onValuesChange={(products) => field.onChange(products)}
+                      >
+                        <MultiSelectorTrigger className={`uppercase`}>
+                          <MultiSelectorInput placeholder={`Select ${type}s`} />
+                        </MultiSelectorTrigger>
+                        <MultiSelectorContent>
+                          <MultiSelectorList>
+                            {(type === "category"
+                              ? categories
+                              : type === "specific"
+                              ? products
+                              : []
+                            ).map((item) => (
+                              <MultiSelectorItem key={item} value={item}>
+                                {item}
+                              </MultiSelectorItem>
+                            ))}
+                          </MultiSelectorList>
+                        </MultiSelectorContent>
+                      </MultiSelector>
+                    </FormControl>
+                    <FormMessage className="font-light" />
+                  </FormItem>
                 )}
               />
             )}
@@ -178,17 +178,16 @@ export default function Discount() {
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
-                      {usagePeriods.map(({value, label}) => (
-                      <FormItem 
-                      key={value}
-                      className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value={value} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {label}
-                        </FormLabel>
-                      </FormItem>
+                      {usagePeriods.map(({ value, label }) => (
+                        <FormItem
+                          key={value}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={value} />
+                          </FormControl>
+                          <FormLabel className="font-normal">{label}</FormLabel>
+                        </FormItem>
                       ))}
                     </RadioGroup>
                   </FormControl>
@@ -263,24 +262,21 @@ export default function Discount() {
               )}
             />
 
-              <FormField
-                control={form.control}
-                name="maximumDiscountAmount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Maximum Discount Amount (Optional)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="font-light" />
-                  </FormItem>
-                )}
-              />
-            
-            <Button
-              type="submit"
-              disabled={form.formState.isSubmitting}
-            >
+            <FormField
+              control={form.control}
+              name="maximumDiscountAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Maximum Discount Amount (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting && (
                 <Loader2 className="size-4 mr-2 animate-spin" />
               )}

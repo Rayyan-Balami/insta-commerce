@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Command,
@@ -7,14 +9,14 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
-import { X as RemoveIcon, Check } from "lucide-react";
+import { XIcon, Check, ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import React, {
-  KeyboardEvent,
-  createContext,
-  forwardRef,
   useCallback,
   useContext,
   useState,
+  createContext,
+  forwardRef,
 } from "react";
 
 const MultiSelectContext = createContext(null);
@@ -48,59 +50,34 @@ const MultiSelector = ({
         onValueChange([...value, val]);
       }
     },
-    [value, onValueChange]
+    [value]
   );
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      const moveNext = () => {
-        const nextIndex = activeIndex + 1;
-        setActiveIndex(
-          nextIndex > value.length - 1 ? (loop ? 0 : -1) : nextIndex
-        );
-      };
-
-      const movePrev = () => {
-        const prevIndex = activeIndex - 1;
-        setActiveIndex(prevIndex < 0 ? value.length - 1 : prevIndex);
-      };
-
-      if ((e.key === "Backspace" || e.key === "Delete") && value.length > 0) {
-        if (inputValue.length === 0) {
-          if (activeIndex !== -1 && activeIndex < value.length) {
-            onValueChange(value.filter((item) => item !== value[activeIndex]));
-            const newIndex = activeIndex - 1 < 0 ? 0 : activeIndex - 1;
-            setActiveIndex(newIndex);
-          } else {
-            onValueChange(
-              value.filter((item) => item !== value[value.length - 1])
-            );
-          }
-        }
-      } else if (e.key === "Enter") {
-        setOpen(true);
-      } else if (e.key === "Escape") {
-        if (activeIndex !== -1) {
-          setActiveIndex(-1);
-        } else {
-          setOpen(false);
-        }
-      } else if (dir === "rtl") {
-        if (e.key === "ArrowRight") {
-          movePrev();
-        } else if (e.key === "ArrowLeft" && (activeIndex !== -1 || loop)) {
-          moveNext();
-        }
+  const handleKeyDown = (e) => {
+   if (
+      e.key === "Backspace" &&
+      pendingDataPoint.length === 0 &&
+      value.length > 0
+    ) {
+      e.preventDefault();
+      if (activeIndex !== -1) {
+        onChange(value.filter((_, index) => index !== activeIndex));
+        setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
       } else {
-        if (e.key === "ArrowLeft") {
-          movePrev();
-        } else if (e.key === "ArrowRight" && (activeIndex !== -1 || loop)) {
-          moveNext();
-        }
+        onChange(value.slice(0, -1));
       }
-    },
-    [value, inputValue, activeIndex, loop, onValueChange, dir]
-  );
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setActiveIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : (prevIndex === 0 ? -1 : value.length - 1)
+      );
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setActiveIndex((prevIndex) =>
+        prevIndex < value.length - 1 ? prevIndex + 1 : -1
+      );
+    }
+  };
 
   return (
     <MultiSelectContext.Provider
@@ -118,7 +95,7 @@ const MultiSelector = ({
       <Command
         onKeyDown={handleKeyDown}
         className={cn(
-          "h-auto overflow-visible bg-transparent flex flex-col",
+          "overflow-visible bg-transparent flex flex-col h-fit",
           className
         )}
         dir={dir}
@@ -143,7 +120,7 @@ const MultiSelectorTrigger = forwardRef(
       <div
         ref={ref}
         className={cn(
-          "flex flex-wrap gap-1 min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-neutral-950 has-[:focus-visible]:ring-offset-2 dark:has-[:focus-visible]:ring-neutral-300 min-h-10 flex items-center w-full flex-wrap gap-2 rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white  disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950",
           className
         )}
         {...props}
@@ -152,25 +129,27 @@ const MultiSelectorTrigger = forwardRef(
           <Badge
             key={item}
             className={cn(
-              "px-1 rounded-xl flex items-center gap-1",
+              "",
               activeIndex === index && "ring-2 ring-muted-foreground "
             )}
             variant={"secondary"}
           >
             <span className="text-xs">{item}</span>
-            <button
-              aria-label={`Remove ${item} option`}
-              aria-roledescription="button to remove option"
-              type="button"
-              onMouseDown={mousePreventDefault}
-              onClick={() => onValueChange(item)}
-            >
-              <span className="sr-only">Remove {item} option</span>
-              <RemoveIcon className="h-4 w-4 hover:stroke-destructive" />
-            </button>
+            <Button
+            variant="ghost"
+            size="icon"
+            className="ml-2 h-3 w-3"
+            type="button"
+            onMouseDown={mousePreventDefault}
+            onClick={() => onValueChange(item)}
+          >
+            <XIcon className="w-3" />
+            <span className="sr-only">Remove {item} option</span>
+          </Button>
           </Badge>
         ))}
         {children}
+        <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
       </div>
     );
   }
@@ -192,7 +171,7 @@ const MultiSelectorInput = forwardRef(
         onFocus={() => setOpen(true)}
         onClick={() => setActiveIndex(-1)}
         className={cn(
-          "ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1",
+          "bg-transparent outline-none placeholder:text-muted-foreground flex-1",
           className,
           activeIndex !== -1 && "caret-transparent"
         )}
@@ -222,7 +201,7 @@ const MultiSelectorList = forwardRef(
       <CommandList
         ref={ref}
         className={cn(
-          "p-1 flex flex-col gap-2 rounded-md scrollbar-thin scrollbar-track-transparent transition-colors scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg w-full absolute bg-background shadow-md z-10 border border-muted top-2",
+          "mt-2 p-2 flex flex-col gap-2 rounded-md scrollbar-thin scrollbar-track-transparent transition-colors scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg w-full absolute bg-background shadow-md z-10 border border-muted top-0",
           className
         )}
       >
@@ -256,7 +235,7 @@ const MultiSelectorItem = forwardRef(
           setInputValue("");
         }}
         className={cn(
-          "rounded-md cursor-pointer px-2 py-1.5 text-sm transition-colors flex justify-between ",
+          "rounded-md cursor-pointer px-2 py-1 transition-colors flex justify-between ",
           className,
           isIncluded && "opacity-50 cursor-default",
           props.disabled && "opacity-50 cursor-not-allowed"
@@ -280,3 +259,4 @@ export {
   MultiSelectorList,
   MultiSelectorItem,
 };
+

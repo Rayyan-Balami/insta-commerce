@@ -33,7 +33,7 @@ export function Combobox({ list, value, onChange, placeholder = "Select Item", c
           {value
             ? list.find((item) => item.value === value)?.label
             : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">

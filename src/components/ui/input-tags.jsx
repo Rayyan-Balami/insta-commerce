@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const InputTags = React.forwardRef(
   ({ className, value, onChange, ...props }, ref) => {
     const [pendingDataPoint, setPendingDataPoint] = React.useState("");
+    const [activeIndex, setActiveIndex] = React.useState(-1);
 
     React.useEffect(() => {
       if (pendingDataPoint.includes(",")) {
@@ -27,6 +28,44 @@ const InputTags = React.forwardRef(
       }
     };
 
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        addPendingDataPoint();
+      } else if (
+        e.key === "Backspace" &&
+        pendingDataPoint.length === 0 &&
+        value.length > 0
+      ) {
+        e.preventDefault();
+        if (activeIndex !== -1) {
+          onChange(value.filter((_, index) => index !== activeIndex));
+          setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+        } else {
+          onChange(value.slice(0, -1));
+        }
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : (prevIndex === 0 ? -1 : value.length - 1)
+        );
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < value.length - 1 ? prevIndex + 1 : -1
+        );
+      }
+    };
+
+    const handleInputFocus = () => {
+      setActiveIndex(-1);
+    };
+
+    const handleInputChange = (e) => {
+      setPendingDataPoint(e.target.value);
+      setActiveIndex(-1);
+    };
+
     return (
       <div
         className={cn(
@@ -34,8 +73,14 @@ const InputTags = React.forwardRef(
           className
         )}
       >
-        {value.map((item) => (
-          <Badge key={item} variant="secondary">
+        {value.map((item, index) => (
+          <Badge
+            key={item}
+            variant="secondary"
+            className={cn(
+              activeIndex === index && "ring-2 ring-muted-foreground"
+            )}
+          >
             {item}
             <Button
               variant="ghost"
@@ -43,6 +88,9 @@ const InputTags = React.forwardRef(
               className="ml-2 h-3 w-3"
               onClick={() => {
                 onChange(value.filter((i) => i !== item));
+                setActiveIndex((prevIndex) =>
+                  prevIndex > 0 ? prevIndex - 1 : 0
+                );
               }}
             >
               <XIcon className="w-3" />
@@ -52,20 +100,9 @@ const InputTags = React.forwardRef(
         <input
           className="flex-1 outline-none placeholder:text-neutral-500 dark:placeholder:text-neutral-400"
           value={pendingDataPoint}
-          onChange={(e) => setPendingDataPoint(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === ",") {
-              e.preventDefault();
-              addPendingDataPoint();
-            } else if (
-              e.key === "Backspace" &&
-              pendingDataPoint.length === 0 &&
-              value.length > 0
-            ) {
-              e.preventDefault();
-              onChange(value.slice(0, -1));
-            }
-          }}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onFocus={handleInputFocus}
           {...props}
           ref={ref}
         />
@@ -77,4 +114,3 @@ const InputTags = React.forwardRef(
 InputTags.displayName = "InputTags";
 
 export { InputTags };
-

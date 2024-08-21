@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 import {
   Form,
@@ -71,6 +72,11 @@ export default function Code() {
   const type = form.watch("type");
   const usagePeriod = form.watch("usagePeriod");
   const discountRate = form.watch("discountRate");
+
+  useEffect(() => {
+    // Reset products field when type changes
+    form.setValue("products", []);
+  }, [type, form]);
 
   const onSubmit = async (data) => {
     // Simulate asynchronous submission (e.g., API call)
@@ -150,7 +156,7 @@ export default function Code() {
                       values={field.value || []}
                       onValuesChange={(products) => field.onChange(products)}
                     >
-                      <MultiSelectorTrigger className={`uppercase`}>
+                      <MultiSelectorTrigger className={`capitalize`}>
                         <MultiSelectorInput placeholder={`Select ${type}s`} />
                       </MultiSelectorTrigger>
                       <MultiSelectorContent>

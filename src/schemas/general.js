@@ -2,15 +2,15 @@ import { z } from "zod";
 
 // Define allowed payment methods
 const paymentMethods = [
-  "credit_card",
-  "paypal",
-  "bank_transfer",
-  "e_sewa",
-  "khalti",
-  "imepay",
-  "prabhu_pay",
-  "connect_ips",
-  "cash_on_delivery",
+  "Bank Transfer",
+  "Cash on Delivery",
+  "Credit Card",
+  "Debit Card",
+  "e-Sewa",
+  "Khalti",
+  "connectIPS",
+  "IME Pay",
+  "Prabhu Pay",
 ];
 
 // Define allowed delivery methods
@@ -22,7 +22,7 @@ const locationSchema = z.object({
     .string()
     .min(1, { message: "Address is required and cannot be empty." })
     .max(255, { message: "Address cannot exceed 255 characters." })
-    .or(z.literal("")),
+    .optional(),
   fee: z.coerce.number().nonnegative({ message: "Fee cannot be negative." }),
 });
 
@@ -39,8 +39,8 @@ export const generalSchema = z
       .max(5000, {
         message: "Store description cannot exceed 5000 characters.",
       }),
-    pickup: z.array(locationSchema).optional(),
-    delivery: z.array(locationSchema).optional(),
+    pickupLocations: z.array(locationSchema).optional(),
+    deliveryLocations: z.array(locationSchema).optional(),
     storePromises: z
       .array(z.string())
       .max(10, { message: "A maximum of 10 store promises is allowed." })
@@ -58,9 +58,7 @@ export const generalSchema = z
     paymentMethod: z
       .array(z.enum(paymentMethods))
       .nonempty({ message: "At least one payment method must be selected." }),
-    deliveryMethod: z
-      .array(z.enum(deliveryMethods))
-      .nonempty({ message: "At least one delivery method must be selected." }),
+    deliveryMethod: z.array(z.enum(deliveryMethods)).optional(),
   })
   .refine((data) => data.maximumOrder >= data.minimumOrder, {
     message: "Maximum order can't be less than minimum order.",
@@ -75,5 +73,28 @@ export const generalSchema = z
     {
       message: "Store promises cannot exceed 50 characters.",
       path: ["storePromises"],
+    }
+  )
+  // Ensure that at least one delivery location is provided if delivery method is selected
+  .refine(
+    (data) => {
+      if (
+        data.deliveryMethod?.includes("delivery") &&
+        data.deliveryLocations.length === 0
+      ) {
+        return false;
+      }
+      if (
+        data.deliveryMethod?.includes("pickup") &&
+        data.pickupLocations.length === 0
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Provide at least one delivery location for the selected delivery method.",
+      path: ["deliveryMethod"],
     }
   );
