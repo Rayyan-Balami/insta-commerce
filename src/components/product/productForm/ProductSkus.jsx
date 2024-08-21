@@ -114,7 +114,8 @@ export default function ProductSkus() {
                                   size ? "border-red-500" : ""
                                 }`}
                               >
-                                Size <ChevronDown className="ml-2 h-4 w-4" />
+                                {field.value?.length ? `${field.value.length} Selected` : "Size"}
+                                <ChevronDown className="ml-2 size-3.5 text-muted-foreground" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">

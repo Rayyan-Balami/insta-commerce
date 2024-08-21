@@ -28,7 +28,7 @@ export const productSchema = z.object({
   description: z
     .string()
     .min(1, { message: "Product description is required and cannot be empty." })
-    .max(500, { message: "Product description cannot exceed 500 characters." }),
+    .max(5000, { message: "Product description cannot exceed 500 characters." }),
   skus: z
     .array(skuSchema)
     .nonempty({ message: "At least one SKU is required." })

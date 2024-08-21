@@ -25,7 +25,7 @@ export default function ProductMedia() {
         <CardTitle>Media</CardTitle>
         <CardDescription>Upload product images and video link </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid gap-6">
         <FormField
           control={form.control}
           name="images"

@@ -6,8 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { useFormContext } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form"
 
@@ -23,8 +22,7 @@ export default function ProductDetails() {
           Basic information about the product
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-6">
+      <CardContent className="grid gap-6">
         <FormField
               control={form.control}
               name="name"
@@ -43,15 +41,24 @@ export default function ProductDetails() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description </FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Wollen T-shirt is made with love" {...field} />
-                  </FormControl>
-                  <FormMessage className="font-light" />
-                </FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <MinimalTiptapEditor
+                  value={field.value}
+                  onChange={(value) => form.setValue("storeDescription", value)}
+                  output="html"
+                  placeholder="A short description of your store"
+                  immediatelyRender={true}
+                  editable={true}
+                  injectCSS={true}
+                  shouldRerenderOnTransaction={false}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage className="font-light" />
+            </FormItem>
               )}
             />
-        </div>
       </CardContent>
     </Card>
   )
