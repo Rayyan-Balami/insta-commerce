@@ -45,38 +45,36 @@ const ImageEditBlock = ({
     close();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
     handleLink();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className={cn("grid grid-cols-3 gap-4", className)} {...props}>
-        <div className="space-y-2 col-span-2">
-          <Label>Attach an image link</Label>
-            <Input
-              type="url"
-              required
-              placeholder="https://example.com"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-            />
-        </div>
-        <Button type="submit" className="mt-auto">Add</Button>
-        <Button onClick={handleClick} className="col-span-3">
-          Upload From Device
-        </Button>
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          multiple
-          className="hidden"
-          onChange={handleFile}
+    <div className={cn("grid grid-cols-3 gap-4", className)} {...props}>
+      <div className="space-y-2 col-span-2">
+        <Label>Attach an image link</Label>
+        <Input
+          type="url"
+          required
+          placeholder="https://example.com"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
         />
       </div>
-    </form>
+      <Button onClick={handleSubmit} className="mt-auto">Add</Button>
+      <Button onClick={handleClick} className="col-span-3">
+        Upload From Device
+      </Button>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        multiple
+        className="hidden"
+        onChange={handleFile}
+      />
+    </div>
   );
 };
 

@@ -52,7 +52,6 @@ export function TableColumnSearch({ table, searchColumns = [] }) {
               checked={activeSelectedIndexes.includes(index)}
               onCheckedChange={() => {
                 handleCheckboxChange(index);
-                table.getColumn(column)?.toggleSearchable(true);
               }}
             >
               {label}

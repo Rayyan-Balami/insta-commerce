@@ -1,9 +1,19 @@
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import Header from "./components/header/Header";
-import DesktopNav from "./components/nav/DesktopNav";
 import { Toaster } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuthInitialization } from "./hooks/useAuthInitialization";
+import { useProductInitialization } from "./hooks/useProductInitialization";
+import DesktopNav from "./components/nav/DesktopNav";
+import Header from "./components/header/Header";
+import { useCartInitialization } from "./hooks/useCartInitalization";
 
 export default function App() {
+  const productLoading = useSelector((state) => state.product.loading);
+  useAuthInitialization();
+  useProductInitialization();
+  useCartInitialization();
+
   return (
     <>
       <DesktopNav />

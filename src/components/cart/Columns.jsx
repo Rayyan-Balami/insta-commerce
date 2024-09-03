@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon, ArrowUpDown } from "lucide-react";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import {TableColumnSort} from "../ui/TableColumnSort";
+import { TableColumnSort } from "../ui/TableColumnSort";
 
 export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
   {
@@ -40,7 +40,7 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
     header: "Image",
     cell: ({ row }) => (
       <img
-        src={row.original.image}
+        src={row.original.imagePreview}
         alt=""
         className="border rounded-md min-h-20 min-w-20 max-h-20 max-w-20 aspect-square object-cover object-center"
       />
@@ -48,12 +48,15 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => <TableColumnSort column={column}/>,
+    header: ({ column }) => <TableColumnSort column={column} />,
     cell: ({ row }) => (
       <div className="min-w-40 space-y-1">
         <p className="capitalize line-clamp-2">{row.original.name}</p>
-        <p className="text-muted-foreground">
-          Rs {row.original.price.toFixed(2)}
+        <p className="text-muted-foreground text-xs italic">
+          Variant: {row.original.sku.color} <span className="capitalize">({row.original.sku.size})</span>
+        </p>
+        <p className="text-muted-foreground text-xs italic">
+          Rs {row.original.sku.price.toFixed(2)}
         </p>
       </div>
     ),
@@ -102,7 +105,9 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
     id: "total",
     header: "Total",
     cell: ({ row }) => (
-      <p className="whitespace-nowrap font-semibold">Rs {(row.original.price * row.original.quantity).toFixed(2)}</p>
+      <p className="whitespace-nowrap font-semibold">
+        Rs {(row.original.sku.price * row.original.quantity).toFixed(2)}
+      </p>
     ),
   },
 ];

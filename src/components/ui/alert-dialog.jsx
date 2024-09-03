@@ -19,18 +19,19 @@ import {
 import { BotMessageSquare } from "lucide-react";
 import { Badge } from "./badge";
 
-export default function AlertDialog({
+const AlertDialog = React.forwardRef(({
   title,
   description,
   triggerLabel = "Open",
   closeLabel = "Close",
   acceptLabel = "Accept",
-  onClick,
+  onAccept,
   variant = "default",
   size = "default",
   acceptDelay = 5000,
   disabled = false,
-}) {
+  className,
+}, ref) => {
   const [open, setOpen] = React.useState(false);
   const [countdown, setCountdown] = React.useState(0);
   const isDesktop = useMediaQuery("(min-width: 640px)");
@@ -52,19 +53,20 @@ export default function AlertDialog({
     }
   }, [open, acceptDelay]);
 
-  const handleAccept = () => {
-    if (onClick) onClick();
+  const handleAccept = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (onAccept) onAccept(e);
     setOpen(false);
   };
 
   const CommonContent = () => (
     <>
       <div className="flex items-start gap-4">
-        <Badge variant={variant} className="rounded-full size-12">
+        <Badge variant={variant} className="rounded-full size-12 hover:bg-primary">
           <BotMessageSquare className="size-7" />
         </Badge>
         <div className="space-y-1.5 text-left">
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </div>
       </div>
@@ -77,7 +79,7 @@ export default function AlertDialog({
           variant={variant}
           disabled={countdown > 0 || disabled}
         >
-          {countdown > 0 ? `${acceptLabel} ( ${countdown}s )` : acceptLabel}
+          {countdown > 0 ? `${acceptLabel} (${countdown}s)` : acceptLabel}
         </Button>
       </div>
     </>
@@ -86,7 +88,7 @@ export default function AlertDialog({
   return isDesktop ? (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" size={size} disabled={disabled}>
+        <Button type="button" variant="outline" size={size} disabled={disabled} className={className}>
           {triggerLabel}
         </Button>
       </DialogTrigger>
@@ -97,7 +99,7 @@ export default function AlertDialog({
   ) : (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button type="button" variant="outline" size={size} disabled={disabled}>
+        <Button type="button" variant="outline" size={size} disabled={disabled} className={className}>
           {triggerLabel}
         </Button>
       </DrawerTrigger>
@@ -106,4 +108,6 @@ export default function AlertDialog({
       </DrawerContent>
     </Drawer>
   );
-}
+});
+
+export default AlertDialog;

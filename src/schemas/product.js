@@ -24,11 +24,11 @@ export const productSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Product name is required and cannot be empty." })
-    .max(50, { message: "Product name cannot exceed 50 characters." }),
+    .max(255, { message: "Product name cannot exceed 255 characters." }),
   description: z
     .string()
     .min(1, { message: "Product description is required and cannot be empty." })
-    .max(5000, { message: "Product description cannot exceed 500 characters." }),
+    .max(5000, { message: "Product description cannot exceed 5000 characters." }),
   skus: z
     .array(skuSchema)
     .nonempty({ message: "At least one SKU is required." })

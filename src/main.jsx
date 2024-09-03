@@ -5,11 +5,15 @@ import "./index.css";
 import { ThemeProvider } from "./contexts/theme.jsx";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router.jsx";
+import { Provider } from "react-redux";
+import store from "./store/store.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
-  </React.StrictMode>
+    </Provider>
+  // </React.StrictMode>
 );
