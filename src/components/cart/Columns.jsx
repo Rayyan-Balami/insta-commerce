@@ -43,6 +43,7 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
         src={row.original.imagePreview}
         alt=""
         className="border rounded-md min-h-20 min-w-20 max-h-20 max-w-20 aspect-square object-cover object-center"
+        loading="lazy"
       />
     ),
   },

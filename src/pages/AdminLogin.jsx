@@ -52,6 +52,8 @@ export function AdminLogin() {
         dispatch(login(response.user));
         navigate("/");
         toast.success("Login successful");
+      }else{
+        form.setError("email", { message: response.message });
       }
     } catch (error) {
       form.setError("email", { message: response.message });

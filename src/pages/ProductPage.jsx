@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
@@ -9,27 +10,62 @@ import {
   BadgeInfo,
   Store,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import ProductCarousel from "@/components/product/productDetail/ProductCarousel";
 import RelatedProductCarousel from "@/components/product/productDetail/RelatedProductCarousel";
 import ProductVarientForm from "@/components/product/productDetail/ProductVarientForm";
+import { useSelector } from "react-redux";
 
 export default function ProductPage() {
+  const navigate = useNavigate();
+  const products = useSelector((state) => state.product.products);
+  const { id } = useParams();
+  const [viewProduct, setViewProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [selectedVarient, setSelectedVarient] = useState({});
+
+  const getRelatedProducts = () => {
+    if (viewProduct) {
+      const relatedProducts = products
+        .filter((product) => product.category === viewProduct.category)
+        .slice(0, 10); // Limit to the first 10 products
+      setRelatedProducts(relatedProducts);
+    }
+  };
+
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    const product = products.find((product) => product.$id === id);
+
+    if (product) {
+      setViewProduct(product);
+      setSelectedVarient(product.skus[0]);
+      getRelatedProducts();
+    } else {
+      navigate("/");
+    }
+  }, [id, products, navigate]);
+
+  if (!viewProduct) {
+    return null; // Optionally, you can show a loading indicator or message here
+  }
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-4">
           <div className="flex items-baseline justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold">Hand Knit Sweater</h1>
-              <p className="text-muted-foreground">Categoty: T-shirts</p>
+              <h1 className="text-2xl font-bold">{viewProduct.name}</h1>
+              <p className="text-muted-foreground">Category: {viewProduct.category}</p>
             </div>
-            {/* using anchor tag to scroll to the details section ( link didnt supported) */}
+            {/* using anchor tag to scroll to the details section ( link didn't support) */}
             <a href="#details">
               <BadgeInfo className="size-5 cursor-pointer" />
             </a>
           </div>
-          <ProductCarousel />
+          <ProductCarousel  product={viewProduct} />
         </div>
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-4">
@@ -42,18 +78,26 @@ export default function ProductPage() {
               Express Shipping
             </Badge>
           </div>
-          {/* //pricing and vat details */}
+          {/* Pricing and VAT details */}
           <div className="flex items-center gap-4">
-            <h3 className="text-3xl font-bold">Rs 34,000</h3>
+            <h3 className="text-3xl font-bold">Rs {selectedVarient.price || 0}</h3>
             <p className="text-sm text-muted-foreground">Inclusive of VAT</p>
           </div>
-          {/* //promocode */}
+          {/* Promocode */}
           <Badge variant="secondary" className="text-sm gap-2 py-1">
             <TicketPercent className="size-[1.15rem]" />
             USE CODE: HUKUT500 FOR RS. 500 OFF
           </Badge>
-          <ProductVarientForm/>
-          {/* //Delivery options (pickup and shipping) note: add a link to the pickup location  */}
+          {/* Product variant form */}
+          {viewProduct.skus && viewProduct.skus.length > 0 && (
+            <ProductVarientForm
+            allProducts={products}
+              product={viewProduct}
+              selectedVarient={selectedVarient}
+              setSelectedVarient={setSelectedVarient}
+            />
+          )}
+          {/* Delivery options (pickup and shipping) */}
           <Alert>
             <PackageOpen className="h-4 w-4" />
             <AlertTitle>Delivery Options Available</AlertTitle>
@@ -70,7 +114,7 @@ export default function ProductPage() {
 
           <Alert>
             <HeartHandshake className="h-4 w-4" />
-            <AlertTitle>Store Promices</AlertTitle>
+            <AlertTitle>Store Promises</AlertTitle>
             <AlertDescription className="mt-2">
               We are committed to providing you with the best products and
               services.
@@ -88,19 +132,9 @@ export default function ProductPage() {
           </Alert>
         </div>
       </div>
-      {/* //more to consider section  */}
+      {/* More to consider section */}
       <div id="details" className="my-8">details</div>
-      <RelatedProductCarousel />
-      {/* <div className="mt-8">
-        <h2 className="text-xl font-bold">More To Consider (10 Items)</h2>
-        <div className="flex gap-4 mt-4 overflow-x-auto *:shrink-0">
-          <ProductCard/>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </div>
-      </div> */}
+      <RelatedProductCarousel relatedProducts={relatedProducts} />
     </>
   );
 }

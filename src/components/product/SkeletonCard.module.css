@@ -1,0 +1,52 @@
+.skeletonCard {
+  position: relative;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.skeletonImage {
+  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+  background-size: 200% 100%;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.skeletonTitle,
+.skeletonPrice,
+.skeletonBadge,
+.skeletonButton {
+  background: #e0e0e0;
+  border-radius: 4px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.skeletonTitle {
+  height: 20px;
+  width: 100%;
+}
+
+.skeletonPrice {
+  height: 20px;
+  width: 100px;
+}
+
+.skeletonBadge {
+  height: 16px;
+  width: 60px;
+}
+
+.skeletonButton {
+  height: 32px;
+  width: 50px;
+}
+
+@keyframes pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}

@@ -7,24 +7,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TicketPercent } from "lucide-react";
 import { useSelector } from "react-redux";
 
 function CartSummary() {
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems);
-
   const checkedItems = cartItems.filter(
-    (item) => item.checked && item.isAvailable
+    (item) => item.isChecked && item.isAvailable
   );
-  console.log("Checked Items:", checkedItems);
+
   const subtotal = checkedItems.reduce(
-    (acc, row) => acc + row.sku.price * row.quantity,
+    (acc, { sku, quantity }) => acc + sku.price * quantity,
     0
   );
-  const discount = 25; // Replace with dynamic logic if needed
+  const discount = 25;
   const total = subtotal - discount;
+
+  const handleCheckout = () => {
+    navigate("/checkout/cart");
+  }
 
   return (
     <>
@@ -64,19 +68,9 @@ function CartSummary() {
           )}
         </CardContent>
         <CardFooter className="border-t bg-muted/40 px-6 py-3 flex-col gap-3">
-          {checkedItems.length > 0 ? (
-            <Button className="w-full" asChild>
-              <Link to="/checkout/cart" className="flex items-center gap-1">
-                Checkout
-              </Link>
+            <Button className="w-full" disabled={checkedItems.length ==0} onClick={handleCheckout}>
+              Checkout
             </Button>
-          ) : (
-            <div className="flex items-center gap-1 w-full">
-              <Button className="w-full" disabled>
-                Checkout
-              </Button>
-            </div>
-          )}
           <CardDescription className="text-xs">
             *Shipping Charges calculated at checkout
           </CardDescription>

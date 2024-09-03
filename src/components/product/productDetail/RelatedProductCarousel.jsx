@@ -23,7 +23,7 @@ const RelatedProductCarousel = () => {
       <CarouselMainContainer className="gap-4 h-fit">
         {Array.from({ length: 5 }).map((_, index) => (
           <SliderMainItem key={index} className="bg-transparent sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 max-w-sm" orientation="horizontal">
-            <ProductCard product="https://i.pinimg.com/564x/4a/2c/6e/4a2c6e00b81a397c4f685b766c0a1d6d.jpg" />
+            {/* <ProductCard/> */}
           </SliderMainItem>
         ))}
       </CarouselMainContainer>

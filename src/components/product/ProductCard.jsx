@@ -6,43 +6,39 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/cartSlice";
 import { toast } from "sonner";
-
-// addToCart: (state, action) => {
-//   const item = action.payload;
-//   const existingItem = state.cartItems.find((i) => i.id === item.id);
-//   if (existingItem) {
-//     existingItem.quantity += item.quantity;
-//   } else {
-//     state.cartItems.push(item);
-//   }
-//   localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
-// },
+import { useSelector } from "react-redux";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
+    console.log("sku", { ...product.skus[0], size: product.skus[0].size[0] });
     dispatch(
       addToCart({
-        id: product.$id,
-        quantity: 1,
-        sku: product.skus[0],
-        checked: false,
+        item: {
+          id: product.$id,
+          quantity: 1,
+          sku: {...product.skus[0], size: product.skus[0].size[0]},
+          isChecked: false,
+        },
+        products,
       })
     );
     toast.success("Added to cart");
   };
 
   return (
-    <Link to={`/view-product/${product.id}`} className="h-fit">
+    <Link to={`/view-product/${product.$id}`} className="h-fit">
       <Card className="overflow-hidden group">
         <div className="relative overflow-hidden aspect-square">
-          <img
-            src={product.imagePreviews[0]}
-            alt="Product Image"
-            className="size-full object-cover object-center xl:group-hover:scale-105 transition-all duration-300"
-          />
+            <img
+              src={product.imagePreviews[0]}
+              alt="Product Image"
+              className="size-full object-cover object-center xl:group-hover:scale-105 transition-all duration-300"
+              loading="lazy"
+            />
         </div>
         <CardContent className="p-4 space-y-4 xl:group-hover:bg-muted/40 transition-all duration-300">
           <div>
@@ -67,7 +63,9 @@ export default function ProductCard({ product }) {
           </div>
           <div className="flex items-center gap-4 justify-between">
             <div>
-              <span className="text-lg font-semibold">{product.skus[0].price}</span>
+              <span className="text-lg font-semibold">
+                {product.skus[0].price}
+              </span>
               <span className="text-xs text-muted-foreground line-through ml-2">
                 10000000
               </span>

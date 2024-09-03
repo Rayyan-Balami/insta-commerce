@@ -9,7 +9,6 @@ import Header from "./components/header/Header";
 import { useCartInitialization } from "./hooks/useCartInitalization";
 
 export default function App() {
-  const productLoading = useSelector((state) => state.product.loading);
   useAuthInitialization();
   useProductInitialization();
   useCartInitialization();
