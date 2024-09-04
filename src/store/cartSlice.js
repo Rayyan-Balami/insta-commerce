@@ -14,7 +14,6 @@ const updateLocalStorage = (cartItems) => {
 const transformCartItem = (cartItems, products) => {
   return cartItems.map((item) => {
     const product = products.find((p) => p.$id === item.id);
-    console.log("slice sku", item.sku);
     return {
       ...item,
       name: product ? product.name : "Product Not Found",
@@ -36,7 +35,6 @@ const cartSlice = createSlice({
     },
     addToCart: (state, action) => {
       const {item, products} = action.payload;
-      console.log("Add to cart", item);
       const existingItem = state.cartItems.find((i) => i.id === item.id);
       if (existingItem) {
         existingItem.quantity += item.quantity;

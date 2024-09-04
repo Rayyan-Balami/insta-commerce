@@ -36,7 +36,7 @@ export default function ProductMedia() {
                 <FileUploadDropzone
                   value={field.value}
                   onValueChange={field.onChange}
-                  accept={{ "image/*": [".jpg", ".jpeg", ".png"] }}
+                  accept={{ "image/*": [".jpg", ".jpeg", ".png", ".webp"] }}
                   maxFiles={8}
                   maxSize={1 * 1024 * 1024} // 1MB
                 />

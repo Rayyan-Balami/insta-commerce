@@ -56,13 +56,13 @@ const ProductCarousel = ({ product }) => {
         <CarouselPrevious />
 
         <div className="relative border rounded-md overflow-hidden h-fit">
-          <CarouselMainContainer className="aspect-square">
+          <CarouselMainContainer>
             {product.imagePreviews.map((preview, index) => (
               <SliderMainItem key={index} className="bg-transparent p-0">
                 <img
                   src={preview}
                   alt="product image"
-                  className="object-cover object-center w-full h-full"
+                  className="object-cover object-center w-full h-full aspect-square"
                 />
               </SliderMainItem>
             ))}

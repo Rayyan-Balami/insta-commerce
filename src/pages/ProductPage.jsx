@@ -9,6 +9,7 @@ import {
   TicketPercent,
   BadgeInfo,
   Store,
+  Package
 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import ProductCarousel from "@/components/product/productDetail/ProductCarousel";
@@ -43,13 +44,15 @@ export default function ProductPage() {
       setSelectedVarient(product.skus[0]);
       getRelatedProducts();
     } else {
-      navigate("/");
+      navigate(-1); // Redirect to the previous page
     }
   }, [id, products, navigate]);
 
   if (!viewProduct) {
     return null; // Optionally, you can show a loading indicator or message here
   }
+
+  console.log("products", products);
 
   return (
     <>
@@ -82,6 +85,12 @@ export default function ProductPage() {
           <div className="flex items-center gap-4">
             <h3 className="text-3xl font-bold">Rs {selectedVarient.price || 0}</h3>
             <p className="text-sm text-muted-foreground">Inclusive of VAT</p>
+            {selectedVarient.stock < 100 && (
+            <Badge variant="outline" className="ml-auto text-sm gap-2 py-1">
+              <Package className="size-[1.15rem]" />
+              Low Stock
+            </Badge>
+            )}
           </div>
           {/* Promocode */}
           <Badge variant="secondary" className="text-sm gap-2 py-1">

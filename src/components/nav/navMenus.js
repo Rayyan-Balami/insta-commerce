@@ -2,10 +2,10 @@ import { ScanBarcode, Store, Package, LineChart, ArrowUpNarrowWide, } from 'luci
 
 export const navMenus = [
   { name: 'Home', to: '/', icon: Store },
-  { name: 'Analytic', to: '/analytic', icon: LineChart },
-  { name: 'Product', to: '/product', icon: ScanBarcode },
-  { name: 'Order', to: '/order', icon: Package, badge: true },
-  { name: 'Promotion', to: '/promotion', icon: ArrowUpNarrowWide },
+  { name: 'Analytic', to: '/analytic', icon: LineChart, auth: true },
+  { name: 'Product', to: '/product', icon: ScanBarcode, auth: true },
+  { name: 'Order', to: '/order', icon: Package, badge: true, auth: true },
+  { name: 'Promotion', to: '/promotion', icon: ArrowUpNarrowWide, auth: true },
 ];
 
 export const navMenuStyle = {

@@ -43,7 +43,6 @@ export const useProductInitialization = () => {
       localStorage.setItem("products_timestamp", new Date().getTime().toString());
     } catch (error) {
       dispatch(setProducts([]));
-      toast.error("Failed to load products.");
     }
   };
 

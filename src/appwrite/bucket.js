@@ -9,9 +9,11 @@ class BucketService {
     this.storage = new Storage(this.client);
   }
 
-  async upload(bucketID, files=[]) {
+  async upload(bucketID, files = []) {
     try {
-      const promises = files.map(file => this.storage.createFile(bucketID, ID.unique(), file));
+      const promises = files.map((file) =>
+        this.storage.createFile(bucketID, ID.unique(), file)
+      );
       return { success: true, promises };
     } catch (error) {
       console.error("Upload error:", error);
@@ -29,16 +31,20 @@ class BucketService {
     }
   }
 
-  async getFilePreview(bucketID, fileID) {
+  getFilePreviews(bucketID, imageIDs) {
     try {
-      const url = await this.storage.getFilePreview(bucketID, fileID);
-      return { success: true, url };
+      const previews = imageIDs.map(
+        (imageID) =>
+          `https://cloud.appwrite.io/v1/storage/buckets/${bucketID}/files/${imageID}/preview?project=${getENV(
+            "PROJECT_ID"
+          )}`
+      );
+      return { success: true, previews };
     } catch (error) {
-      console.error("Get file preview error:", error);
+      console.error("Get file previews error:", error);
       return { success: false, message: error.message };
     }
-  } 
-
+  }
 }
 
 export default new BucketService();

@@ -55,7 +55,7 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
       name: product.name,
     };
     localStorage.setItem("buyNow", JSON.stringify(item));
-    // navigate("/checkout/buy-now");
+    navigate("/checkout/buy-now");
   };
 
   const handleAddToCart = (e) => {
@@ -111,7 +111,7 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
                       key={color}
                       value={color}
                       aria-label={color}
-                      className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
+                      className={`px-3 py-1 transition-colors duration-300 cursor-pointer capitalize ${
                         field.value === color
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : "text-muted-foreground"
@@ -146,7 +146,7 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
                       key={size}
                       value={size}
                       aria-label={size}
-                      className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
+                      className={`px-3 py-1 transition-colors duration-300 cursor-pointer uppercase ${
                         field.value === size
                           ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                           : "text-muted-foreground"
@@ -208,7 +208,9 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
 
         {/* Buy Now and Add to Cart Buttons */}
         <div className="flex items-center gap-4">
-          <Button type="button" className="w-full flex items-center gap-2" onClick={handleBuyNow}>
+          <Button type="button" className="w-full flex items-center gap-2"
+          disabled={selectedVarient.stock === 0}
+          onClick={handleBuyNow}>
               <Wallet className="size-4" />
               Buy Now
           </Button>

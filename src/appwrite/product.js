@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Query } from "appwrite";
+import { Client, Databases, ID, Query, Functions } from "appwrite";
 import { getENV } from "@/getENV";
 import BucketService from "@/appwrite/bucket";
 
@@ -8,6 +8,7 @@ class ProductService {
       .setEndpoint(getENV("ENDPOINT"))
       .setProject(getENV("PROJECT_ID"));
     this.databases = new Databases(this.client);
+    this.functions = new Functions(this.client);
   }
 
   async createProduct(data) {
@@ -165,22 +166,11 @@ class ProductService {
         getENV("PRODUCTS_COLLECTION_ID"),
         queries
       );
-  
-      // Get images preview URL for each product
-      const imagePreviews = await Promise.all(
-        result.documents.map(async (doc) => {
-          const previews = await Promise.all(
-            doc.images.map(async (imageId) => {
-              const preview = await BucketService.getFilePreview(
-                getENV("PRODUCTS_BUCKET_ID"),
-                imageId
-              );
-              return preview.success ? preview.url.toString() : null;
-            })
-          );
-          return previews;
-        })
-      );
+
+      // Create image preview URLs
+      const imagePreviews = result.documents.map(doc => 
+        BucketService.getFilePreviews(getENV("PRODUCTS_BUCKET_ID"), doc.images).previews
+      );  
   
       // Convert the skus string back to an array
       result.documents = result.documents.map((doc, index) => ({

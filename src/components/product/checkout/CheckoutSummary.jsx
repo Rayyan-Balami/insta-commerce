@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -20,9 +21,44 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TicketPercent } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function CheckoutSummary() {
   const form = useFormContext();
+  const { type } = useParams();
+  const navigate = useNavigate();
+
+  const cartItems = useSelector((state) => state.cart.cartItems);
+
+  const getCheckoutItems = () => {
+    if (type === "cart") {
+      return cartItems.filter((item) => item.isChecked && item.isAvailable);
+    } else if (type === "buy-now") {
+      return [JSON.parse(localStorage.getItem("buyNow"))] || [];
+    }
+    return [];
+  };
+
+  const checkoutItems = getCheckoutItems();
+  console.log("Checkout Items", checkoutItems);
+
+  useEffect(() => {
+    if (!["buy-now", "cart"].includes(type) || checkoutItems.length === 0) {
+      navigate(-1);
+    }
+  }, [type, navigate, checkoutItems]);
+
+  const subtotal = checkoutItems.reduce(
+    (acc, { sku, quantity }) => acc + (sku.price || 0) * (quantity || 0),
+    0
+  );
+
+  const discount = 25;
+  const total = subtotal - discount;
+
+  console.log("Checkout Items", checkoutItems);
+
   return (
     <>
       <Card x-chunk="dashboard-05-chunk-4">
@@ -39,55 +75,47 @@ function CheckoutSummary() {
         <CardContent className="p-6 text-sm">
           <div className="grid gap-3">
             <ul className="grid gap-3">
-              <li className="flex items-center justify-between gap-2">
-                <img
-                  src="https://i.pinimg.com/564x/4c/01/56/4c01564b2bb728c2d34873b3cf317f48.jpg"
-                  alt=""
-                  className="border rounded-md size-20 aspect-square object-cover object-center"
-                />
-                <div className="space-y-1 text-right">
-                  <p>Shoes with Laces</p>
-                  <p className="text-muted-foreground text-xs italic">
-                    Varient: Black (M)
-                  </p>
-                  <p className="text-muted-foreground text-xs italic">
-                    Rs 250.00 x <span>2</span>
-                  </p>
-                  <p className="mt-4">Rs 250.00</p>
+              {checkoutItems.map((item) => (
+                <div key={item.id}>
+                  <li className="flex items-center justify-between gap-2">
+                    <img
+                      src={item.imagePreview}
+                      alt="image preview"
+                      className="self-start border rounded-md size-20 aspect-square object-cover object-center"
+                    />
+                    <div className="space-y-1 text-right">
+                      <p>{item.name}</p>
+                      <p className="text-muted-foreground text-xs italic">
+                        Varient: {item.sku.color} ({item.sku.size})
+                      </p>
+                      <p className="text-muted-foreground text-xs italic">
+                        Rs {item.sku.price.toFixed(2)} x {item.quantity}
+                      </p>
+                      <p className="mt-4">
+                        {(item.sku.price * item.quantity).toFixed(2)}
+                      </p>
+                    </div>
+                  </li>
+                  <Separator className="my-2" />
                 </div>
-              </li>
-              <Separator className="my-2" />
-              <li className="flex items-center justify-between gap-2">
-                <img
-                  src="https://i.pinimg.com/564x/4c/01/56/4c01564b2bb728c2d34873b3cf317f48.jpg"
-                  alt=""
-                  className="border rounded-md size-20 aspect-square object-cover object-center"
-                />
-                <div className="space-y-1 text-right">
-                  <p>Shoes with Laces</p>
-                  <p className="text-muted-foreground text-xs italic">
-                    Varient: Black (M)
-                  </p>
-                  <p className="text-muted-foreground text-xs italic">
-                    Rs 250.00 x <span>2</span>
-                  </p>
-                  <p className="mt-4">Rs 250.00</p>
-                </div>
-              </li>
-              <Separator className="my-2" />
+              ))}
             </ul>
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>$299.00</span>
+                <span>RS {subtotal.toFixed(2)}</span>
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>$5.00</span>
+                <span>RS 0.00</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">Discount</span>
+                <span>- RS {discount.toFixed(2)}</span>
               </li>
               <li className="flex items-center justify-between font-semibold">
                 <span>Total</span>
-                <span>$329.00</span>
+                <span>RS {total.toFixed(2)}</span>
               </li>
               <Separator className="my-2" />
               {/* //Input to add promocode */}
