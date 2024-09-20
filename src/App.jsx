@@ -7,10 +7,12 @@ import { useProductInitialization } from "./hooks/useProductInitialization";
 import DesktopNav from "./components/nav/DesktopNav";
 import Header from "./components/header/Header";
 import { useCartInitialization } from "./hooks/useCartInitalization";
+import { usePromotionInitialization } from "./hooks/usePromotionInitalization";
 
 export default function App() {
   useAuthInitialization();
   useProductInitialization();
+  usePromotionInitialization();
   useCartInitialization();
 
   return (

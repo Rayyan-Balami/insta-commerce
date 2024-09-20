@@ -22,7 +22,7 @@ function PromoTabs() {
         ))}
       </TabsList>
       {PromoTabs.map(({ label, Component }) => (
-        <TabsContent key={label} value={label}>
+        <TabsContent key={label} value={label} className="space-y-4 lg:space-y-6">
           <Component />
         </TabsContent>
       ))}

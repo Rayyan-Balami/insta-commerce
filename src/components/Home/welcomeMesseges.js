@@ -1,14 +1,14 @@
 const welcomeMessages = [
-  "Welcome! Let's make shopping fun 🔥",
-  "Hey! Ready for a shopping spree? 🛍️",
-  "Welcome! Ready to fill your cart? 🛒",
-  "Hello! Shopping just got better! 🎉",
-  "Welcome to your top shopping spot! 🌈",
-  "Welcome! Let's start your shopping journey 🌟",
-  "Hey! Find your next great buy here 🔥",
-  "Welcome aboard! Shop till you drop 🚀",
-  "Welcome! Enjoy every purchase 🎉",
-  "Welcome! Your shopping adventure starts now 🛍️"
+  "Hey bestie, ready to shop till you drop? 🛍️",
+  "What's up? Time to treat yourself! 💅",
+  "Yo, welcome to the coolest store ever! 🙌",
+  "Hey fam, let's get you some fresh fits! 👗",
+  "Welcome, let's find your next fave item! ✨",
+  "Sup, you're about to discover some fire deals! 🔥",
+  "Hey there, let's make your cart happy! 🛒",
+  "Welcome, let's shop and slay together! 💪",
+  "Hey, you're in for a shopping spree! 🎉",
+  "Yo, let's make today a shopping adventure! 🌟"
 ];
 
 const getRandomWelcomeMessage = () => {
@@ -17,4 +17,3 @@ const getRandomWelcomeMessage = () => {
 };
 
 export { getRandomWelcomeMessage };
-

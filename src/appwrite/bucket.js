@@ -1,4 +1,4 @@
-import { Client, Storage, ID } from "appwrite";
+import { Client, Storage, ID, Query } from "appwrite";
 import { getENV } from "@/getENV";
 
 class BucketService {
@@ -42,6 +42,22 @@ class BucketService {
       return { success: true, previews };
     } catch (error) {
       console.error("Get file previews error:", error);
+      return { success: false, message: error.message };
+    }
+  }
+
+  async listFiles(bucketID) {
+    try {
+      const response = await this.storage.listFiles(
+        bucketID,
+        [
+          Query.orderDesc("$createdAt"),
+        ]
+
+      );
+      return { success: true, files: response.files };
+    } catch (error) {
+      console.error("List files error:", error);
       return { success: false, message: error.message };
     }
   }

@@ -16,6 +16,7 @@ export default function ProductCard({ product }) {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dispatch(
       addToCart({
         item: {
@@ -37,9 +38,10 @@ export default function ProductCard({ product }) {
 
   return (
     <Card
-      className="overflow-hidden group flex flex-col"
+      className="overflow-hidden group flex flex-col cursor-pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={handleRedirect}
     >
       <div className="relative overflow-hidden aspect-square">
         {/* Default Image */}
@@ -78,7 +80,7 @@ export default function ProductCard({ product }) {
           >
             {product.category}
           </Badge>
-          <Badge className="text-white">{product.skus.length} Variants</Badge>
+          <Badge className="text-primary-foreground">{product.skus.length} Variants</Badge>
         </div>
         <div className="flex items-center gap-4 justify-between">
           <div>

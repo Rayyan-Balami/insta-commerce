@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import ProductGrid from "@/components/home/ProductGrid";
-import PromotionCarousel from "@/components/home/PromotionCarousel";
+import BannersCarousel from "@/components/home/BannersCarousel";
 import NoDataPlaceholder from "@/components/NoDataPlaceholder";
 import PageTitle from "@/components/PageTitle";
 import { getRandomWelcomeMessage } from "@/components/home/welcomeMesseges";
@@ -11,7 +11,7 @@ function Home() {
 
   return (
     <>
-      <PromotionCarousel />
+      <BannersCarousel />
 
       {loading ? (
         // Loading state: Display skeleton loaders

@@ -42,9 +42,9 @@ export function AdminLogin() {
     try {
       const response = await AuthService.login(email, password);
       if (response.success) {
-        // Clear local storage of products and timestamp
-        localStorage.removeItem('products');
+        // Clear local storage of timestamp
         localStorage.removeItem('products_timestamp');
+        localStorage.removeItem('promotions_timestamp');
 
         // Store user data in local storage
         localStorage.setItem('user', JSON.stringify(response.user));

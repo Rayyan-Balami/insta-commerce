@@ -8,7 +8,6 @@ import { Form } from "@/components/ui/form";
 import productService from "@/appwrite/product";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { addProduct } from "@/store/productSlice";
 import { useDispatch } from "react-redux";
 import BucketService from "@/appwrite/bucket";
 import { getENV } from "@/getENV";
@@ -42,15 +41,11 @@ function AddProduct() {
           result.images
         ).previews;
 
-        const updatedProduct = { ...result, imagePreviews, skus: JSON.parse(result.skus) };
-
-        dispatch(addProduct(updatedProduct));
-
-        const currentProducts =
-          JSON.parse(localStorage.getItem("products")) || [];
+        //set products_time in local storage to force a re-fetch of products
         localStorage.setItem(
-          "products",
-          JSON.stringify([updatedProduct, ...currentProducts])
+          "products_timestamp",
+          Date.now() -
+            (Date.now() - parseInt(getENV("CACHE_LIMIT"), 10)).toString()
         );
 
         toast.success("Product created successfully");

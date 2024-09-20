@@ -256,7 +256,7 @@ export const FileUploaderItem = forwardRef(
         ref={ref}
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          "h-6 p-1 justify-between cursor-pointer relative",
+          "h-6 p-1 justify-between relative",
           className,
           isSelected ? "bg-muted" : ""
         )}
@@ -268,13 +268,13 @@ export const FileUploaderItem = forwardRef(
         <button
           type="button"
           className={cn(
-            "absolute",
-            direction === "rtl" ? "top-1 left-1" : "top-1 right-1"
+            "absolute p-1 pb-2.5 pl-2.5 bg-red-500 rounded-bl-full",
+            direction === "rtl" ? "top-0 left-0" : "top-0 right-0"
           )}
           onClick={() => removeFileFromSet(index)}
         >
           <span className="sr-only">remove item {index}</span>
-          <CircleX className="size-5 stroke-destructive-foreground hover:stroke-destructive duration-200 ease-in-out" />
+          <CircleX className="size-4 stroke-destructive-foreground" />
         </button>
       </div>
     );

@@ -51,7 +51,7 @@ class ProductService {
           );
           await Promise.all(deletePromises);
         } catch (deleteError) {
-          // Log rollback failure
+          return { success: false, message: deleteError.message };
         }
       }
 
