@@ -54,7 +54,7 @@ export default function StoreDetails() {
               <FormControl>
                 <MinimalTiptapEditor
                   value={field.value}
-                  onChange={(value) => form.setValue("storeDescription", value)}
+                  onChange={field.onChange}
                   output="html"
                   placeholder="A short description of your store"
                   immediatelyRender={true}

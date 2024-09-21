@@ -148,8 +148,6 @@ class ProductService {
 
   async listProducts({ sort = "desc", status = "active" } = {}) {
     try {
-      console.log("listProducts called with:", { sort, status });
-  
       const queries = [
         sort === "asc" ? Query.orderAsc("$createdAt") : Query.orderDesc("$createdAt"),
       ];
@@ -158,8 +156,6 @@ class ProductService {
       if (status !== "all") {
         queries.push(Query.equal("status", status));
       }
-  
-      console.log("Queries:", queries);
   
       const result = await this.databases.listDocuments(
         getENV("DB_ID"),

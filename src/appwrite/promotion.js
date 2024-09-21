@@ -23,10 +23,10 @@ class PromotionService {
       if (banners.success) {
         const previews = await BucketService.getFilePreviews(
           getENV("BANNERS_BUCKET_ID"),
-          banners.banners.map((banner) => banner.$id)
+          banners.result.map((banner) => banner.$id)
         );
         if (previews.success) {
-          banners.banners.forEach((banner, index) => {
+          banners.result.forEach((banner, index) => {
             banner.preview = previews.previews[index];
           });
         }
@@ -35,10 +35,10 @@ class PromotionService {
       return {
         success: true,
         result: {
-          banners: banners.banners,
-          promoCodes: promoCodes.promoCodes,
-          discounts: discounts.discounts,
-          promoCard: promoCard.promoCard,
+          banners: banners.result,
+          promoCodes: promoCodes.result,
+          discounts: discounts.result,
+          promoCard: promoCard.result,
         },
       };
     } catch (error) {
@@ -72,8 +72,6 @@ class PromotionService {
       // Wait for all promises in the upload response to resolve
       const results = await Promise.all(uploadResponse.promises);
   
-      console.log(results);
-  
       return { success: true, result: results };
     } catch (error) {
       return { success: false, message: error.message };
@@ -87,7 +85,7 @@ class PromotionService {
         throw new Error(banners.message);
       }
 
-      return { success: true, banners: banners.files };
+      return { success: true, result: banners.files };
     } catch (error) {
       return { success: false, message: error.message };
     }
@@ -114,10 +112,10 @@ class PromotionService {
     try {
       // Implement the logic to list promo codes
       const promoCodes = await this.databases.listDocuments(
-        getENV("DATABASE_ID"),
+        getENV("DB_ID"),
         getENV("PROMO_CODES_COLLECTION_ID")
       );
-      return { success: true, promoCodes: promoCodes.documents };
+      return { success: true, result: promoCodes.documents };
     } catch (error) {
       return { success: false, message: error.message };
     }
@@ -127,27 +125,46 @@ class PromotionService {
     try {
       // Implement the logic to list discounts
       const discounts = await this.databases.listDocuments(
-        getENV("DATABASE_ID"),
+        getENV("DB_ID"),
         getENV("DISCOUNTS_COLLECTION_ID")
       );
-      return { success: true, discounts: discounts.documents };
+      return { success: true, result: discounts.documents };
     } catch (error) {
       return { success: false, message: error.message };
     }
   }
 
+  //promoCard related functions start here
   async listPromoCard() {
     try {
       // Implement the logic to list promo cards
       const promoCard = await this.databases.listDocuments(
-        getENV("DATABASE_ID"),
+        getENV("DB_ID"),
         getENV("PROMO_CARD_COLLECTION_ID")
       );
-      return { success: true, promoCard: promoCard.documents };
+      return { success: true, result: promoCard.documents[0] };
     } catch (error) {
       return { success: false, message: error.message };
     }
   }
+
+  async updatePromoCard(id, data) {
+    try {
+      // Implement the logic to update promo card
+      const promoCard = await this.databases.updateDocument(
+        getENV("DB_ID"),
+        getENV("PROMO_CARD_COLLECTION_ID"),
+        id,
+        data
+      );
+      return { success: true, result: promoCard };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  //promoCard related functions end here
+
 }
 
 export default new PromotionService();

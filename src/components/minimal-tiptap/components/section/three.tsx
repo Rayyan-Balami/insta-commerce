@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export const SectionThree: React.FC<{ editor: Editor }> = ({ editor }) => {
-  const color = editor.getAttributes("textStyle")?.color || "hsl(var(--primary)";
+  // Get the color from the editor or use 'inherit' for inherited styles
+  const color = editor.getAttributes("textStyle")?.color || ""; // Use empty string to inherit
   const [selectedColor, setSelectedColor] = React.useState(color);
 
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,6 +17,7 @@ export const SectionThree: React.FC<{ editor: Editor }> = ({ editor }) => {
     editor.chain().setColor(newColor).run();
   };
 
+  // Sync the selected color with editor attributes
   React.useEffect(() => {
     setSelectedColor(color);
   }, [color]);
@@ -28,35 +30,35 @@ export const SectionThree: React.FC<{ editor: Editor }> = ({ editor }) => {
           aria-label="Text color"
           className="w-12"
         >
-          <Baseline className="size-4" style={{ color: selectedColor }} />
+          <Baseline className="size-4" style={{ color: selectedColor || 'inherit' }} />
           <ChevronDown className="size-3.5" />
         </ToolbarButton>
       </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="w-full p-2 flex items-center gap-2"
-          onCloseAutoFocus={(event) => event.preventDefault()}
-        >
-          {/* //default color setter */}
-          <Button
+      <PopoverContent
+        align="start"
+        className="w-full p-2 flex items-center gap-2"
+        onCloseAutoFocus={(event) => event.preventDefault()}
+      >
+        {/* Button to reset color to inherited */}
+        <Button
           variant="outline"
           size="sm"
-            onClick={() => {
-              setSelectedColor("hsl(var(--foreground))");
-              editor.chain().setColor("hsl(var(--primary)").run();
-            }}
+          onClick={() => {
+            setSelectedColor(""); // Set to empty to inherit
+            editor.chain().unsetColor().run(); // Clear the color formatting
+          }}
           className="text-primary"
-          >
-            Default
-          </Button>
-          <Input
-            type="color"
-            value={selectedColor}
-            onChange={handleColorChange}
-            className="w-20 h-9 p-0 "
-          />
-          
-        </PopoverContent>
+        >
+          Default
+        </Button>
+        {/* The Input will display #000000 or any selected color, but not 'inherit' */}
+        <Input
+          type="color"
+          value={selectedColor || "#000000"} // Default to black if no color selected
+          onChange={handleColorChange}
+          className="w-20 h-9 p-0"
+        />
+      </PopoverContent>
     </Popover>
   );
 };

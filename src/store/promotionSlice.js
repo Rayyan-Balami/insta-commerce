@@ -26,9 +26,13 @@ const promotionSlice = createSlice({
         (banner) => banner.$id !== action.payload
       );
     },
+    updatePromoCard: (state, action) => {
+      // Correctly update promoCard instead of promoCodes
+      state.promotions.promoCard = action.payload;
+      console.log("Updated promoCard:", state.promotions.promoCard);
+    },
   },
 });
 
-export const { setPromotions, addBanner, deleteBanner } = promotionSlice.actions;
-
+export const { setPromotions, addBanner, deleteBanner, updatePromoCard } = promotionSlice.actions;
 export default promotionSlice.reducer;

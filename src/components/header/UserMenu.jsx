@@ -20,7 +20,6 @@ function UserMenu() {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    console.log("Logging out...");
     try {
       const response = await AuthService.logout();
       if (response.success) {

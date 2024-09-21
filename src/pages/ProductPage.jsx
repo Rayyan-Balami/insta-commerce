@@ -207,11 +207,15 @@ export default function ProductPage() {
       >
         <h2 className="text-xl font-bold">Description</h2>
         <div>{parse(viewProduct.description)}</div>
+
+        {/* Gradient overlay */}
+        { descriptionRef.current && descriptionRef.current.scrollHeight > 320 && (
         <div
           className={`absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-primary-foreground to-transparent pointer-events-none transition-opacity duration-300 ${
             isSeeMore ? "opacity-0" : "opacity-100"
           }`}
         />
+        )}
       </div>
       {/* See more button */}
       { descriptionRef.current && descriptionRef.current.scrollHeight > 320 && (
