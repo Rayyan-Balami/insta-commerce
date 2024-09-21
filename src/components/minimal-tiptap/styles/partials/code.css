@@ -1,25 +1,25 @@
-.minimal-tiptap-editor .ProseMirror code.inline {
+code.inline {
   @apply rounded border border-[var(--mt-code-color)] bg-[var(--mt-code-background)] px-1 py-0.5 text-sm;
 }
 
-.minimal-tiptap-editor .ProseMirror pre {
+pre {
   @apply relative overflow-auto rounded border font-mono text-sm;
   @apply border-[var(--mt-pre-border)] bg-[var(--mt-pre-background)] text-[var(--mt-pre-color)];
   @apply hyphens-none whitespace-pre-wrap text-left; /* Changed from whitespace-pre to whitespace-pre-wrap */
 }
 
-.minimal-tiptap-editor .ProseMirror code {
+code {
   @apply break-words leading-[1.7em];
   word-wrap: break-word; /* Added for word wrapping */
   word-break: break-word; /* Added for word breaking */
   overflow-wrap: break-word; /* Added for overflow wrapping */
 }
 
-.minimal-tiptap-editor .ProseMirror pre code {
+pre code {
   @apply block overflow-x-auto p-3.5;
 }
 
-.minimal-tiptap-editor .ProseMirror pre {
+pre {
   .hljs-keyword,
   .hljs-operator,
   .hljs-function,

@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,8 +18,8 @@ function PromoCard({ title, description, CTA, URL }) {
     useSelector((state) => state.promotion.promotions.promoCard) || {};
 
   // Use props if provided, otherwise fallback to Redux store values
-  const cardTitle = title || card.title || "Default Title";
-  const cardDescription = description || card.description || "Default Description";
+  const cardTitle = title || card.title || "Title";
+  const cardDescription = description || card.description || "Description";
   const cardCTA = CTA || card.CTA || "CTA";
   const cardURL = URL || card.URL || "#";
 
@@ -33,19 +34,19 @@ function PromoCard({ title, description, CTA, URL }) {
   return (
     <div className="mt-auto">
       <Card x-chunk="dashboard-02-chunk-0">
-        <CardHeader>
-          <CardTitle>{cardTitle}</CardTitle>
-          <div className="text-muted-foreground">
-            {cardDescription ? parse(cardDescription) : "No description available."}
-          </div>
+        <CardHeader className="p-4">
+          <CardTitle className="text-xl">{cardTitle}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-muted-foreground text-sm p-0 mx-4 text-pretty">
+          {parse(cardDescription)}
+        </CardContent>
+        <CardFooter className="p-4">
           <Button size="sm" className="w-full" asChild>
             <Link to={cardURL} target="_blank">
               {cardCTA}
             </Link>
           </Button>
-        </CardContent>
+          </CardFooter>
       </Card>
     </div>
   );
