@@ -6,6 +6,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 export function TableColumnVisibility({ table }) {
@@ -17,6 +19,8 @@ export function TableColumnVisibility({ table }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+      <DropdownMenuLabel>Columns</DropdownMenuLabel>
+      <DropdownMenuSeparator />
         {table
           .getAllColumns()
           .filter((column) => column.getCanHide())

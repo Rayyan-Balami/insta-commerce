@@ -32,23 +32,22 @@ function PromoCard({ title, description, CTA, URL }) {
   }
 
   return (
-    <div className="mt-auto">
-      <Card x-chunk="dashboard-02-chunk-0">
-        <CardHeader className="p-4">
-          <CardTitle className="text-xl">{cardTitle}</CardTitle>
-        </CardHeader>
-        <CardContent className="text-muted-foreground text-sm p-0 mx-4 text-pretty">
-          {parse(cardDescription)}
-        </CardContent>
-        <CardFooter className="p-4">
-          <Button size="sm" className="w-full" asChild>
-            <Link to={cardURL} target="_blank">
-              {cardCTA}
-            </Link>
-          </Button>
-          </CardFooter>
-      </Card>
-    </div>
+    <Card x-chunk="dashboard-02-chunk-0">
+      <CardHeader className="p-4">
+        <CardTitle className="text-xl">{cardTitle}</CardTitle>
+      </CardHeader>
+      <CardContent className="text-muted-foreground text-sm p-0 mx-4 text-pretty">
+        {parse(cardDescription)}
+      </CardContent>
+      <CardFooter className="p-4">
+        <Button
+         className="w-full h-8" asChild>
+          <Link to={cardURL} target="_blank">
+            {cardCTA}
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 

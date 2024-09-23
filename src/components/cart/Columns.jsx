@@ -39,12 +39,14 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => (
-      <img
-        src={row.original.imagePreview}
-        alt=""
-        className="border rounded-md min-h-20 min-w-20 max-h-20 max-w-20 aspect-square object-cover object-center"
-        loading="lazy"
-      />
+      <div className="aspect-square min-h-20 max-w-20">
+        <img
+          src={row.original.imagePreview}
+          alt=""
+          className="w-full h-full border rounded-md object-cover object-center"
+          loading="lazy"
+        />
+      </div>
     ),
   },
   {
@@ -54,7 +56,8 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
       <div className="min-w-40 space-y-1">
         <p className="capitalize line-clamp-2">{row.original.name}</p>
         <p className="text-muted-foreground text-xs italic">
-          Variant: {row.original.sku.color} <span className="capitalize">({row.original.sku.size})</span>
+          Variant: {row.original.sku.color}{" "}
+          <span className="capitalize">({row.original.sku.size})</span>
         </p>
         <p className="text-muted-foreground text-xs italic">
           Rs {row.original.sku.price.toFixed(2)}
@@ -83,18 +86,23 @@ export const createColumns = (handleQuantityChange, handleCheckboxChange) => [
         </Button>
         <Input
           type="number"
+          min="1"
+          max={row.original.sku.stock}
           value={row.original.quantity}
           onChange={(e) => {
             const parsedValue = parseInt(e.target.value, 10);
-            if (!isNaN(parsedValue)) {
-              handleQuantityChange(row.original, "set", parsedValue);
-            }
+            const validValue =
+              isNaN(parsedValue) || parsedValue < 1
+                ? 1
+                : Math.min(parsedValue, selectedVarient.stock);
+            handleQuantityChange(row.original, "set", validValue);
           }}
           className="h-9 w-16 text-center"
         />
         <Button
           variant="outline"
           size="sm"
+          disabled={row.original.quantity >= row.original.sku.stock}
           onClick={() => handleQuantityChange(row.original, "increment")}
         >
           <PlusIcon className="w-4 h-4" />

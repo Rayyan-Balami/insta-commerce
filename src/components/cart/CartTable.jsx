@@ -12,15 +12,15 @@ import { TableControls } from "@/components/ui/TableControls";
 import { TablePagination } from "@/components/ui/TablePagination";
 import AlertDialog from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useSelector, useDispatch } from "react-redux";
 import { updateQuantity, changeChecked, removeFromCart } from "@/store/cartSlice";
 
-export default function ProductTable() {
+export default function CartTable() {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const initialData = useSelector((state) => state.cart.cartItems);
   
-  const [data, setData] = useState(cartItems);
+  const [data, setData] = useState(initialData);
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -28,12 +28,12 @@ export default function ProductTable() {
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
-    setData(cartItems);
-    setRowSelection(cartItems.reduce((acc, { id, isChecked }) => {
+    setData(initialData);
+    setRowSelection(initialData.reduce((acc, { id, isChecked }) => {
       if (isChecked) acc[id] = true;
       return acc;
     }, {}));
-  }, [cartItems]);
+  }, [initialData]);
 
   const handleQuantityChange = (row, type, value) => {
     const newValue = Math.max(1, type === "increment" ? row.quantity + 1 : type === "decrement" ? row.quantity - 1 : value);

@@ -16,8 +16,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { addToCart } from "@/store/cartSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Package } from "lucide-react";
 
-function ProductVarientForm({ allProducts, product, selectedVarient, setSelectedVarient }) {
+function ProductVarientForm({
+  allProducts,
+  product,
+  selectedVarient,
+  setSelectedVarient,
+}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -40,11 +47,10 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
       form.setValue("size", selectedSku.size[0]);
     }
   }, [form.watch("color"), product.skus, setSelectedVarient]);
-  
 
   const handleBuyNow = (e) => {
     e.preventDefault();
-    //add item local storage with name buyNow , only one item can be added to buy now at a time 
+    //add item local storage with name buyNow , only one item can be added to buy now at a time
     const size = form.getValues("size");
     const quantity = form.getValues("quantity");
     const item = {
@@ -63,7 +69,7 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
     const size = form.getValues("size");
     const quantity = form.getValues("quantity");
     console.log("sku", { ...selectedVarient, size });
-  
+
     dispatch(
       addToCart({
         item: {
@@ -77,20 +83,21 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
     );
     toast.success("Added to cart");
   };
-  
-
-
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => {
-        // Simulate asynchronous submission (e.g., API call)
-        return new Promise((resolve) => setTimeout(resolve, 1000))
-          .then(() => {
-            console.log(data); // Handle form submission logic here
-            form.reset();
-          });
-      })} className="grid gap-6">
+      <form
+        onSubmit={form.handleSubmit((data) => {
+          // Simulate asynchronous submission (e.g., API call)
+          return new Promise((resolve) => setTimeout(resolve, 1000)).then(
+            () => {
+              console.log(data); // Handle form submission logic here
+              form.reset();
+            }
+          );
+        })}
+        className="grid gap-6"
+      >
         {/* Color Options */}
         <FormField
           control={form.control}
@@ -162,59 +169,82 @@ function ProductVarientForm({ allProducts, product, selectedVarient, setSelected
         />
 
         {/* Quantity Options */}
-        <FormField
-          control={form.control}
-          name="quantity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Quantity</FormLabel>
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="p-1"
-                  disabled={field.value <= 1}
-                  onClick={() => field.onChange(Math.max(1, field.value - 1))}
-                >
-                  <MinusIcon className="w-4 h-4" />
-                </Button>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min="1"
-                    value={field.value}
-                    onChange={(e) => {
-                      const parsedValue = parseInt(e.target.value, 10);
-                      field.onChange(isNaN(parsedValue) ? 1 : parsedValue);
-                    }}
-                    className="w-1/4 text-center"
-                  />
-                </FormControl>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="p-1"
-                  onClick={() => field.onChange(field.value + 1)}
-                >
-                  <PlusIcon className="w-4 h-4" />
-                </Button>
-              </div>
-              <FormMessage className="font-light" />
-            </FormItem>
-          )}
-        />
 
         {/* Buy Now and Add to Cart Buttons */}
-        <div className="flex items-center gap-4">
-          <Button type="button" className="w-full flex items-center gap-2"
-          disabled={selectedVarient.stock === 0}
-          onClick={handleBuyNow}>
-              <Wallet className="size-4" />
-              Buy Now
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="p-1"
+                    disabled={field.value <= 1}
+                    onClick={() => field.onChange(Math.max(1, field.value - 1))}
+                  >
+                    <MinusIcon className="w-4 h-4" />
+                  </Button>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="1"
+                      max={selectedVarient.stock}
+                      value={field.value}
+                      onChange={(e) => {
+                        const parsedValue = parseInt(e.target.value, 10);
+                        const validValue =
+                          isNaN(parsedValue) || parsedValue < 1
+                            ? 1
+                            : Math.min(parsedValue, selectedVarient.stock);
+                        field.onChange(validValue);
+                      }}
+                      className="text-center"
+                    />
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="p-1"
+                    disabled={field.value >= selectedVarient.stock}
+                    onClick={() => field.onChange(field.value + 1)}
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                  </Button>
+                </div>
+                <FormMessage className="font-light" />
+              </FormItem>
+            )}
+          />
+          {selectedVarient.stock < 100 && (
+            <Badge
+              variant="secondary"
+              className="mt-auto h-10 justify-center rounded-md text-sm gap-2 py-1"
+            >
+              <Package className="size-[1.15rem]" />
+              {selectedVarient.stock === 0 ? "Out of Stock" : "Low Stock"}
+            </Badge>
+          )}
+          <Button
+            type="button"
+            className="w-full flex items-center gap-2"
+            disabled={selectedVarient.stock === 0}
+            onClick={handleBuyNow}
+          >
+            <Wallet className="size-4" />
+            Buy Now
           </Button>
-          <Button type="button" variant="outline" className="w-full" onClick={handleAddToCart}>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleAddToCart}
+          >
             <ShoppingCart className="size-4 mr-2" />
             Add to Cart
           </Button>

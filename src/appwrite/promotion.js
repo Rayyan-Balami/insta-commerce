@@ -54,7 +54,7 @@ class PromotionService {
         throw new Error(banners.message);
       }
   
-      const bannerCount = banners.banners.length;
+      const bannerCount = banners.result.length;
       if (bannerCount + data.images.length > 8) {
         throw new Error("Cannot add more than 8 banners");
       }
@@ -121,12 +121,64 @@ class PromotionService {
     }
   }
 
+  async addDiscount(data) {
+    console.log(data);
+    try {
+      // Implement the logic to add discount
+      const discount = await this.databases.createDocument(
+        getENV("DB_ID"),
+        getENV("DISCOUNTS_COLLECTION_ID"),
+        ID.unique(),
+        data
+      );
+      console.log(discount);
+      return { success: true, result: discount };
+    }
+    catch (error) {
+      console.log(error);
+      return { success: false, message: error.message };
+    }
+  }
+
+  async updateDiscount(id, data) {
+    try {
+      // Implement the logic to update discount
+      const discount = await this.databases.updateDocument(
+        getENV("DB_ID"),
+        getENV("DISCOUNTS_COLLECTION_ID"),
+        id,
+        data
+      );
+      return { success: true, result: discount };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async deleteDiscount(id) {
+    try {
+      // Implement the logic to delete discount
+      const discount = await this.databases.deleteDocument(
+        getENV("DB_ID"),
+        getENV("DISCOUNTS_COLLECTION_ID"),
+        id
+      );
+      return { success: true, result: discount };
+    }
+    catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   async listDiscounts() {
     try {
       // Implement the logic to list discounts
       const discounts = await this.databases.listDocuments(
         getENV("DB_ID"),
-        getENV("DISCOUNTS_COLLECTION_ID")
+        getENV("DISCOUNTS_COLLECTION_ID"),
+        [
+          Query.orderDesc("$createdAt"),
+        ]
       );
       return { success: true, result: discounts.documents };
     } catch (error) {

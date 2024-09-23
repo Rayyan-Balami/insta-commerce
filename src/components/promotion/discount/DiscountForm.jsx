@@ -22,91 +22,85 @@ import { Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import promotionService from "@/appwrite/promotion";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getENV } from "@/getENV";
-import {
-  addDiscount,
-  updateDiscount,
-  deleteDiscount,
-} from "@/store/promotionSlice";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multi-select";
-import { discountSchema } from "@/schemas/discount";
-import { useSelector } from "react-redux";
-import { Combobox } from "../ui/Combobox";
+import { addDiscount, updateDiscount } from "@/store/promotionSlice";
+import { discountSchema, types, usagePeriods } from "@/schemas/discount";
+import { Combobox } from "@/components/ui/Combobox";
 
-const categories = ["clothing", "electronics", "accessories"]; // Define your categories here
+const categories = [
+  { $id: "1", name: "Electronics" },
+  { $id: "2", name: "Clothing" },
+  { $id: "3", name: "Home & Furniture" },
+];
 
-export default function Discount() {
+export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDataID }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.product.products);
-  console.log(products);
+  const editingData = useSelector((state) =>
+    isEdit
+      ? state.promotion.promotions.discounts.find(
+          (discount) => discount.$id === editDataID
+        )
+      : null
+  );
 
   const form = useForm({
     resolver: zodResolver(discountSchema),
     defaultValues: {
-      name: "",
-      type: "all",
-      products: [],
-      usagePeriod: "noLimit",
-      limitedUsage: "",
-      discountRate: "",
-      minimumPurchaseAmount: "",
-      maximumDiscountAmount: "",
+      name: editingData?.name || "",
+      type: editingData?.type || "all",
+      products: editingData?.products || [],
+      categories: editingData?.categories || [],
+      usagePeriod: editingData?.usagePeriod || "noLimit",
+      limitedUsage: editingData?.limitedUsage || 0,
+      discountRate: editingData?.discountRate || "",
+      minimumPurchaseAmount: editingData?.minimumPurchaseAmount || "",
+      maximumDiscountAmount: editingData?.maximumDiscountAmount || "",
     },
   });
-
-  const types = [
-    { value: "all", label: "All" },
-    { value: "specific", label: "Specific" },
-    { value: "category", label: "Category" },
-  ];
-
-  const usagePeriods = [
-    { value: "noLimit", label: "No Limit" },
-    { value: "limitedDay", label: "Limited Day" },
-  ];
 
   const type = form.watch("type");
   const usagePeriod = form.watch("usagePeriod");
 
   useEffect(() => {
-    // Reset products field when type changes
-    form.setValue("products", []);
-  }, [type, form]);
+    if (editingData) form.reset(editingData);
+  }, [editingData, form]);
 
   const onSubmit = async (data) => {
-    try {
-      const { success, result, message } = await promotionService.addDiscount(
-        data
-      );
+    data = {
+      ...data,
+      products: data.type !== "products" ? [] : data.products,
+      categories: data.type !== "categories" ? [] : data.categories,
+      limitedUsage: data.usagePeriod !== "limitedDay" ? 0 : data.limitedUsage,
+    };
 
-      if (success) {
-        console.log(result, success, message);
-        dispatch(addDiscount(result));
-        localStorage.setItem(
-          "promotions_timestamp",
-          (Date.now() - parseInt(getENV("CACHE_LIMIT"), 10)).toString()
-        );
-        // form.reset();
-        toast.success("Discount added successfully.");
-      } else {
-        toast.error(message);
+    try {
+      const {success,result, message} = isEdit
+        ? await promotionService.updateDiscount(editDataID, data)
+        : await promotionService.addDiscount(data);
+
+      if (!success) {
+        throw new Error(message);
       }
+
+      dispatch(isEdit ? updateDiscount(result) : addDiscount(result));
+      toast.success(`Discount ${isEdit ? "updated" : "added"} successfully.`);
+      localStorage.setItem(
+        "promotions_timestamp",
+        (Date.now() - parseInt(getENV("CACHE_LIMIT"), 10)).toString()
+      );
+      setIsEdit(false);
+      setEditDataID(null);
+      // form.reset();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add discount.");
+      toast.error("Failed to save discount.");
     }
   };
 
   return (
-    <Card className="bg-muted/40 max-w-2xl">
+    <Card className="bg-muted/40">
       <CardHeader>
         <CardTitle>Discount Details</CardTitle>
         <CardDescription>
@@ -129,7 +123,6 @@ export default function Discount() {
                 </FormItem>
               )}
             />
-            {/* //radio groups for promo type (all, specific, category) */}
             <FormField
               control={form.control}
               name="type"
@@ -138,8 +131,8 @@ export default function Discount() {
                   <FormLabel>Type</FormLabel>
                   <FormControl>
                     <RadioGroup
+                      value={field.value}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
                       {types.map(({ value, label }) => (
@@ -159,7 +152,7 @@ export default function Discount() {
                 </FormItem>
               )}
             />
-            {type !== "all" && (
+            {type === "products" && (
               <FormField
                 control={form.control}
                 name="products"
@@ -168,21 +161,12 @@ export default function Discount() {
                     <FormControl>
                       <Combobox
                         {...field}
-                        list={(type === "category"
-                          ? categories
-                          : type === "specific"
-                          ? products
-                          : []
-                        ).map((item) => ({
+                        list={products.map((item) => ({
                           value: item.$id,
                           label: item.name,
                         }))}
-                        placeholder={
-                          type === "category"
-                            ? "Select Category"
-                            : "Select Products"
-                        }
-                        multiple={true}
+                        placeholder="Select Products"
+                        multiple
                       />
                     </FormControl>
                     <FormMessage className="font-light" />
@@ -190,7 +174,28 @@ export default function Discount() {
                 )}
               />
             )}
-            {/* //for usage period (no limit, limited Days) */}
+            {type === "categories" && (
+              <FormField
+                control={form.control}
+                name="categories"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Combobox
+                        {...field}
+                        list={categories.map((item) => ({
+                          value: item.$id,
+                          label: item.name,
+                        }))}
+                        placeholder="Select Categories"
+                        multiple
+                      />
+                    </FormControl>
+                    <FormMessage className="font-light" />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="usagePeriod"
@@ -199,8 +204,8 @@ export default function Discount() {
                   <FormLabel>Usage Period</FormLabel>
                   <FormControl>
                     <RadioGroup
+                      value={field.value}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
                       {usagePeriods.map(({ value, label }) => (
@@ -239,7 +244,6 @@ export default function Discount() {
                 )}
               />
             )}
-
             <FormField
               control={form.control}
               name="discountRate"
@@ -258,7 +262,6 @@ export default function Discount() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="minimumPurchaseAmount"
@@ -272,7 +275,6 @@ export default function Discount() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="maximumDiscountAmount"
@@ -286,13 +288,29 @@ export default function Discount() {
                 </FormItem>
               )}
             />
-
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting && (
-                <Loader2 className="size-4 mr-2 animate-spin" />
+            <div className="flex gap-4">
+              {isEdit && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={form.formState.isSubmitting}
+                  onClick={() => setIsEdit(false)}
+                  className="w-full"
+                >
+                  Cancel
+                </Button>
               )}
-              Save
-            </Button>
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting}
+                className="w-full"
+              >
+                {form.formState.isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isEdit ? "Update" : "Create"}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

@@ -141,12 +141,6 @@ export default function ProductPage() {
               </span>
             </h3>
             <p className="text-sm text-muted-foreground">Inclusive of VAT</p>
-            {/* {selectedVarient.stock < 100 && (
-              <Badge variant="outline" className="ml-auto text-sm gap-2 py-1">
-                <Package className="size-[1.15rem]" />
-                Low Stock
-              </Badge>
-            )} */}
           </div>
           {/* Promocode */}
           <Badge variant="secondary" className="text-sm gap-2 py-1">
@@ -177,6 +171,7 @@ export default function ProductPage() {
             </AlertDescription>
           </Alert>
 
+          {/* Store promises */}
           <Alert>
             <HeartHandshake className="h-4 w-4" />
             <AlertTitle>Store Promises</AlertTitle>
@@ -185,13 +180,10 @@ export default function ProductPage() {
               services.
             </AlertDescription>
             <Separator className="my-4" />
-            <AlertDescription className="flex h-5 items-center gap-4">
+            <AlertDescription className="flex flex-wrap justify-between gap-4">
               <span>x Warranty </span>
-              <Separator orientation="vertical" />
               <span>100% Genuine</span>
-              <Separator orientation="vertical" />
               <span>Easy Returns</span>
-              <Separator orientation="vertical" />
               <span>Express Delivery</span>
             </AlertDescription>
           </Alert>

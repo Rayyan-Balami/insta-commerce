@@ -67,7 +67,7 @@ export default function ProductCard({ product }) {
       </div>
       <CardContent className="flex-1 flex flex-col p-4 transition-background-color duration-300 ease-in-out xl:group-hover:bg-muted/40">
         <h3 className="text-lg font-semibold mb-3">{product.name}</h3>
-        <div className="flex items-center gap-2 mb-4 mt-auto">
+        <div className="flex items-center flex-wrap gap-2 mb-4 mt-auto">
           <Badge
             variant="secondary"
             className="bg-green-500 hover:bg-green-600 text-white"

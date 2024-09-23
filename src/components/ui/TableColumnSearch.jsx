@@ -7,6 +7,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 export function TableColumnSearch({ table, searchColumns = [] }) {
@@ -45,6 +47,8 @@ export function TableColumnSearch({ table, searchColumns = [] }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
+        <DropdownMenuLabel>Search Filters</DropdownMenuLabel>
+        <DropdownMenuSeparator />
           {searchColumns.map(({ label, column }, index) => (
             <DropdownMenuCheckboxItem
               key={column} // Use column ID for key

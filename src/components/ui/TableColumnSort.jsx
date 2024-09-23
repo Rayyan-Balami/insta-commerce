@@ -6,7 +6,7 @@ export function TableColumnSort({ column }) {
   const isSorted = column.getIsSorted();
   return (
     <Button variant="ghost" onClick={() => column.toggleSorting()}>
-      Customer
+      {column.columnDef.accessorKey}
       {!isSorted ? (
         <ArrowUpDown className="ml-2 size-3.5" />
       ) : isSorted === "asc" ? (

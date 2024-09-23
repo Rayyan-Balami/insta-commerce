@@ -1,8 +1,8 @@
 import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs";
-import Banner from "./Banner";
+import Banner from "./banner/Banner";
 import PromoCard from "./PromoCard";
 import Code from "./Code";
-import Discount from "./Discount";
+import Discount from "./discount/Discount";
 
 function PromoTabs() {
   const PromoTabs = [

@@ -144,7 +144,6 @@ export const createColumns = (handleCheckboxChange) => [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >

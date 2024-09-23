@@ -11,6 +11,7 @@ export function TableFilters({ table, filters }) {
           onChange={(value) => table.getColumn(filter.column).setFilterValue(value)}
           placeholder={filter.label}
           className="w-auto h-9"
+          // multiple={true}
         />
       ))}
     </>
