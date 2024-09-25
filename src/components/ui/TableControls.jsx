@@ -11,12 +11,12 @@ export function TableControls({
 }) {
   return (
     <div className="flex items-center flex-wrap gap-2">
-        <TableColumnVisibility table={table} />
-      <div className="flex-1 flex items-center gap-2">
       <TableColumnSearch table={table} searchColumns={searchColumns} />
       <TableFilters table={table} filters={filters} />
-      </div>
+      <div className="ml-auto flex items-center flex-wrap gap-2">
+        <TableColumnVisibility table={table} />
         {children}
+      </div>
     </div>
   );
 }

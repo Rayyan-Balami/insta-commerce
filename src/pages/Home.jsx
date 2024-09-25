@@ -5,9 +5,12 @@ import BannersCarousel from "@/components/home/BannersCarousel";
 import NoDataPlaceholder from "@/components/NoDataPlaceholder";
 import PageTitle from "@/components/PageTitle";
 import { getRandomWelcomeMessage } from "@/components/home/welcomeMesseges";
+import useProductWithPromotions from "@/hooks/useProductWithPromotions";
 
 function Home() {
-  const { loading, products } = useSelector((state) => state.product);
+  const loading = useSelector((state) => state.product.loading);
+  const products = useProductWithPromotions();
+  console.log(products);
 
   return (
     <>

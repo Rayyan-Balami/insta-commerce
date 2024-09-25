@@ -29,13 +29,14 @@ import { discountSchema, types, usagePeriods } from "@/schemas/discount";
 import { Combobox } from "@/components/ui/Combobox";
 
 const categories = [
-  { $id: "1", name: "Electronics" },
+  { $id: "1", name: "Electronics Electronics Electronics Electronics Electronics Electronics Electronics" },
   { $id: "2", name: "Clothing" },
   { $id: "3", name: "Home & Furniture" },
 ];
 
 export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDataID }) {
   const dispatch = useDispatch();
+  const discounts = useSelector((state) => state.promotion.promotions.discounts);
   const products = useSelector((state) => state.product.products);
   const editingData = useSelector((state) =>
     isEdit
@@ -50,8 +51,8 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
     defaultValues: {
       name: editingData?.name || "",
       type: editingData?.type || "all",
-      products: editingData?.products || [],
-      categories: editingData?.categories || [],
+      product: editingData?.product || "",
+      category: editingData?.category || "",
       usagePeriod: editingData?.usagePeriod || "noLimit",
       limitedUsage: editingData?.limitedUsage || 0,
       discountRate: editingData?.discountRate || "",
@@ -68,11 +69,31 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
   }, [editingData, form]);
 
   const onSubmit = async (data) => {
+
+    //if there is already all type discount, then return 
+    if ( !isEdit && data.type === "all" && discounts.some((discount) => discount.type === "all")) {
+      toast.error("All type discount already exists.");
+      return;
+    }
+
+    //if there is already a discount for the selected product, then return
+    if ( !isEdit && data.type === "product" && discounts.some((discount) => discount.type === "product" && discount.product === data.product)) {
+      toast.error("This product already has a discount.");
+      return;
+    }
+
+    //if there is already a discount for the selected category, then return
+    if ( !isEdit && data.type === "category" && discounts.some((discount) => discount.type === "category" && discount.category === data.category)) {
+      toast.error("This category already has a discount.");
+      return;
+    }
+
     data = {
       ...data,
-      products: data.type !== "products" ? [] : data.products,
-      categories: data.type !== "categories" ? [] : data.categories,
+      product: data.type !== "product" ? "" : data.product,
+      category: data.type !== "category" ? "" : data.category,
       limitedUsage: data.usagePeriod !== "limitedDay" ? 0 : data.limitedUsage,
+      minimumPurchaseAmount: data.type === "product" ? 0 : data.minimumPurchaseAmount,
     };
 
     try {
@@ -92,7 +113,7 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
       );
       setIsEdit(false);
       setEditDataID(null);
-      // form.reset();
+      form.reset();
     } catch (error) {
       console.error(error);
       toast.error("Failed to save discount.");
@@ -104,7 +125,7 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
       <CardHeader>
         <CardTitle>Discount Details</CardTitle>
         <CardDescription>
-          Preapply discount rates to your products
+          Preapply discount rates to your product
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -152,10 +173,10 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                 </FormItem>
               )}
             />
-            {type === "products" && (
+            {type === "product" && (
               <FormField
                 control={form.control}
-                name="products"
+                name="product"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -165,8 +186,7 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                           value: item.$id,
                           label: item.name,
                         }))}
-                        placeholder="Select Products"
-                        multiple
+                        placeholder="Select Product"
                       />
                     </FormControl>
                     <FormMessage className="font-light" />
@@ -174,10 +194,10 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                 )}
               />
             )}
-            {type === "categories" && (
+            {type === "category" && (
               <FormField
                 control={form.control}
-                name="categories"
+                name="category"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -187,8 +207,7 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                           value: item.$id,
                           label: item.name,
                         }))}
-                        placeholder="Select Categories"
-                        multiple
+                        placeholder="Select Category"
                       />
                     </FormControl>
                     <FormMessage className="font-light" />
@@ -262,6 +281,8 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                 </FormItem>
               )}
             />
+            {/* if type is not product then show minimum purchase amount */}
+            {type !== "product" && (
             <FormField
               control={form.control}
               name="minimumPurchaseAmount"
@@ -275,6 +296,7 @@ export default function DiscountForm({ isEdit, setIsEdit, editDataID, setEditDat
                 </FormItem>
               )}
             />
+            )}
             <FormField
               control={form.control}
               name="maximumDiscountAmount"

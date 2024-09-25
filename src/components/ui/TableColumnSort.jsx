@@ -5,7 +5,7 @@ import { ArrowUpDown, ArrowDownAZ, ArrowUpZA } from "lucide-react";
 export function TableColumnSort({ column }) {
   const isSorted = column.getIsSorted();
   return (
-    <Button variant="ghost" onClick={() => column.toggleSorting()}>
+    <Button variant="ghost" className="capitalize" onClick={() => column.toggleSorting()}>
       {column.columnDef.accessorKey}
       {!isSorted ? (
         <ArrowUpDown className="ml-2 size-3.5" />

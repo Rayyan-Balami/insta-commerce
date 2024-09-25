@@ -124,6 +124,27 @@ class PromotionService {
   async addDiscount(data) {
     console.log(data);
     try {
+      // Fetch the list of all discounts
+      const {success, result, message} = await this.listDiscounts();
+      if (!success) {
+        throw new Error(message);
+      }
+  
+      // Check if an "all" type discount already exists
+      if (result.some((discount) => discount.type === "all")) {
+        throw new Error("An 'all' type discount already exists.");
+      }
+  
+      // Check if a discount for the selected product already exists
+      if (data.type === "product" && result.some((discount) => discount.type === "product" && discount.product === data.product)) {
+        throw new Error("This product already has a discount.");
+      }
+  
+      // Check if a discount for the selected category already exists
+      if (data.type === "category" && result.some((discount) => discount.type === "category" && discount.category === data.category)) {
+        throw new Error("This category already has a discount.");
+      }
+  
       // Implement the logic to add discount
       const discount = await this.databases.createDocument(
         getENV("DB_ID"),
@@ -133,8 +154,7 @@ class PromotionService {
       );
       console.log(discount);
       return { success: true, result: discount };
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       return { success: false, message: error.message };
     }

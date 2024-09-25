@@ -11,8 +11,8 @@ import { usePromotionInitialization } from "./hooks/usePromotionInitalization";
 
 export default function App() {
   useAuthInitialization();
-  useProductInitialization();
   usePromotionInitialization();
+  useProductInitialization();
   useCartInitialization();
 
   return (

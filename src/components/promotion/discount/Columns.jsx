@@ -16,11 +16,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, SquarePen } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const getTargetName = (row, products, categories) => {
+  return row.original.type === "product"
+    ? products.find((p) => p.$id === row.original.product)?.name
+    : row.original.type === "category"
+    ? categories.find((c) => c.$id === row.original.category)?.name
+    : row.original.type === "all"
+    ? "All in store"
+    : "";
+};
 
 export const createColumns = (
   handleCheckboxChange,
   setIsEdit,
-  setEditDataID
+  setEditDataID,
+  products,
+  categories
 ) => [
   {
     id: "select",
@@ -60,13 +73,39 @@ export const createColumns = (
     ),
     enableSorting: true,
   },
+
+  {
+    accessorKey: "target",
+    header: ({ column }) => <TableColumnSort column={column} />,
+    cell: ({ row }) => {
+      const targetName = getTargetName(row, products, categories);
+      return (
+        <p
+          className="min-w-40 text-muted-foreground text-xs italic line-clamp-1"
+          title={targetName}
+        >
+          {targetName}
+        </p>
+      );
+    },
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const targetNameA = getTargetName(rowA, products, categories);
+      const targetNameB = getTargetName(rowB, products, categories);
+      return targetNameA.localeCompare(targetNameB);
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const targetName = getTargetName(row, products, categories);
+      return targetName.toLowerCase().includes(filterValue.toLowerCase());
+    },
+  },
   {
     accessorKey: "type",
     header: "Type",
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize whitespace-nowrap">
         {row.original.type === "products" || row.original.type === "categories"
-          ? `${row.original.type} - ${row.original[row.original.type].length}`
+          ? row.original.type
           : "All"}
       </Badge>
     ),
@@ -116,6 +155,14 @@ export const createColumns = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {row.original.type === "products" && (
+              <DropdownMenuItem asChild>
+                <Link to={`/view-product/${row.original[row.original.type]}`}>
+                  <Eye className="size-3.5 mr-2" />
+                  View Product
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => {
                 setIsEdit(true);
