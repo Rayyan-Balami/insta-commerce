@@ -30,7 +30,7 @@ function ProductGrid({ products, loading }) {
   return (
     <div
       ref={gridRef}
-      className="grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 sm:gap-4 md:gap-8 h-fit"
+      className="grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 h-fit"
     >
       {loading
         ? <SkeletonCard columns={columns} />

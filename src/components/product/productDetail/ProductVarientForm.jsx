@@ -25,6 +25,8 @@ function ProductVarientForm({
   selectedVarient,
   setSelectedVarient,
 }) {
+  console.log("new product selected", selectedVarient);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -36,8 +38,16 @@ function ProductVarientForm({
     },
   });
 
-  const sizes = selectedVarient.size || [];
+  const sizes = selectedVarient.size;
   const colors = product.skus.map((sku) => sku.color);
+
+  useEffect(() => {
+    form.reset({
+      color: selectedVarient.color,
+      size: selectedVarient.size[0],
+      quantity: 1,
+    });
+  }, [selectedVarient, form]);
 
   useEffect(() => {
     const currentColor = form.watch("color");
@@ -50,9 +60,14 @@ function ProductVarientForm({
 
   const handleBuyNow = (e) => {
     e.preventDefault();
-    //add item local storage with name buyNow , only one item can be added to buy now at a time
     const size = form.getValues("size");
     const quantity = form.getValues("quantity");
+
+    if (!selectedVarient || !size) {
+      toast.error("Please select a variant and size.");
+      return;
+    }
+
     const item = {
       id: product.$id,
       quantity,
@@ -68,6 +83,12 @@ function ProductVarientForm({
     e.preventDefault();
     const size = form.getValues("size");
     const quantity = form.getValues("quantity");
+
+    if (!selectedVarient || !size) {
+      toast.error("Please select a variant and size.");
+      return;
+    }
+
     console.log("sku", { ...selectedVarient, size });
 
     dispatch(
@@ -88,10 +109,9 @@ function ProductVarientForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          // Simulate asynchronous submission (e.g., API call)
           return new Promise((resolve) => setTimeout(resolve, 1000)).then(
             () => {
-              console.log(data); // Handle form submission logic here
+              console.log(data);
               form.reset();
             }
           );
@@ -168,10 +188,8 @@ function ProductVarientForm({
           )}
         />
 
-        {/* Quantity Options */}
-
-        {/* Buy Now and Add to Cart Buttons */}
         <div className="grid grid-cols-2 gap-4">
+          {/* Quantity Options */}
           <FormField
             control={form.control}
             name="quantity"
@@ -221,6 +239,8 @@ function ProductVarientForm({
               </FormItem>
             )}
           />
+
+          {/* Buy Now and Add to Cart Buttons */}
           {selectedVarient.stock < 100 && (
             <Badge
               variant="secondary"

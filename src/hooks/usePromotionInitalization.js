@@ -37,7 +37,7 @@ export const usePromotionInitialization = () => {
       }
 
       const response = await PromotionService.listPromotions();
-      // console.log(response);
+      console.log(response);
       // return;
       if (response.success) {
         const promotions = {

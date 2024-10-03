@@ -23,7 +23,7 @@ export default function DiscountTable({ setIsEdit, setEditDataID }) {
   const dispatch = useDispatch();
   const initialData = useSelector(
     (state) => state.promotion.promotions.discounts
-  );
+  ) || [];
 
   const [data, setData] = useState(initialData);
   const [rowSelection, setRowSelection] = useState({});

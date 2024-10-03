@@ -1,15 +1,15 @@
 import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs";
 import Banner from "./banner/Banner";
 import PromoCard from "./PromoCard";
-import Code from "./Code";
 import Discount from "./discount/Discount";
+import PromoCode from "./promocode/PromoCode";
 
 function PromoTabs() {
   const PromoTabs = [
     { label: "banner", Component: Banner },
     { label: "card", Component: PromoCard },
     { label: "discount", Component: Discount },
-    { label: "code", Component: Code },
+    { label: "code", Component: PromoCode },
   ];
 
   return (

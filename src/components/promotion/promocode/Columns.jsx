@@ -15,8 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, SquarePen } from "lucide-react";
+import { MoreHorizontal, Copy, SquarePen } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const getTargetName = (row, products, categories) => {
   return row.original.type === "product"
@@ -64,11 +65,11 @@ export const createColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "code",
     header: ({ column }) => <TableColumnSort column={column} />,
     cell: ({ row }) => (
       <div className="min-w-40 space-y-1">
-        <p className="capitalize line-clamp-2">{row.original.name}</p>
+        <p className="line-clamp-2 uppercase">{row.original.code}</p>
       </div>
     ),
     enableSorting: true,
@@ -109,18 +110,33 @@ export const createColumns = (
     ),
   },
   {
-    accessorKey: "DiscountRate",
-    header: "Discount Rate",
+    accessorKey: "discountType",
+    header: () => <div className="whitespace-nowrap">Discount Type</div>,
+    cell: ({ row }) => (
+      <Badge variant="outline" className="capitalize whitespace-nowrap">
+        {row.original.discountType}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "DiscountValue",
+    header: "Discount Value",
     cell: ({ row }) => (
       <div className="min-w-40 space-y-1">
         <div className="flex items-center space-x-2">
           <p className="capitalize line-clamp-2">
-            {row.original.discountRate} %
+            {row.original.discountType === "percentage" ? (
+              <>{row.original.discountValue} %</>
+            ) : (
+              <>Rs {row.original.discountValue.toFixed(2)}</>
+            )}
           </p>
           <p className="text-muted-foreground text-xs italic">
             {row.original.usagePeriod === "limitedDay"
               ? `/ ${row.original.limitedUsage} days`
-              : "/ No Limit"}
+              : row.original.usagePeriod === "limitedCount"
+              ? `/ ${row.original.limitedUsage} Counts`
+              : "No Limit"}
           </p>
         </div>
         {row.original.minimumPurchaseAmount > 0 && (
@@ -157,14 +173,16 @@ export const createColumns = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {row.original.type === "products" && (
-              <DropdownMenuItem asChild>
-                <Link to={`/view-product/${row.original[row.original.type]}`}>
-                  <Eye className="size-3.5 mr-2" />
-                  View Product
-                </Link>
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem
+              onClick={() => {
+                // Copy code to clipboard
+                navigator.clipboard.writeText(row.original.code);
+                toast.success("Code copied to clipboard");
+              }}
+            >
+              <Copy className="size-3.5 mr-2" />
+              Copy Code
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 setIsEdit(true);

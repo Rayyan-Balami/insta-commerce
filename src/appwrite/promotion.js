@@ -108,6 +108,85 @@ class PromotionService {
     }
   }
 
+  //banner related functions end here
+
+  //promoCode related functions start here
+
+  async addPromoCode(data) {
+    console.log(data);
+    try {
+      // fetch the list of all promo codes
+      const {success, result, message} = await this.listPromoCodes();
+      if (!success) {
+        throw new Error(message);
+      }
+
+      console.log("list",result);
+
+      // Check if a promo code with the same code already exists
+      if (result.some((promoCode) => promoCode.code === data.code)) {
+        throw new Error("A promo code with the same code already exists.");
+      }
+
+      //check if 'all' type promo code already exists
+      if (result.some((promoCode) => promoCode.type === "all" && data.type === "all")) {
+        throw new Error("An 'all' type promo code already exists.");
+      }
+
+      //check if a promo code for the selected product already exists
+      if (data.type === "product" && result.some((promoCode) => promoCode.type === "product" && promoCode.product === data.product)) {
+        throw new Error("This product already has a promo code.");
+      }
+
+      //check if a promo code for the selected category already exists
+      if (data.type === "category" && result.some((promoCode) => promoCode.type === "category" && promoCode.category === data.category)) {
+        throw new Error("This category already has a promo code.");
+      }
+
+      // Implement the logic to add promo code
+      const promoCode = await this.databases.createDocument(
+        getENV("DB_ID"),
+        getENV("PROMO_CODES_COLLECTION_ID"),
+        ID.unique(),
+        data
+      );
+
+      return { success: true, result: promoCode };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async updatePromoCode(id, data) {
+    try {
+      // Implement the logic to update promo code
+      const promoCode = await this.databases.updateDocument(
+        getENV("DB_ID"),
+        getENV("PROMO_CODES_COLLECTION_ID"),
+        id,
+        data
+      );
+      return { success: true, result: promoCode };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async deletePromoCode(id) {
+    try {
+      // Implement the logic to delete promo code
+      const promoCode = await this.databases.deleteDocument(
+        getENV("DB_ID"),
+        getENV("PROMO_CODES_COLLECTION_ID"),
+        id
+      );
+      return { success: true, result: promoCode };
+    }
+    catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   async listPromoCodes() {
     try {
       // Implement the logic to list promo codes
@@ -121,6 +200,11 @@ class PromotionService {
     }
   }
 
+  //promoCode related functions end here
+
+
+  //discount related functions start here
+
   async addDiscount(data) {
     console.log(data);
     try {
@@ -129,9 +213,14 @@ class PromotionService {
       if (!success) {
         throw new Error(message);
       }
+
+      // Check if a discount with the same name already exists
+      if (result.some((discount) => discount.name === data.name)) {
+        throw new Error("A discount with the same name already exists.");
+      }
   
       // Check if an "all" type discount already exists
-      if (result.some((discount) => discount.type === "all")) {
+      if (result.some((discount) => discount.type === "all" && data.type === "all")) {
         throw new Error("An 'all' type discount already exists.");
       }
   
@@ -205,6 +294,8 @@ class PromotionService {
       return { success: false, message: error.message };
     }
   }
+
+  //discount related functions end here
 
   //promoCard related functions start here
   async listPromoCard() {

@@ -24,8 +24,13 @@ import promotionService from "@/appwrite/promotion";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { getENV } from "@/getENV";
-import { addDiscount, updateDiscount } from "@/store/promotionSlice";
-import { discountSchema, types, usagePeriods } from "@/schemas/discount";
+import { addPromoCode, updatePromoCode } from "@/store/promotionSlice";
+import {
+  promoCodeSchema,
+  types,
+  usagePeriods,
+  discountTypes,
+} from "@/schemas/promoCode";
 import { Combobox } from "@/components/ui/Combobox";
 
 const categories = [
@@ -38,42 +43,44 @@ const categories = [
 ];
 
 const initialFormValues = {
-  name: "",
+  code: "",
   type: "all",
   product: "",
   category: "",
   usagePeriod: "noLimit",
   limitedUsage: 0,
-  discountRate: "",
+  discountType: "amount",
+  discountValue: "",
   minimumPurchaseAmount: "",
   maximumDiscountAmount: "",
 };
 
-export default function DiscountForm({
+export default function PromoCodeForm({
   isEdit,
   setIsEdit,
   editDataID,
   setEditDataID,
 }) {
   const dispatch = useDispatch();
-  const discounts =
-    useSelector((state) => state.promotion.promotions.discounts) || [];
+  const promoCodes =
+    useSelector((state) => state.promotion.promotions.promoCodes) || [];
   const products = useSelector((state) => state.product.products);
   const editingData = useSelector((state) =>
     isEdit
-      ? state.promotion.promotions.discounts.find(
-          (discount) => discount.$id === editDataID
+      ? state.promotion.promotions.promoCodes.find(
+          (promoCode) => promoCode.$id === editDataID
         )
       : null
   );
 
   const form = useForm({
-    resolver: zodResolver(discountSchema),
+    resolver: zodResolver(promoCodeSchema),
     defaultValues: initialFormValues,
   });
 
   const type = form.watch("type");
   const usagePeriod = form.watch("usagePeriod");
+  const discountType = form.watch("discountType");
 
   useEffect(() => {
     if (isEdit && editingData) {
@@ -84,46 +91,50 @@ export default function DiscountForm({
   }, [isEdit, editingData]);
 
   const onSubmit = async (data) => {
-    const otherDiscounts = discounts.filter(
-      (discount) => discount.$id !== editDataID
+    console.log(data);
+    // Exclude the current promo code being edited from the validation checks
+    const otherPromoCodes = promoCodes.filter(
+      (promoCode) => promoCode.$id !== editDataID
     );
 
-    //if discount with the same name already exists, then return
-    if (otherDiscounts.some((discount) => discount.name === data.name)) {
-      toast.error("Discount with the same name already exists.");
+    //if there is already a promo code with the same code, then return
+    if (
+      otherPromoCodes.some((promoCode) => promoCode.code === data.code)
+    ) {
+      toast.error("Promo code with the same code already exists.");
       return;
     }
 
-    //if there is already all type discount, then return
+    //if there is already all type promo code, then return
     if (
       data.type === "all" &&
-      otherDiscounts.some((discount) => discount.type === "all")
+      otherPromoCodes.some((promoCode) => promoCode.type === "all")
     ) {
-      toast.error("All type discount already exists.");
+      toast.error("All type promo code already exists.");
       return;
     }
 
-    //if there is already a discount for the selected product, then return
+    //if there is already a promo code for the selected product, then return
     if (
       data.type === "product" &&
-      otherDiscounts.some(
-        (discount) =>
-          discount.type === "product" && discount.product === data.product
+      otherPromoCodes.some(
+        (promoCode) =>
+          promoCode.type === "product" && promoCode.product === data.product
       )
     ) {
-      toast.error("This product already has a discount.");
+      toast.error("This product already has a promo code.");
       return;
     }
 
-    //if there is already a discount for the selected category, then return
+    //if there is already a promo code for the selected category, then return
     if (
       data.type === "category" &&
-      otherDiscounts.some(
-        (discount) =>
-          discount.type === "category" && discount.category === data.category
+      otherPromoCodes.some(
+        (promoCode) =>
+          promoCode.type === "category" && promoCode.category === data.category
       )
     ) {
-      toast.error("This category already has a discount.");
+      toast.error("This category already has a promo code.");
       return;
     }
 
@@ -131,33 +142,37 @@ export default function DiscountForm({
       ...data,
       product: data.type !== "product" ? "" : data.product,
       category: data.type !== "category" ? "" : data.category,
-      limitedUsage: data.usagePeriod !== "limitedDay" ? 0 : data.limitedUsage,
+      limitedUsage: data.usagePeriod === "noLimit" ? 0 : data.limitedUsage,
       minimumPurchaseAmount:
         data.type === "product" ? 0 : data.minimumPurchaseAmount,
+      maximumDiscountAmount:
+        data.discountType === "percentage" ? data.maximumDiscountAmount : 0,
     };
 
     try {
       const { success, result, message } = isEdit
-        ? await promotionService.updateDiscount(editDataID, data)
-        : await promotionService.addDiscount(data);
+        ? await promotionService.updatePromoCode(editDataID, data)
+        : await promotionService.addPromoCode(data);
 
       if (!success) {
         throw new Error(message);
       }
 
-      dispatch(isEdit ? updateDiscount(result) : addDiscount(result));
-      toast.success(`Discount ${isEdit ? "updated" : "added"} successfully.`);
+      dispatch(isEdit ? updatePromoCode(result) : addPromoCode(result));
+      toast.success(`PromoCode ${isEdit ? "updated" : "added"} successfully.`);
       localStorage.setItem(
         "promotions_timestamp",
         (Date.now() - parseInt(getENV("CACHE_LIMIT"), 10)).toString()
       );
       setIsEdit(false);
       setEditDataID(null);
-      form.reset(initialFormValues);
+      form.reset(initialFormValues); // Reset form after successful submission
     } catch (error) {
       console.error(error);
-      toast.error("Failed to save discount.");
+      toast.error("Failed to save promo code.");
     }
+
+    console.log("form fields after submit", form.getValues());
   };
 
   const handleCancel = () => {
@@ -169,9 +184,9 @@ export default function DiscountForm({
   return (
     <Card className="bg-muted/40">
       <CardHeader>
-        <CardTitle>Discount Details</CardTitle>
+        <CardTitle>Promo Code Details</CardTitle>
         <CardDescription>
-          Preapply discount rates to your product
+          Fill in the details for the Promo Code here.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -179,12 +194,12 @@ export default function DiscountForm({
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
             <FormField
               control={form.control}
-              name="name"
+              name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="New Year Sale" {...field} />
+                    <Input placeholder="RYNB40" className="uppercase" {...field} />
                   </FormControl>
                   <FormMessage className="font-light" />
                 </FormItem>
@@ -300,7 +315,7 @@ export default function DiscountForm({
                       <div className="flex items-center gap-3">
                         <Input type="number" {...field} />
                         <p className="text-sm text-gray-500 w-1/6 text-center">
-                          Days
+                          {usagePeriod === "limitedDay" ? "Days" : "Counts"}
                         </p>
                       </div>
                     </FormControl>
@@ -309,17 +324,47 @@ export default function DiscountForm({
                 )}
               />
             )}
+
             <FormField
               control={form.control}
-              name="discountRate"
+              name="discountType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Discount Rate</FormLabel>
+                  <FormLabel>Discount Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      {discountTypes.map(({ value, label }) => (
+                        <FormItem
+                          key={value}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={value} />
+                          </FormControl>
+                          <FormLabel className="font-normal">{label}</FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="discountValue"
+              render={({ field }) => (
+                <FormItem>
                   <FormControl>
                     <div className="flex items-center gap-3">
                       <Input type="number" {...field} />
                       <p className="text-sm text-gray-500 w-1/6 text-center">
-                        %
+                        {discountType === "percentage" ? "%" : "Amount"}
                       </p>
                     </div>
                   </FormControl>
@@ -327,6 +372,7 @@ export default function DiscountForm({
                 </FormItem>
               )}
             />
+
             {/* if type is not product then show minimum purchase amount */}
             {type !== "product" && (
               <FormField
@@ -343,19 +389,23 @@ export default function DiscountForm({
                 )}
               />
             )}
-            <FormField
-              control={form.control}
-              name="maximumDiscountAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Maximum Discount Amount (Optional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage className="font-light" />
-                </FormItem>
-              )}
-            />
+
+            {discountType === "percentage" && (
+              <FormField
+                control={form.control}
+                name="maximumDiscountAmount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Maximum Discount Amount (Optional)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage className="font-light" />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <div className="flex gap-4">
               {isEdit && (
                 <Button

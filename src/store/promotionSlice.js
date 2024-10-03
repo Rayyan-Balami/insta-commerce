@@ -48,8 +48,22 @@ const promotionSlice = createSlice({
           discount.$id === action.payload.$id ? action.payload : discount
       );
     },
+    addPromoCode: (state, action) => {
+      state.promotions.promoCodes = [action.payload, ...state.promotions.promoCodes];
+    },
+    updatePromoCode: (state, action) => {
+      state.promotions.promoCodes = state.promotions.promoCodes.map(
+        (promoCode) =>
+          promoCode.$id === action.payload.$id ? action.payload : promoCode
+      );
+    },
+    deletePromoCode: (state, action) => {
+      state.promotions.promoCodes = state.promotions.promoCodes.filter(
+        (promoCode) => promoCode.$id !== action.payload
+      );
+    },
   },
 });
 
-export const { setPromotions, addBanner, deleteBanner, updatePromoCard , addDiscount, deleteDiscount, updateDiscount } = promotionSlice.actions;
+export const { setPromotions, addBanner, deleteBanner, updatePromoCard , addDiscount, deleteDiscount, updateDiscount , addPromoCode, updatePromoCode, deletePromoCode } = promotionSlice.actions;
 export default promotionSlice.reducer;

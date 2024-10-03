@@ -2,11 +2,33 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, TicketPercent } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/store/cartSlice";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+
+export const calculateDiscountedPrice = (product, originalPrice) => {
+  const { discount } = product;
+  if (!discount) return null;
+
+  const { discountRate, maximumDiscountAmount, minimumPurchaseAmount } = discount;
+  let discountAmt = originalPrice * (discountRate / 100);
+
+  if (maximumDiscountAmount === 0) {
+    return (originalPrice - discountAmt).toFixed(2);
+  }
+
+  if (discountAmt > maximumDiscountAmount) {
+    discountAmt = maximumDiscountAmount;
+  }
+
+  if (minimumPurchaseAmount === 0 || originalPrice >= minimumPurchaseAmount) {
+    return (originalPrice - discountAmt).toFixed(2);
+  }
+
+  return null;
+};
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
@@ -32,38 +54,12 @@ export default function ProductCard({ product }) {
   };
 
   const handleRedirect = () => {
-    // Redirect to the product page
     navigate(`/view-product/${product.$id}`);
   };
 
-  const originalPrice = product.skus[0].price;
-
-  const calculateDiscountedPrice = () => {
-    const { discount } = product;
-    if (!discount) return null;
-
-    const { discountRate, maximumDiscountAmount, minimumPurchaseAmount } =
-      discount;
-
-    let discountAmt = originalPrice * (discountRate / 100);
-
-    if (maximumDiscountAmount === 0) {
-      // No cap on discount amount
-      return (originalPrice - discountAmt).toFixed(2);
-    }
-
-    if (discountAmt > maximumDiscountAmount) {
-      discountAmt = maximumDiscountAmount;
-    }
-
-    if (minimumPurchaseAmount === 0 || originalPrice >= minimumPurchaseAmount) {
-      return (originalPrice - discountAmt).toFixed(2);
-    }
-
-    return null;
-  };
-
-  const discountedPrice = calculateDiscountedPrice();
+  const discountedPrice = calculateDiscountedPrice(product, product.skus[0].price);
+  const originalPrice = product.skus[0].price.toFixed(2);
+  const [integerPart, decimalPart] = originalPrice.split(".");
 
   return (
     <Card
@@ -73,7 +69,6 @@ export default function ProductCard({ product }) {
       onClick={handleRedirect}
     >
       <div className="relative overflow-hidden aspect-square">
-        {/* Default Image */}
         <img
           src={product.imagePreviews[0]}
           alt="Product Image"
@@ -82,7 +77,6 @@ export default function ProductCard({ product }) {
           }`}
           loading="lazy"
         />
-        {/* Hover Image */}
         {product.imagePreviews[1] && (
           <img
             src={product.imagePreviews[1]}
@@ -93,42 +87,58 @@ export default function ProductCard({ product }) {
             loading="lazy"
           />
         )}
-      </div>
-      <CardContent className="flex-1 flex flex-col p-4 transition-background-color duration-300 ease-in-out xl:group-hover:bg-muted/40">
-        <h3 className="text-lg font-semibold mb-3">{product.name}</h3>
-        <div className="flex items-center flex-wrap gap-2 mb-4 mt-auto">
-          {product.discount && (
+        <div className="absolute bottom-1 left-2">
+          {product.promoCode && (
             <Badge
               variant="secondary"
-              className="bg-green-500 hover:bg-green-600 text-white"
+              className="border border-primary/10 gap-2 uppercase rounded-md"
             >
-              {product.discount.discountRate}% off
+              <TicketPercent className="size-[1.15rem]" />
+              {product.promoCode.code}
             </Badge>
           )}
-          <Badge
-            variant="secondary"
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            {product.category}
-          </Badge>
-          <Badge className="text-primary-foreground">
-            {product.skus.length} Variants
-          </Badge>
         </div>
-        <div className="flex items-center gap-4 justify-between">
-          <div>
-            <span className="text-xl font-semibold">
-              {discountedPrice !== null
-                ? discountedPrice === 0
-                  ? "Free"
-                  : `Rs ${discountedPrice}`
-                : `Rs ${originalPrice.toFixed(2)}`}
-            </span>
+      </div>
+      <CardContent className="flex-1 flex flex-col p-4 xl:group-hover:bg-muted/40 transition-all duration-300">
+        <div className="text-xs mb-1.5 capitalize text-muted-foreground flex items-center gap-2 justify-between">
+          <p>{product.category}</p>
+          <p>{product.skus.length} Variants</p>
+        </div>
+        <h3 className="text-lg font-semibold mb-2.5">{product.name}</h3>
+        <div className="flex items-center gap-4 justify-between mt-auto">
+          <div className="flex flex-col gap-0.5">
             {discountedPrice !== null && (
-              <span className="text-xs italic text-muted-foreground line-through ml-2">
-                Rs {originalPrice.toFixed(2)}
+              <span className="text-xs font-semibold italic text-muted-foreground line-through">
+                Rs {integerPart}
+                <span className="font-normal">.{decimalPart}</span>
               </span>
             )}
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-semibold">
+                {discountedPrice !== null ? (
+                  discountedPrice === 0 ? (
+                    "Free"
+                  ) : (
+                    <>
+                      Rs {Math.floor(discountedPrice)}
+                      <span className="text-sm font-normal">
+                        .{discountedPrice.split(".")[1]}
+                      </span>
+                    </>
+                  )
+                ) : (
+                  <>
+                    Rs {integerPart}
+                    <span className="text-sm font-normal">.{decimalPart}</span>
+                  </>
+                )}
+              </span>
+              {product.discount && (
+                <Badge variant="secondary" className="border border-primary/10">
+                  - {product.discount.discountRate}%
+                </Badge>
+              )}
+            </div>
           </div>
 
           <Button variant="outline" size="sm" onClick={handleAddToCart}>
