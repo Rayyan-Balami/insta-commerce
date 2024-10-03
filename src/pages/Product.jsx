@@ -5,10 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { PlusCircle } from "lucide-react";
 import Products from "@/components/product/productTable/Products";
+import { useSelector } from "react-redux";
+import useProductWithPromotions from "@/hooks/useProductWithPromotions";
 
 function Product() {
-  return (
-    <>
+  const loading = useSelector((state) => state.product.loading);
+  const products = useProductWithPromotions();
+
+  if (!loading && (!products || products.length === 0)) {
+    return (
       <NoDataPlaceholder
         header="No Products Found"
         body="Create a new product to get started"
@@ -20,6 +25,11 @@ function Product() {
           </Link>
         </Button>
       </NoDataPlaceholder>
+    );
+  }
+
+  return (
+    <>
       <PageTitle title="Products">
         <ProductTableMenus />
       </PageTitle>
