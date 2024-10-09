@@ -59,7 +59,7 @@ class ProductService {
     }
   }
 
-  async updateProduct(id, data) {
+  async updateProduct(id, data, currentImages = []) {
     let newImageIDs = [];
 
     try {
@@ -70,7 +70,35 @@ class ProductService {
         throw new Error("Product not found");
       }
 
-      const existingImages = existingProduct.result.images || [];
+      let existingImages = existingProduct.result.images || [];
+
+      // Remove not in use images
+      const imagesToDelete = existingImages.filter(
+        (fileID) => !currentImages.includes(fileID)
+      );
+
+      console.log("imagesToDelete", imagesToDelete);
+
+      // Delete images that are no longer in use
+      if (imagesToDelete.length > 0) {
+        const deletePromises = imagesToDelete.map((fileID) =>
+          BucketService.delete(getENV("PRODUCTS_BUCKET_ID"), fileID)
+        );
+        const deleteResponses = await Promise.all(deletePromises);
+
+        deleteResponses.forEach((response) => {
+          if (!response.success) {
+            throw new Error(response.message);
+          }
+        });
+
+        // Remove the deleted images from the existing images array
+        existingImages = existingImages.filter(
+          (fileID) => !imagesToDelete.includes(fileID)
+        );
+      }
+
+      console.log("existingImages", existingImages);
 
       // Handle image updates: Upload new images if provided
       if (data.images && data.images.length > 0) {
@@ -86,13 +114,13 @@ class ProductService {
         // Extract the new file IDs from the successful uploads
         newImageIDs = await Promise.all(uploadResponse.promises);
 
-        // Optionally, delete old images that are no longer needed
-        if (existingImages.length > 0) {
-          const deletePromises = existingImages.map((fileID) =>
-            BucketService.delete(getENV("PRODUCTS_BUCKET_ID"), fileID)
-          );
-          await Promise.all(deletePromises);
-        }
+        console.log("newImageIDs", newImageIDs);
+
+        // Add the new image IDs to the existing images array
+        existingImages = [
+          ...existingImages,
+          ...newImageIDs.map((file) => file.$id),
+        ];
       }
 
       // Update the product document in the database
@@ -101,10 +129,10 @@ class ProductService {
         getENV("PRODUCTS_COLLECTION_ID"),
         id,
         {
-          ...data,
-          skus: JSON.stringify(data.skus), // Save the stringified skus
-          images: newImageIDs.length > 0 ? newImageIDs.map((file) => file.$id) : existingImages, // Handle image updates
-          video: data.video && data.video.length > 0 ? data.video : existingProduct.result.video, // Handle video updates
+          ...data, // Spread the rest of the data object
+          skus: JSON.stringify(data.skus), // Convert skus array to JSON string
+          images: existingImages, // Use the updated images array
+          video: data.video && data.video.length > 0 ? data.video : null, // Handle the video property
         }
       );
 
@@ -125,20 +153,27 @@ class ProductService {
 
       const imageFileIDs = product.result.images || [];
 
+      // After successful deletion, delete associated files
+      if (imageFileIDs.length > 0) {
+        const deletePromises = imageFileIDs.map((fileID) =>
+          BucketService.delete(getENV("PRODUCTS_BUCKET_ID"), fileID)
+        );
+
+        const deleteResponses = await Promise.all(deletePromises);
+
+        deleteResponses.forEach((response) => {
+          if (!response.success) {
+            throw new Error(response.message);
+          }
+        });
+      }
+
       // Delete the product document
       const result = await this.databases.deleteDocument(
         getENV("DB_ID"),
         getENV("PRODUCTS_COLLECTION_ID"),
         id
       );
-
-      // After successful deletion, delete associated files
-      if (imageFileIDs.length > 0) {
-        const deletePromises = imageFileIDs.map((fileID) =>
-          BucketService.delete(getENV("PRODUCTS_BUCKET_ID"), fileID)
-        );
-        await Promise.all(deletePromises);
-      }
 
       return { success: true, result };
     } catch (error) {
@@ -149,14 +184,16 @@ class ProductService {
   async listProducts({ sort = "desc", status = "active" } = {}) {
     try {
       const queries = [
-        sort === "asc" ? Query.orderAsc("$createdAt") : Query.orderDesc("$createdAt"),
+        sort === "asc"
+          ? Query.orderAsc("$createdAt")
+          : Query.orderDesc("$createdAt"),
       ];
-  
+
       // Only add the status query if the status is not "all"
       if (status !== "all") {
         queries.push(Query.equal("status", status));
       }
-  
+
       const result = await this.databases.listDocuments(
         getENV("DB_ID"),
         getENV("PRODUCTS_COLLECTION_ID"),
@@ -164,23 +201,49 @@ class ProductService {
       );
 
       // Create image preview URLs
-      const imagePreviews = result.documents.map(doc => 
-        BucketService.getFilePreviews(getENV("PRODUCTS_BUCKET_ID"), doc.images).previews
-      );  
-  
+      const imagePreviews = result.documents.map(
+        (doc) =>
+          BucketService.getFilePreviews(
+            getENV("PRODUCTS_BUCKET_ID"),
+            doc.images
+          ).previews
+      );
+
       // Convert the skus string back to an array
       result.documents = result.documents.map((doc, index) => ({
         ...doc,
         skus: JSON.parse(doc.skus),
         imagePreviews: imagePreviews[index],
       }));
-  
+
       return { success: true, result };
     } catch (error) {
       return { success: false, message: error.message };
     }
   }
 
+  async getProduct(id) {
+    try {
+      const result = await this.databases.getDocument(
+        getENV("DB_ID"),
+        getENV("PRODUCTS_COLLECTION_ID"),
+        id
+      );
+
+      // Create image preview URLs
+      const imagePreviews = BucketService.getFilePreviews(
+        getENV("PRODUCTS_BUCKET_ID"),
+        result.images
+      ).previews;
+
+      // Convert the skus string back to an array
+      result.skus = JSON.parse(result.skus);
+
+      return { success: true, result, imagePreviews };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
 }
 
 export default new ProductService();

@@ -16,20 +16,24 @@ const productSlice = createSlice({
       state.products = action.payload;
     },
     addProduct: (state, action) => {
+      action.payload.skus = JSON.parse(action.payload.skus);
       state.products.unshift(action.payload);
     },
     updateProduct: (state, action) => {
       const index = state.products.findIndex(
-        (product) => product.id === action.payload.id
+        (product) => product.$id === action.payload.$id
       );
       if (index !== -1) {
+        action.payload.skus = JSON.parse(action.payload.skus);
         state.products[index] = action.payload;
       }
     },
     deleteProduct: (state, action) => {
       state.products = state.products.filter(
-        (product) => product.id !== action.payload
+        (product) => product.$id !== action.payload
       );
+      console.log("Product deleted:", action.payload);
+      console.log("Products:", state.products);
     },
     filterProducts: (state, action) => {
       const { category, priceRange } = action.payload;

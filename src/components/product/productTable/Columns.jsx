@@ -233,7 +233,7 @@ export const createColumns = (handleCheckboxChange, setViewProductID) => [
               SKU
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to={`/edit-products/${payment.id}`}>
+              <Link to={`/edit-product/${row.original.$id}`}>
                 <SquarePen className="size-3.5 mr-2" />
                 Edit
               </Link>

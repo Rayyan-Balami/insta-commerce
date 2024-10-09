@@ -19,8 +19,8 @@ export const skuSchema = z.object({
     .nonempty({ message: "At least one size must be selected." }),
 });
 
-// Define schema for product
-export const productSchema = z.object({
+// Define base schema for product
+const baseProductSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Product name is required and cannot be empty." })
@@ -41,10 +41,6 @@ export const productSchema = z.object({
       message: "Status must be one of 'active', 'draft', or 'archived'.",
     }),
   }),
-  images: z
-    .array(z.instanceof(File))
-    .min(1, "At least one image is required")
-    .max(8, "Maximum of 8 images allowed"),
   video: z
     .string()
     .regex(
@@ -55,3 +51,22 @@ export const productSchema = z.object({
     )
     .or(z.literal("")),
 });
+
+// Define schema for new product (images required)
+const newProductSchema = baseProductSchema.extend({
+  images: z
+    .array(z.instanceof(File))
+    .min(1, "At least one image is required")
+    .max(8, "Maximum of 8 images allowed"),
+});
+
+// Define schema for existing product (images optional)
+const existingProductSchema = baseProductSchema.extend({
+  images: z
+    .array(z.instanceof(File))
+    .max(8, "Maximum of 8 images allowed")
+    .optional(),
+});
+
+// Export the appropriate schema based on the presence of id
+export const productSchema = (id) => (id ? existingProductSchema : newProductSchema);

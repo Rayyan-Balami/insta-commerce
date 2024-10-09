@@ -254,10 +254,12 @@ export default function ProductPage() {
           {isSeeMore ? "See Less" : "See More"}
         </Button>
       )}
+      {relatedProducts.length > 0 && (
       <div className="mt-8 space-y-4 lg:space-y-6">
         <h2 className="text-xl font-bold">Related Products</h2>
         <ProductGrid products={relatedProducts} loading={false} />
       </div>
+      )}
       <a href="#top">
         <Card
           className={`fixed top-20 right-4 bg-muted/80 backdrop-blur-sm shadow-lg transition-opacity duration-300 ${

@@ -21,11 +21,10 @@ import {
   FormDescription
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import NavPromoCard from "@/components/nav/PromoCard";
+import { PromoCard as NavPromoCard } from "@/components/nav/PromoCardAndMenu";
 import { useSelector } from "react-redux";
 import { updatePromoCard } from "@/store/promotionSlice";
 import promotionService from "@/appwrite/promotion";
-import parse from "html-react-parser";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { getENV } from "@/getENV";

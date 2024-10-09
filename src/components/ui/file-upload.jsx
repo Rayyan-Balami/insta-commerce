@@ -14,7 +14,7 @@ import {
 } from "react-dropzone";
 import { toast } from "sonner";
 import { CircleX } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const FileUploaderContext = createContext(null);
 
@@ -255,7 +255,6 @@ export const FileUploaderItem = forwardRef(
       <div
         ref={ref}
         className={cn(
-          buttonVariants({ variant: "ghost" }),
           "h-6 p-1 justify-between relative",
           className,
           isSelected ? "bg-muted" : ""
@@ -265,17 +264,17 @@ export const FileUploaderItem = forwardRef(
         <div className="font-medium leading-none tracking-tight flex items-center gap-1.5 h-full w-full">
           {children}
         </div>
-        <button
+        <Button
           type="button"
-          className={cn(
-            "absolute p-1 pb-2.5 pl-2.5 bg-red-500 rounded-bl-full",
+          size="sm"
+          className={`absolute p-1 pb-2.5 pl-2.5 bg-red-500 rounded-bl-full ${
             direction === "rtl" ? "top-0 left-0" : "top-0 right-0"
-          )}
+          }`}
           onClick={() => removeFileFromSet(index)}
         >
           <span className="sr-only">remove item {index}</span>
           <CircleX className="size-4 stroke-destructive-foreground" />
-        </button>
+        </Button>
       </div>
     );
   }

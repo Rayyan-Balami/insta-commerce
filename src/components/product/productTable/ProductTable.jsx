@@ -14,11 +14,12 @@ import AlertDialog from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSelector, useDispatch } from "react-redux";
-import { deletePromoCode } from "@/store/promotionSlice";
+import { deleteProduct } from "@/store/productSlice";
 import promotionService from "@/appwrite/promotion";
 import { toast } from "sonner";
 import { getENV } from "@/getENV";
 import useProductWithPromotions from "@/hooks/useProductWithPromotions";
+import ProductService from "@/appwrite/product";
 
 export default function ProductTable({ setViewProductID}) {
   const dispatch = useDispatch();
@@ -52,25 +53,25 @@ export default function ProductTable({ setViewProductID}) {
   const handleDelete = async () => {
     try {
       const ids = Object.keys(rowSelection);
-      const promises = ids.map(($id) => promotionService.deletePromoCode($id));
+      const promises = ids.map(($id) => ProductService.deleteProduct($id));
       const results = await Promise.all(promises);
       const success = results.every(({ success }) => success);
 
       if (success) {
         ids.forEach(($id) => {
-          dispatch(deletePromoCode($id));
+          dispatch(deleteProduct($id));
         });
         localStorage.setItem(
-          "promotions_timestamp",
+          "products_timestamp",
           (Date.now() - parseInt(getENV("CACHE_LIMIT"), 10)).toString()
         );
-        toast.success("Promo code(s) deleted successfully.");
+        toast.success("Product(s) deleted successfully.");
       } else {
-        toast.error("Failed to delete promo code(s).");
+        toast.error("Failed to delete product(s).");
       }
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred while deleting promo code(s).");
+      toast.error("An error occurred while deleting product(s).");
     }
   };
 
@@ -143,13 +144,13 @@ export default function ProductTable({ setViewProductID}) {
         <AlertDialog
           title={
             <>
-              <span>Remove Promo codes</span>{" "}
+              <span>Remove Products</span>{" "}
               <Badge variant="outline">
                 {Object.keys(rowSelection).length}
               </Badge>
             </>
           }
-          description="This action will remove all the selected promo codes. Are you sure you want to proceed?"
+          description="This action will remove all the selected products. Are you sure you want to proceed?"
           size="sm"
           variant="destructive"
           acceptLabel="Delete"

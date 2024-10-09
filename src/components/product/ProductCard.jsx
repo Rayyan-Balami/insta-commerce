@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, TicketPercent } from "lucide-react";
+import { ShoppingBag, TicketPercent } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/store/cartSlice";
 import { toast } from "sonner";
@@ -141,8 +141,8 @@ export default function ProductCard({ product }) {
             </div>
           </div>
 
-          <Button variant="outline" size="sm" onClick={handleAddToCart}>
-            <ShoppingCart className="h-3.5 w-3.5" />
+          <Button variant="outline" size="icon" className="rounded-full" onClick={handleAddToCart}>
+            <ShoppingBag className="size-5" />
             <span className="sr-only">Add to Cart</span>
           </Button>
         </div>

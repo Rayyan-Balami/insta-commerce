@@ -24,6 +24,7 @@ export const router = createBrowserRouter(
         {/* Both guests and authenticated users can access the home page */}
         <Route path="" element={<Home />} />
         <Route path="view-product/:id" element={<ProductPage />} />
+
         <Route path="checkout/:type" element={<Checkout />} />
         <Route path="cart" element={<Cart />} />
 
@@ -32,6 +33,7 @@ export const router = createBrowserRouter(
           <Route path="order" element={<Order />} />
           <Route path="product" element={<Product />} />
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="edit-product/:id" element={<AddProduct />} />
           <Route path="promotion" element={<Promotion />} />
           <Route path="setting" element={<Setting />} />
         </Route>

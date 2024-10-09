@@ -61,6 +61,21 @@ class BucketService {
       return { success: false, message: error.message };
     }
   }
+
+  async getFiles(bucketID, fileID = []) {
+    try {
+      const promises = fileID.map((id) =>
+        this.storage.getFileView(bucketID, id)
+      );
+    const response = await Promise.all(promises);
+    console.log("response", response);
+      return { success: true, result: response };
+  }
+    catch (error) {
+      console.error("Get file error:", error);
+      return { success: false, message: error.message };
+    }
+  }
 }
 
 export default new BucketService();

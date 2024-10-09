@@ -52,6 +52,7 @@ const FileUploadDropzone = ({
               alt={file.name}
               className="w-full h-full object-cover"
             />
+            
           </FileUploaderItem>
         ))}
       </FileUploaderContent>

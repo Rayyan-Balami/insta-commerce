@@ -15,8 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useParams } from "react-router-dom";
 
 export default function ProductCategoryAndStatus() {
+  const { id } = useParams() || null;
+  console.log("id", id);
   const form = useFormContext();
   
   const items = [
@@ -58,8 +61,8 @@ export default function ProductCategoryAndStatus() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
+                  {/* if new product, show draft , if editing show archived */}
+                  {id ? <SelectItem value="archived">Archived</SelectItem> : <SelectItem value="draft">Draft</SelectItem>}
                 </SelectContent>
               </Select>
               <FormMessage className="font-light" />

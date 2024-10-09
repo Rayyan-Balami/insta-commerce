@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 import { navMenus } from "./navMenus";
 import NavAnchor from "./NavAnchor";
 import Logo from "./Logo";
-import PromoCard from "./PromoCard";
 import Categories from "./Categories";
 import SizeToggles from "./SizeToggles";
 import PriceRange from "./PriceRange";
 import { useSelector } from "react-redux";
+import PromoCardAndMenu from "./PromoCardAndMenu";
 
 function MobileNav() {
   const user = useSelector((state) => state.auth.user);
@@ -50,9 +50,7 @@ function MobileNav() {
           <SizeToggles className="pt-4 space-y-2" />
           <PriceRange className="pt-4 space-y-2" />
         </div>
-        <div className="mt-auto px-2 pb-2 lg:px-4 lg:pb-4">
-        <PromoCard />
-        </div>
+        <PromoCardAndMenu />
       </SheetContent>
     </Sheet>
   );

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search as SearchIcon } from "lucide-react";
+import { Command, Search as SearchIcon } from "lucide-react";
 
 import {
   CommandDialog,
@@ -30,21 +30,27 @@ export default function Search() {
   const form = useForm();
   const onSubmit = (data) => {
     console.log(data);
-  }
+  };
   return (
     <>
       <Button
         variant="ghost"
         size="icon"
-        className="rounded-full"
+        className="relative rounded-full md:border md:border-input md:py-2  md:bg-secondary md:text-secondary-foreground md:hover:bg-secondary/80 md:px-3 md:pr-20  md:w-fit md:justify-start md:gap-2"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="w-5 h-5" />
-        <span className="sr-only">Toggle user menu</span>
+        <span className="max-md:sr-only">Search Store</span>
+        <kbd
+          className="hidden md:flex items-center gap-1 pointer-events-none absolute right-2.5 top-1/2 transform -translate-y-1/2 h-5 select-none rounded border bg-muted px-1.5 font-medium text-xs"
+        >
+          <Command className="size-2.5" />
+          <span>K</span>
+        </kbd>
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen} className="m-4">
-        <CommandInput placeholder="Search products..." />
+        <CommandInput placeholder="Search Store"/>
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">

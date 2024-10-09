@@ -4,7 +4,7 @@ import ProductSkus from "./ProductSkus";
 import ProductCategoryAndStatus from "./ProductCategoryAndStatus";
 import ProductMedia from "./ProductMedia";
 
-function ProductForm() {
+function ProductForm({editingProduct, setEditingProduct}) {
   return (
     <div className="grid gap-4 xl:grid-cols-3 xl:gap-8">
       <div className="grid auto-rows-max gap-4 xl:col-span-2 xl:gap-8">
@@ -13,7 +13,7 @@ function ProductForm() {
         <ProductCategoryAndStatus />
       </div>
       <div className="grid auto-rows-max gap-4 xl:gap-8">
-        <ProductMedia />
+        <ProductMedia editingProduct={editingProduct}  setEditingProduct={ setEditingProduct}/>
       </div>
     </div>
   );
