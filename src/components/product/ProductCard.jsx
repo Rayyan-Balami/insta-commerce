@@ -57,7 +57,7 @@ export default function ProductCard({ product }) {
     navigate(`/view-product/${product.$id}`);
   };
 
-  const discountedPrice = calculateDiscountedPrice(product, product.skus[0].price);
+  const discountedPrice = calculateDiscountedPrice(product, product.skus[0].price); 
   const originalPrice = product.skus[0].price.toFixed(2);
   const [integerPart, decimalPart] = originalPrice.split(".");
 
@@ -116,7 +116,7 @@ export default function ProductCard({ product }) {
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold">
                 {discountedPrice !== null ? (
-                  discountedPrice === 0 ? (
+                  discountedPrice <= 0 ? (
                     "Free"
                   ) : (
                     <>

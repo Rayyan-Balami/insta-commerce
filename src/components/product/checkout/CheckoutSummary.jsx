@@ -55,7 +55,7 @@ function CheckoutSummary() {
   );
 
   const discount = 25;
-  const total = subtotal - discount;
+  const total = subtotal - discount < 0 ? 0 : subtotal - discount;
 
   console.log("Checkout Items", checkoutItems);
 
