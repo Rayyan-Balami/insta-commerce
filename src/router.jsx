@@ -16,6 +16,7 @@ import Checkout from "./pages/Checkout";
 import Cart from "./pages/Cart";
 import { AuthMiddleware } from "./middlewares/AuthMiddleware";
 import { GuestMiddleware } from "./middlewares/GuestMiddleware";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +47,7 @@ export const router = createBrowserRouter(
       {/* Only guests can access the following routes */}
       <Route element={<GuestMiddleware />}>
           <Route path="admin/login" element={<AdminLogin />} />
+          <Route path="oauth/success" element={<OAuthSuccess />} />
         </Route>
     </>
   )

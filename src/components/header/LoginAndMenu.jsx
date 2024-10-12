@@ -1,5 +1,3 @@
-import React from "react";
-import { User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,17 +14,43 @@ import { logout } from "@/store/authSlice";
 import AlertDialog from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
+import { login } from "@/store/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-function GoogleLogin() {
+export function GoogleLogin() {
+  const [loading, setLoading] = useState(false);
+
+  const handleOAuthLogin = async () => {
+    setLoading(true); // Set loading to true when login starts
+    try {
+      const { success } = await AuthService.oAuthLogin();
+      if (success) {
+        console.log("Redirecting for OAuth...");
+      }
+    } catch (error) {
+      console.error("Login error", error);
+    } finally {
+      setLoading(false); // Set loading to false after login attempt
+    }
+  };
+
   return (
-    <Button variant="ghost" size="icon" className="rounded-full md:bg-secondary md:text-secondary-foreground md:hover:bg-secondary/80 md:px-3  md:justify-start md:w-fit md:gap-2">
+    <Button
+      variant="ghost"
+      size="icon"
+      className="rounded-full md:bg-secondary md:text-secondary-foreground md:hover:bg-secondary/80 md:px-3  md:justify-start md:w-fit md:gap-2"
+      onClick={handleOAuthLogin}
+      disabled={loading}
+    >
+      {/* //google svg  */}
       <svg
         viewBox="-0.5 0 48 48"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         fill="#000000"
-        className="size-5 shrink-0"
+        className={`size-5 shrink-0 ${loading ? "animate-pulse" : ""}`}
       >
         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
         <g
@@ -72,15 +96,19 @@ function GoogleLogin() {
           </g>
         </g>
       </svg>
-      <span className="max-md:sr-only">Sign in</span>
+      <span className="max-md:sr-only">Google Login</span>
     </Button>
   );
 }
 
 function UserMenu({ user }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
+    setLoading(true);
     try {
       const response = await AuthService.logout();
       if (response.success) {
@@ -91,9 +119,11 @@ function UserMenu({ user }) {
 
         // Dispatch the logout action
         dispatch(logout());
+        toast.success("Logged out successfully");
+        navigate("/");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Logout failed. Try again later.");
     }
   };
 
@@ -101,18 +131,30 @@ function UserMenu({ user }) {
     return null;
   }
 
-  console.log(user)
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+          className="relative rounded-full focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
         >
+          <div className="rounded-full size-9 flex items-center justify-center bg-secondary">
+            {imageError ? (
+              <span className="text-xl font-bold">{user.name.charAt(0)}</span>
+            ) : (
+              <img
+                src={user.profile.picture}
+                className="rounded-full h-full w-full object-cover object-center"
+                alt={user.name}
+                onError={() => setImageError(true)}
+              />
+            )}
+          </div>
           {user.labels.includes("admin") ? (
-            <Badge className="size-9 justify-center">AD</Badge>
+            <Badge className="absolute -top-1 -right-2 p-0.5 text-[0.6rem] size-5 justify-center">
+              AD
+            </Badge>
           ) : (
             ""
           )}
@@ -134,6 +176,7 @@ function UserMenu({ user }) {
             size="sm"
             acceptLabel="Logout"
             onAccept={handleLogout}
+            disabled={loading}
             triggerLabel="Logout"
             className="w-full h-full border-none justify-start ring-none focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
           />
@@ -145,6 +188,9 @@ function UserMenu({ user }) {
 
 export default function LoginAndMenu() {
   const user = useSelector((state) => state.auth.user);
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return <>{user ? <UserMenu user={user} /> : <GoogleLogin />}</>;
 }

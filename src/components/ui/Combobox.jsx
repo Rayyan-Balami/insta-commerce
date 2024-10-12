@@ -79,6 +79,7 @@ const Combobox = React.forwardRef(
                     value={item.label}
                     key={item.value}
                     onSelect={() => handleSelect(item.value)}
+                    disabled={item.disabled}
                   >
                     <Check
                       className={cn(

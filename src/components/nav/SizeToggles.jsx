@@ -1,17 +1,10 @@
 import { Scaling } from "lucide-react";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { sizes } from "@/schemas/general";
 
 export default function SizeToggles({ className }) {
   const [selectedSize, setSelectedSize] = useState("");
-  const sizes = [
-    { size: "free size", label: "Free Size" },
-    { size: "small", label: "S" },
-    { size: "medium", label: "M" },
-    { size: "large", label: "L" },
-    { size: "extra-large", label: "XL" },
-    { size: "2x-large", label: "XXL" },
-  ];
 
   return (
     <div className={className}>
@@ -26,9 +19,9 @@ export default function SizeToggles({ className }) {
         value={selectedSize}
         onValueChange={setSelectedSize}
       >
-        {sizes.map(({ size, label }) => (
+        {sizes.map(({ size, label },i) => (
           <ToggleGroupItem
-            key={size}  // Adding a unique key
+            key={i}
             value={label}
             aria-label={size}
             className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${

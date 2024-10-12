@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import FileUploadDropzone from "@/components/FileUploadDropzone";
 import {
   Form,
@@ -120,7 +120,7 @@ export default function BannerForm() {
                 disabled={form.formState.isSubmitting || banners.length >= 8}
               >
                 {form.formState.isSubmitting && (
-                  <Loader2 className="size-4 mr-2 animate-spin" />
+                  <Loader className="size-4 mr-2 animate-spin" />
                 )}
                 {banners.length >= 8 ? "Max images reached" : "Upload Images"}
               </Button>

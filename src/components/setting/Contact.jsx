@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function Contact() {
   const form = useForm({
@@ -106,7 +106,7 @@ export default function Contact() {
               disabled={form.formState.isSubmitting}
             >
 
-              {form.formState.isSubmitting && <Loader2 className="size-4 mr-2 animate-spin" />}
+              {form.formState.isSubmitting && <Loader className="size-4 mr-2 animate-spin" />}
               Save
             </Button>
           </form>

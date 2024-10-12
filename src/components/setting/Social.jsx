@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function Social() {
   const form = useForm({
@@ -134,7 +134,7 @@ export default function Social() {
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
-                <Loader2 className="size-4 mr-2 animate-spin" />
+                <Loader className="size-4 mr-2 animate-spin" />
               )}
               Save
             </Button>

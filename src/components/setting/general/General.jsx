@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import StoreDetails from "./StoreDetails";
 import Locations from "./Locations";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import PurchaseLimit from "./PurchaseLimit";
 import Currency from "./Currency";
 import PaymentAndDelivery from "./PaymentAndDelivery";
@@ -33,7 +33,7 @@ function General() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(data); // Handle form submission logic here
     //reset the form
-    form.reset();
+    // form.reset();
   };
 
   return (
@@ -56,9 +56,10 @@ function General() {
                 type="submit"
                 className="w-full"
                 disabled={form.formState.isSubmitting}
+                onClick={form.errors}
               >
                 {form.formState.isSubmitting && (
-                  <Loader2 className="size-4 mr-2 animate-spin" />
+                  <Loader className="size-4 mr-2 animate-spin" />
                 )}
                 Save
               </Button>

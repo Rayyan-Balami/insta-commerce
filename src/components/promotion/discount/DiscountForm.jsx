@@ -18,7 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import promotionService from "@/appwrite/promotion";
 import { toast } from "sonner";
@@ -374,7 +374,7 @@ export default function DiscountForm({
                 className="w-full"
               >
                 {form.formState.isSubmitting && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {isEdit ? "Update" : "Create"}
               </Button>

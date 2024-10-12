@@ -73,7 +73,7 @@ export function PromoCard({ title, description, CTA, URL }) {
           className="-mb-7 rounded-full"
           onClick={toggleExpanded}
         >
-          <ChevronDown className="size-5" />
+          <ChevronDown className={`size-5 ${isExpanded ? "" : "transform rotate-180"} transition-all`} />
         </Button>
       </CardFooter>
     </Card>

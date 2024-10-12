@@ -1,4 +1,4 @@
-import { Wallet, Loader2, UndoDot } from "lucide-react";
+import { Wallet, Loader, UndoDot } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -73,7 +73,7 @@ function PriceRange({ className }) {
             className="col-span-3"
           >
             {form.formState.isSubmitting && (
-              <Loader2 className="size-4 mr-2 animate-spin" />
+              <Loader className="size-4 mr-2 animate-spin" />
             )}
             Apply
           </Button>

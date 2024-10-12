@@ -1,4 +1,4 @@
-import { UndoDot, PlusCircle, Loader2 } from "lucide-react";
+import { UndoDot, PlusCircle, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFormContext } from "react-hook-form";
 
@@ -26,7 +26,7 @@ function ProductFormMenus() {
         disabled={form.formState.isSubmitting}
       >
         {form.formState.isSubmitting ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <Loader className="h-3.5 w-3.5 animate-spin" />
         ) : (
           <PlusCircle className="h-3.5 w-3.5" />
         )}

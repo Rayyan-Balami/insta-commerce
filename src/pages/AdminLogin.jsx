@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import { login } from "@/store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { GoogleLogin } from "@/components/header/LoginAndMenu";
 
 export function AdminLogin() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export function AdminLogin() {
 
   const onSubmit = async ({ email, password }) => {
     try {
-      const response = await AuthService.login(email, password);
+      const response = await AuthService.adminLogin(email, password);
       if (response.success) {
         // Clear local storage of timestamp
         localStorage.removeItem('products_timestamp');
@@ -102,17 +103,18 @@ export function AdminLogin() {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex-col gap-2 *:w-full">
             <Button
               type="submit"
               className="w-full"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
-                <Loader2 className="size-4 mr-2 animate-spin" />
+                <Loader className="size-4 mr-2 animate-spin" />
               )}
               Login
             </Button>
+            <GoogleLogin />
           </CardFooter>
         </Card>
       </form>

@@ -49,7 +49,7 @@ function Locations() {
 
   const handleAddDelivery = (e) => {
     e.preventDefault();
-    appendDelivery({ address: "", fee: 0 });
+    appendDelivery({ address: "", latLong: "", fee: 0 });
   };
 
   const deliveryMethods = form.watch("deliveryMethod");
@@ -58,7 +58,7 @@ function Locations() {
     <>
       {/* Pickup Locations Table */}
       {deliveryMethods.includes("pickup") && (
-        <Card className="bg-muted/40">
+        <Card className="bg-muted/40 overflow-auto">
           <CardHeader>
             <CardTitle>Pickup Locations</CardTitle>
             <CardDescription>
@@ -70,13 +70,14 @@ function Locations() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Address</TableHead>
+                  <TableHead>Latitude, Longitude</TableHead>
                   <TableHead>Fee</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pickupFields.map((item, index) => {
-                  const { address, fee } = form.formState.errors.pickupLocations?.[index] || {};
+                  const { address, latLong, fee } = form.formState.errors.pickupLocations?.[index] || {};
                   return (
                     <TableRow key={item.id}>
                       <TableCell>
@@ -90,6 +91,22 @@ function Locations() {
                                 {...field}
                                 value={field.value || ""} // Ensure controlled value
                                 className={`min-w-20 ${address ? "border-red-500" : ""}`}
+                              />
+                            </FormControl>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <FormField
+                          control={form.control}
+                          name={`pickupLocations.${index}.latLong`}
+                          render={({ field }) => (
+                            <FormControl>
+                              <Input
+                                placeholder="Latitude, Longitude"
+                                {...field}
+                                value={field.value || ""} // Ensure controlled value
+                                className={`min-w-20 ${latLong ? "border-red-500" : ""}`}
                               />
                             </FormControl>
                           )}
@@ -142,7 +159,7 @@ function Locations() {
 
       {/* Delivery Locations Table */}
       {deliveryMethods.includes("delivery") && (
-        <Card className="bg-muted/40">
+        <Card className="bg-muted/40 overflow-auto">
           <CardHeader>
             <CardTitle>Delivery Locations</CardTitle>
             <CardDescription>

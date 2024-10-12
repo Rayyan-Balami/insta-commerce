@@ -25,24 +25,13 @@ import {
 } from "@/components/ui/multi-select";
 import { useFormContext } from "react-hook-form";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Combobox } from "@/components/ui/combobox";
+import { paymentMethods } from "@/schemas/general";
+import { deliveryMethods } from "@/schemas/general";
 
 function PaymentAndDelivery() {
   const form = useFormContext();
-  const paymentMethods = [
-    "Bank Transfer",
-    "Cash on Delivery",
-    "Credit Card",
-    "Debit Card",
-    "e-Sewa",
-    "Khalti",
-    "connectIPS",
-    "IME Pay",
-    "Prabhu Pay",
-  ];
-  const deliveryMethods = [
-    { value: "pickup", label: "Pickup" },
-    { value: "delivery", label: "Delivery" },
-  ];
+
   return (
     <Card className="bg-muted/40">
       {/* //Payment Information (logos of payment methods) */}
@@ -52,7 +41,7 @@ function PaymentAndDelivery() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-6">
-          <FormField
+          {/* <FormField
             control={form.control}
             name="paymentMethod"
             render={({ field }) => (
@@ -81,7 +70,24 @@ function PaymentAndDelivery() {
                 <FormMessage className="font-light" />
               </FormItem>
             )}
-          />
+          /> */}
+          <FormField
+                control={form.control}
+                name="paymentMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Combobox
+                        {...field}
+                        list={paymentMethods}
+                        placeholder="Select Payment Method"
+                        multiple
+                      />
+                    </FormControl>
+                    <FormMessage className="font-light" />
+                  </FormItem>
+                )}
+              />
           <FormField
             control={form.control}
             name="deliveryMethod"
@@ -96,11 +102,12 @@ function PaymentAndDelivery() {
                     value={field.value}
                     onValueChange={field.onChange}
                   >
-                    {deliveryMethods.map(({ value, label }) => (
+                    {deliveryMethods.map(({ value, label,disabled }) => (
                       <ToggleGroupItem
                         key={value}
                         value={value}
                         aria-label={value}
+                        disabled={disabled}
                         className={`px-3 py-1 transition-colors duration-300 cursor-pointer ${
                           form.watch("deliveryMethod").includes(value)
                             ? "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"

@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -144,7 +144,7 @@ function CheckoutSummary() {
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting && (
-              <Loader2 className="size-4 mr-2 animate-spin" />
+              <Loader className="size-4 mr-2 animate-spin" />
             )}
             Place Order
           </Button>

@@ -20,8 +20,8 @@ function Header() {
             <span className="max-md:sr-only">Cart</span>
           </Link>
         </Button>
-        <LoginAndMenu />
         <MobileNav />
+        <LoginAndMenu />
       </div>
     </header>
   );

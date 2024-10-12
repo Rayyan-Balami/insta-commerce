@@ -16,11 +16,11 @@ import { useSelector } from "react-redux";
 import PromoCardAndMenu from "./PromoCardAndMenu";
 
 function MobileNav() {
-  const user = useSelector((state) => state.auth.user);
+  const {isAdmin} = useSelector((state) => state.auth);
 
   const filteredNavMenus = navMenus.filter((menu) => {
-    if (menu.auth && !user) return false;
-    return true;
+    if (menu.isAdmin && isAdmin) return true;
+    return !menu.isAdmin;
   });
 
   return (

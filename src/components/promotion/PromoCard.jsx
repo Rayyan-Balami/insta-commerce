@@ -20,7 +20,7 @@ import {
   FormMessage,
   FormDescription
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { PromoCard as NavPromoCard } from "@/components/nav/PromoCardAndMenu";
 import { useSelector } from "react-redux";
 import { updatePromoCard } from "@/store/promotionSlice";
@@ -152,7 +152,7 @@ export default function PromoCard() {
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && (
-                <Loader2 className="size-4 mr-2 animate-spin" />
+                <Loader className="size-4 mr-2 animate-spin" />
               )}
               Save
             </Button>
