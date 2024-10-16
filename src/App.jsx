@@ -8,9 +8,11 @@ import DesktopNav from "./components/nav/DesktopNav";
 import Header from "./components/header/Header";
 import { useCartInitialization } from "./hooks/useCartInitalization";
 import { usePromotionInitialization } from "./hooks/usePromotionInitalization";
+import { useStoreInitialization } from "./hooks/useStoreInitialization";
 
 export default function App() {
   useAuthInitialization();
+  useStoreInitialization();
   usePromotionInitialization();
   useProductInitialization();
   useCartInitialization();

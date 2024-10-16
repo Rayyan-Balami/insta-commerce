@@ -35,7 +35,7 @@ export const sizes = [
   { value: "4xl", label: "4XL" },
   { value: "5xl", label: "5XL" },
   { value: "6xl", label: "6XL" },
-  { value: "tiny", label: "Tiny" },
+  { value: "short", label: "Short" },
   { value: "tall", label: "Tall" },
   { value: "skinny", label: "Skinny" },
   { value: "chubby", label: "Chubby" },
@@ -94,6 +94,12 @@ export const generalSchema = z
       .array(z.enum(paymentMethodValues))
       .nonempty({ message: "At least one payment method must be selected." }),
     deliveryMethod: z.array(z.enum(deliveryMethodValues)).optional(),
+    categories: z
+      .array(
+        z.string().max(25, { message: "Each category can be a maximum of 25 characters." })
+      )
+      .max(100, { message: "A maximum of 100 categories is allowed." }),
+    sizes: z.array(z.enum(sizeValues)).nonempty({ message: "At least one size must be selected." }),
   })
   .refine((data) => data.maximumOrder >= data.minimumOrder, {
     message: "Maximum order can't be less than minimum order.",

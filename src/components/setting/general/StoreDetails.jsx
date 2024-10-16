@@ -18,6 +18,7 @@ import {
 import { InputTags } from "@/components/ui/input-tags";
 import { useFormContext } from "react-hook-form";
 
+
 export default function StoreDetails() {
   const form = useFormContext();
 
@@ -80,7 +81,7 @@ export default function StoreDetails() {
                 <InputTags
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Enter values, comma separated..."
+                  placeholder="Hit ↵ Enter or (,) comma to separate"
                 />
               </FormControl>
               <FormMessage className="font-light" />

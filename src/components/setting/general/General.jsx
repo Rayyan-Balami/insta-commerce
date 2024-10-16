@@ -10,30 +10,46 @@ import { Loader } from "lucide-react";
 import PurchaseLimit from "./PurchaseLimit";
 import Currency from "./Currency";
 import PaymentAndDelivery from "./PaymentAndDelivery";
+import Categories from "@/components/setting/general/Categories";
+import Sizes from "./Sizes";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setGeneral, setContact } from "@/store/storeSlice";
+import StoreService from "@/appwrite/store";
+import { toast } from "sonner";
 
 function General() {
+  const storeGeneral = useSelector((state) => state.store.general);
+  const dispatch = useDispatch();
   const form = useForm({
     resolver: zodResolver(generalSchema),
     defaultValues: {
-      storeName: "",
-      storeDescription: "",
-      pickupLocations: [],
-      deliveryLocations: [],
-      storePromises: [],
-      minimumOrder: 1,
-      maximumOrder: 5,
-      currencySymbol: "Rs",
-      paymentMethod: [],
-      deliveryMethod: [],
+      storeName: storeGeneral.storeName,
+      storeDescription: storeGeneral.storeDescription,
+      pickupLocations: storeGeneral.pickupLocations,
+      deliveryLocations: storeGeneral.deliveryLocations,
+      storePromises: storeGeneral.storePromises,
+      minimumOrder: storeGeneral.minimumOrder,
+      maximumOrder: storeGeneral.maximumOrder,
+      currencySymbol: storeGeneral.currencySymbol,
+      paymentMethod: storeGeneral.paymentMethod,
+      deliveryMethod: storeGeneral.deliveryMethod,
+      categories: storeGeneral.categories,
+      sizes: storeGeneral.sizes,
     },
   });
 
   const onSubmit = async (data) => {
-    // Simulate asynchronous submission (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data); // Handle form submission logic here
-    //reset the form
-    // form.reset();
+    try {
+      const response = await StoreService.updateGeneral(storeGeneral.$id, data);
+      if (response.success) {
+        dispatch(setGeneral(data));
+        localStorage.setItem("storeGeneral", JSON.stringify(data));
+        toast.success("General settings updated successfully.");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -50,6 +66,8 @@ function General() {
               <Locations />
             </div>
             <div className="grid auto-rows-max gap-4 xl:gap-8">
+              <Categories />
+              <Sizes />
               <PurchaseLimit />
               <Currency />
               <Button

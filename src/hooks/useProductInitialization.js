@@ -27,22 +27,31 @@ export const useProductInitialization = () => {
         dispatch(setProducts(cachedProducts));
         return;
       }
-  
+
       const cachedUser = localStorage.getItem("user");
-      const status = cachedUser ? "all" : "active";
+      let status = "active";
+
+      if (cachedUser) {
+        const user = JSON.parse(cachedUser);
+        if (user.labels.includes("admin")) {
+          status = "all";
+        }
+      }
+
       const response = await ProductService.listProducts({ status });
-  
+
       if (!response.success) {
         dispatch(setProducts([]));
         toast.error(response.message);
         return;
       }
-  
+
       dispatch(setProducts(response.result.documents));
       localStorage.setItem("products", JSON.stringify(response.result.documents));
       localStorage.setItem("products_timestamp", new Date().getTime().toString());
     } catch (error) {
       dispatch(setProducts([]));
+      toast.error("Failed to initialize products");
     }
   };
 

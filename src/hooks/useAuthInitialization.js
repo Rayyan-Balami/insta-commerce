@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/authSlice";
-import AuthService from "@/appwrite/auth";
 import { toast } from "sonner";
 
 export const useAuthInitialization = () => {

@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Query, Functions } from "appwrite";
+import { Client, Databases, ID, Query } from "appwrite";
 import { getENV } from "@/getENV";
 import BucketService from "@/appwrite/bucket";
 
@@ -8,7 +8,6 @@ class ProductService {
       .setEndpoint(getENV("ENDPOINT"))
       .setProject(getENV("PROJECT_ID"));
     this.databases = new Databases(this.client);
-    this.functions = new Functions(this.client);
   }
 
   async createProduct(data) {
@@ -190,6 +189,7 @@ class ProductService {
       ];
 
       // Only add the status query if the status is not "all"
+      console.log("status", status);
       if (status !== "all") {
         queries.push(Query.equal("status", status));
       }

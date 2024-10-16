@@ -76,6 +76,7 @@ function PaymentAndDelivery() {
                 name="paymentMethod"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Accepted Payment Methods</FormLabel>
                     <FormControl>
                       <Combobox
                         {...field}
