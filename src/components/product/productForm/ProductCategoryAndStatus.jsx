@@ -16,17 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function ProductCategoryAndStatus() {
   const { id } = useParams() || null;
   console.log("id", id);
   const form = useFormContext();
-  
-  const items = [
-    { value: "clothing", label: "Clothing" },
-    { value: "electronics", label: "Electronics" },
-    { value: "accessories", label: "Accessories" },
-  ];
+
+  const categories =
+    useSelector((state) => state.store.general.categories) || [];
 
   return (
     <Card className="bg-muted/40">
@@ -41,13 +39,23 @@ export default function ProductCategoryAndStatus() {
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <Combobox list={items} value={field.value} onChange={field.onChange} placeholder="Select Category"/>
+                <Combobox
+                  list={categories.map((category) => {
+                    return {
+                      label: category,
+                      value: category,
+                    };
+                  })}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select Category"
+                />
               </FormControl>
-              <FormMessage className="font-light"/>
+              <FormMessage className="font-light" />
             </FormItem>
           )}
         />
-         <FormField
+        <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
@@ -62,7 +70,11 @@ export default function ProductCategoryAndStatus() {
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
                   {/* if new product, show draft , if editing show archived */}
-                  {id ? <SelectItem value="archived">Archived</SelectItem> : <SelectItem value="draft">Draft</SelectItem>}
+                  {id ? (
+                    <SelectItem value="archived">Archived</SelectItem>
+                  ) : (
+                    <SelectItem value="draft">Draft</SelectItem>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage className="font-light" />

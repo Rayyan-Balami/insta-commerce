@@ -9,20 +9,6 @@ class AuthService {
     this.account = new Account(this.client);
   }
 
-  // //email, password
-  // async adminLogin(email, password) {
-  //   try {
-  //     const session = await this.account.createEmailPasswordSession(
-  //       email,
-  //       password
-  //     );
-  //     const user = await this.account.get();
-  //     return { success: true, session, user };
-  //   } catch (error) {
-  //     return { success: false, message: error.message };
-  //   }
-  // }
-
   async logout() {
     try {
       await this.account.deleteSession("current");
@@ -40,7 +26,6 @@ class AuthService {
       const user = await this.account.get();
       return { success: true, user, session };
     } catch (error) {
-      console.log("Unauthorized - no session", error);
       return { success: false, message: error.message };
     }
   }
@@ -51,10 +36,9 @@ class AuthService {
       this.account.createOAuth2Session(
         "google",
         "http://localhost:5173/oauth/success", // Success URL
-        "http://localhost:5173/fail" // Fail URL
+        "http://localhost:5173/error" // Error URL
       );
     } catch (error) {
-      console.log("OAuth error", error);
       return { success: false, message: error.message };
     }
   }

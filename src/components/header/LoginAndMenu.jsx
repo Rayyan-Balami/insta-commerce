@@ -188,9 +188,6 @@ function UserMenu({ user }) {
 
 export default function LoginAndMenu() {
   const user = useSelector((state) => state.auth.user);
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return <>{user ? <UserMenu user={user} /> : <GoogleLogin />}</>;
 }

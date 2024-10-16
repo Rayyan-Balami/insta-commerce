@@ -12,7 +12,6 @@ const authSlice = createSlice({
     login: (state, action) => {
       state.user = action.payload;
       state.isAdmin = action.payload?.labels?.includes("admin");
-      console.log(state.user, state.isAdmin);
     },
     logout: (state) => {
       state.user = null;

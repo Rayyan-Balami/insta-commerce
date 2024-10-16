@@ -26,8 +26,8 @@ function MobileNav() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="shrink-0 md:hidden">
-          <Menu className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="rounded-full shrink-0 md:hidden">
+          <Menu className="size-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>

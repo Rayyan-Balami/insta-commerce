@@ -98,7 +98,6 @@ function AddProduct() {
   };
 
   return (
-    <>
       <FormProvider {...form}>
         <Form {...form}>
           <form
@@ -112,7 +111,6 @@ function AddProduct() {
           </form>
         </Form>
       </FormProvider>
-    </>
   );
 }
 

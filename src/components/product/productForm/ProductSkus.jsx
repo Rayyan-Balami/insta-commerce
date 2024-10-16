@@ -42,10 +42,12 @@ import {
   DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { sizeValues } from "@/schemas/general";
+import { useSelector } from "react-redux";
 
 export default function ProductSkus() {
   const form = useFormContext();
+  const sizes = useSelector((state) => state.store.general.sizes) || [];
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "skus",
@@ -118,7 +120,7 @@ export default function ProductSkus() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              {sizeValues.map((size) => (
+                              {sizes.map((size) => (
                                 <DropdownMenuCheckboxItem
                                   key={size}
                                   className="uppercase"

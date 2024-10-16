@@ -19,7 +19,7 @@ function CategoriesCheckBoxes({ category }) {
       />
       <Label
         htmlFor={id}
-        className={`transition-colors hover:text-primary ${
+        className={`capitalize transition-colors hover:text-primary ${
           isChecked ? "text-primary" : "text-muted-foreground"
         }`}
       >

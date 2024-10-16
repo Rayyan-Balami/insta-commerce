@@ -49,11 +49,22 @@ class StoreService {
         getENV("DB_ID"),
         getENV("STORE_CONTACT_COLLECTION_ID"),
         documentID,
-        data
+        {
+          ...data,
+          email2: data.email2 === "" ? null : data.email2,
+          tel2: data.tel2 === "" ? null : data.tel2,
+          facebook: data.facebook === "" ? null : data.facebook,
+          twitter: data.twitter === "" ? null : data.twitter,
+          linkedin: data.linkedin === "" ? null : data.linkedin,
+          instagram: data.instagram === "" ? null : data.instagram,
+          youtube: data.youtube === "" ? null : data.youtube,
+          tiktok: data.tiktok === "" ? null : data.tiktok,
+        }
       );
 
       return { success: true, result };
     } catch (error) {
+      console.log(error);
       return { success: false, message: error.message };
     }
   }

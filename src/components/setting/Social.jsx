@@ -20,24 +20,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setContact } from "@/store/storeSlice";
+import StoreService from "@/appwrite/store";
+import { toast } from "sonner";
+
 
 export default function Social() {
+  const storeContact = useSelector((state) => state.store.contact);
+  const dispatch = useDispatch();
+  const defaultValues = {
+    facebook: storeContact.facebook || "",
+    twitter: storeContact.twitter || "",
+    linkedin: storeContact.linkedin || "",
+    instagram: storeContact.instagram || "",
+    youtube: storeContact.youtube || "",
+    tiktok: storeContact.tiktok || "",
+  };
   const form = useForm({
     resolver: zodResolver(socialSchema),
-    defaultValues: {
-      facebook: "",
-      twitter: "",
-      linkedin: "",
-      instagram: "",
-      youtube: "",
-      tiktok: "",
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data) => {
-    // Simulate asynchronous submission (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data); // Handle form submission logic here
+    try {
+      const response = await StoreService.updateContact(storeContact.$id, data);
+      if (response.success) {
+        dispatch(setContact(response.result));
+        localStorage.setItem("storeContact", JSON.stringify(response.result));
+        toast.success("Social settings updated successfully.");
+      }
+    }
+    catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

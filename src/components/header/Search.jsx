@@ -36,7 +36,7 @@ export default function Search() {
       <Button
         variant="ghost"
         size="icon"
-        className="relative rounded-full md:border md:border-input md:py-2  md:bg-secondary md:text-secondary-foreground md:hover:bg-secondary/80 md:px-3 md:pr-20  md:w-fit md:justify-start md:gap-2"
+        className="relative rounded-full md:border md:border-input md:py-2  md:bg-secondary md:text-secondary-foreground md:hover:bg-secondary/80 md:px-3 md:pr-20 md:w-full  md:max-w-sm md:justify-start md:gap-2"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="w-5 h-5" />

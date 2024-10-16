@@ -28,7 +28,7 @@ function Categories() {
           name="categories"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Categories (optional)</FormLabel>
+              <FormLabel>Categories</FormLabel>
               <FormControl>
                 {/* //InputTags is a custom component that takes in a value and onChange function */}
                 <InputTags

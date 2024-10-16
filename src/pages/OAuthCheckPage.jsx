@@ -9,7 +9,7 @@ import { Loader, House, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const OAuthSuccess = () => {
+const OAuthCheckPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isAuthFailed, setIsAuthFailed] = useState(false);
@@ -85,4 +85,4 @@ const fetchGoogleUserProfile = async (accessToken) => {
   }
 };
 
-export default OAuthSuccess;
+export default OAuthCheckPage;

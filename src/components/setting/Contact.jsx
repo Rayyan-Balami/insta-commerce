@@ -20,22 +20,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setContact } from "@/store/storeSlice";
+import StoreService from "@/appwrite/store";
+import { toast } from "sonner";
 
 export default function Contact() {
+  const storeContact = useSelector((state) => state.store.contact);
+  const dispatch = useDispatch();
+  const defaultValues = {
+    email1: storeContact.email1 || "",
+    email2: storeContact.email2 || "",
+    tel1: storeContact.tel1 || "",
+    tel2: storeContact.tel2 || "",
+  };
+  console.log(defaultValues);
   const form = useForm({
     resolver: zodResolver(contactSchema),
-    defaultValues: {
-      email1: "",
-      email2: "",
-      tel1: "",
-      tel2: "",
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data) => {
-    // Simulate asynchronous submission (e.g., API call)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data); // Handle form submission logic here
+    try {
+      const response = await StoreService.updateContact(storeContact.$id, data);
+      if (response.success) {
+        dispatch(setContact(response.result));
+        localStorage.setItem("storeContact", JSON.stringify(response.result));
+        toast.success("Contact settings updated successfully.");
+      }
+    }
+    catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

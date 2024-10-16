@@ -10,22 +10,21 @@ import Order from "./pages/Order";
 import Home from "./pages/Home";
 import Setting from "./pages/Setting";
 import Promotion from "./pages/Promotion";
-import { AdminLogin } from "./pages/AdminLogin";
 import ProductPage from "./pages/ProductPage";
 import Checkout from "./pages/Checkout";
 import Cart from "./pages/Cart";
 import { AuthMiddleware } from "./middlewares/AuthMiddleware";
 import { GuestMiddleware } from "./middlewares/GuestMiddleware";
-import OAuthSuccess from "./pages/OAuthSuccess";
+import OAuthCheckPage from "./pages/OAuthCheckPage";
+import ErrorPage from "./pages/ErrorPage";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<App />}>
-        {/* Both guests and authenticated users can access the home page */}
+        {/* Both guests and authenticated users can access the following routes */}
         <Route path="" element={<Home />} />
         <Route path="view-product/:id" element={<ProductPage />} />
-
         <Route path="checkout/:type" element={<Checkout />} />
         <Route path="cart" element={<Cart />} />
 
@@ -46,9 +45,10 @@ export const router = createBrowserRouter(
 
       {/* Only guests can access the following routes */}
       <Route element={<GuestMiddleware />}>
-          <Route path="admin/login" element={<AdminLogin />} />
-          <Route path="oauth/success" element={<OAuthSuccess />} />
+          <Route path="oauth/success" element={<OAuthCheckPage />} />
         </Route>
+
+      <Route path="*" element={<ErrorPage />} />
     </>
   )
 );

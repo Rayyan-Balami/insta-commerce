@@ -68,7 +68,6 @@ class BucketService {
         this.storage.getFileView(bucketID, id)
       );
     const response = await Promise.all(promises);
-    console.log("response", response);
       return { success: true, result: response };
   }
     catch (error) {

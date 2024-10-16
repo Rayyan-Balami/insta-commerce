@@ -113,15 +113,12 @@ class PromotionService {
   //promoCode related functions start here
 
   async addPromoCode(data) {
-    console.log(data);
     try {
       // fetch the list of all promo codes
       const {success, result, message} = await this.listPromoCodes();
       if (!success) {
         throw new Error(message);
       }
-
-      console.log("list",result);
 
       // Check if a promo code with the same code already exists
       if (result.some((promoCode) => promoCode.code === data.code)) {
@@ -206,7 +203,6 @@ class PromotionService {
   //discount related functions start here
 
   async addDiscount(data) {
-    console.log(data);
     try {
       // Fetch the list of all discounts
       const {success, result, message} = await this.listDiscounts();
@@ -241,10 +237,8 @@ class PromotionService {
         ID.unique(),
         data
       );
-      console.log(discount);
       return { success: true, result: discount };
     } catch (error) {
-      console.log(error);
       return { success: false, message: error.message };
     }
   }

@@ -21,30 +21,43 @@ import { toast } from "sonner";
 function General() {
   const storeGeneral = useSelector((state) => state.store.general);
   const dispatch = useDispatch();
+
+  const parsedPickupLocations = Array.isArray(storeGeneral.pickupLocations)
+    ? storeGeneral.pickupLocations
+    : JSON.parse(storeGeneral.pickupLocations || "[]");
+
+  const parsedDeliveryLocations = Array.isArray(storeGeneral.deliveryLocations)
+    ? storeGeneral.deliveryLocations
+    : JSON.parse(storeGeneral.deliveryLocations || "[]");
+
+  const defaultValues = {
+    storeName: storeGeneral.storeName,
+    storeDescription: storeGeneral.storeDescription,
+    pickupLocations: parsedPickupLocations,
+    deliveryLocations: parsedDeliveryLocations,
+    storePromises: storeGeneral.storePromises,
+    minimumOrder: storeGeneral.minimumOrder,
+    maximumOrder: storeGeneral.maximumOrder,
+    currencySymbol: storeGeneral.currencySymbol,
+    paymentMethod: storeGeneral.paymentMethod,
+    deliveryMethod: storeGeneral.deliveryMethod,
+    categories: storeGeneral.categories,
+    sizes: storeGeneral.sizes,
+  };
+
   const form = useForm({
     resolver: zodResolver(generalSchema),
-    defaultValues: {
-      storeName: storeGeneral.storeName,
-      storeDescription: storeGeneral.storeDescription,
-      pickupLocations: storeGeneral.pickupLocations,
-      deliveryLocations: storeGeneral.deliveryLocations,
-      storePromises: storeGeneral.storePromises,
-      minimumOrder: storeGeneral.minimumOrder,
-      maximumOrder: storeGeneral.maximumOrder,
-      currencySymbol: storeGeneral.currencySymbol,
-      paymentMethod: storeGeneral.paymentMethod,
-      deliveryMethod: storeGeneral.deliveryMethod,
-      categories: storeGeneral.categories,
-      sizes: storeGeneral.sizes,
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
+      console.log(data);
       const response = await StoreService.updateGeneral(storeGeneral.$id, data);
       if (response.success) {
-        dispatch(setGeneral(data));
-        localStorage.setItem("storeGeneral", JSON.stringify(data));
+        dispatch(setGeneral(response.result));
+        localStorage.setItem("storeGeneral", JSON.stringify(response.result));
         toast.success("General settings updated successfully.");
       }
     } catch (error) {
@@ -74,7 +87,7 @@ function General() {
                 type="submit"
                 className="w-full"
                 disabled={form.formState.isSubmitting}
-                onClick={form.errors}
+                onClick={() => console.log(form.formState.errors)}
               >
                 {form.formState.isSubmitting && (
                   <Loader className="size-4 mr-2 animate-spin" />

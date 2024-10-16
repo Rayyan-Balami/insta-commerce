@@ -13,16 +13,15 @@ export const paymentMethods = [
   { value: "prabhuPay", label: "Prabhu Pay", disabled: true },
 ];
 
-const paymentMethodValues = paymentMethods.map(method => method.value);
-
+const paymentMethodValues = paymentMethods.map((method) => method.value);
 
 // Define allowed delivery methods
 export const deliveryMethods = [
   { value: "pickup", label: "Pickup" },
   { value: "delivery", label: "Delivery" },
-]
+];
 
-const deliveryMethodValues = deliveryMethods.map(method => method.value);
+const deliveryMethodValues = deliveryMethods.map((method) => method.value);
 
 export const sizes = [
   { value: "free size", label: "Free Size" },
@@ -41,8 +40,7 @@ export const sizes = [
   { value: "chubby", label: "Chubby" },
 ];
 
-
-export const sizeValues = sizes.map(size => size.value);
+export const sizeValues = sizes.map((size) => size.value);
 
 // Define schema for pickup and delivery locations
 const locationSchema = z.object({
@@ -51,11 +49,13 @@ const locationSchema = z.object({
     .min(1, { message: "Address is required and cannot be empty." })
     .max(255, { message: "Address cannot exceed 255 characters." })
     .optional(),
-    latLong: z
+  latLong: z
     .string()
-    .regex(/^[^,]+,[^,]+$/, { message: "Must contain exactly one comma, not at the start or end." })
+    .regex(/^[^,]+,[^,]+$/, {
+      message: "Must contain exactly one comma, not at the start or end.",
+    })
     .min(1, { message: "Latitude and longitude are required." })
-    .optional(),  
+    .optional(),
   fee: z.coerce.number().nonnegative({ message: "Fee cannot be negative." }),
 });
 
@@ -76,7 +76,11 @@ export const generalSchema = z
     deliveryLocations: z.array(locationSchema).optional(),
     storePromises: z
       .array(
-        z.string().max(25, { message: "Each store promise can be a maximum of 25 characters." })
+        z
+          .string()
+          .max(25, {
+            message: "Each store promise can be a maximum of 25 characters.",
+          })
       )
       .max(10, { message: "A maximum of 10 store promises is allowed." })
       .optional(),
@@ -96,10 +100,17 @@ export const generalSchema = z
     deliveryMethod: z.array(z.enum(deliveryMethodValues)).optional(),
     categories: z
       .array(
-        z.string().max(25, { message: "Each category can be a maximum of 25 characters." })
+        z
+          .string()
+          .max(25, {
+            message: "Each category can be a maximum of 25 characters.",
+          })
       )
+      .nonempty({ message: "At least one category must be entered." })
       .max(100, { message: "A maximum of 100 categories is allowed." }),
-    sizes: z.array(z.enum(sizeValues)).nonempty({ message: "At least one size must be selected." }),
+    sizes: z
+      .array(z.enum(sizeValues))
+      .nonempty({ message: "At least one size must be selected." }),
   })
   .refine((data) => data.maximumOrder >= data.minimumOrder, {
     message: "Maximum order can't be less than minimum order.",

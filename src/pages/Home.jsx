@@ -10,7 +10,6 @@ import useProductWithPromotions from "@/hooks/useProductWithPromotions";
 function Home() {
   const loading = useSelector((state) => state.product.loading);
   const products = useProductWithPromotions();
-  console.log(products);
 
   return (
     <>

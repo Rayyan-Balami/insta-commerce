@@ -93,7 +93,7 @@ const Combobox = React.forwardRef(
                           : "opacity-0"
                       )}
                     />
-                    <span className="truncate">
+                    <span className="truncate capitalize">
                     {item.label}
                     </span>
                   </CommandItem>

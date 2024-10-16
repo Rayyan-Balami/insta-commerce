@@ -76,8 +76,6 @@ class ProductService {
         (fileID) => !currentImages.includes(fileID)
       );
 
-      console.log("imagesToDelete", imagesToDelete);
-
       // Delete images that are no longer in use
       if (imagesToDelete.length > 0) {
         const deletePromises = imagesToDelete.map((fileID) =>
@@ -97,8 +95,6 @@ class ProductService {
         );
       }
 
-      console.log("existingImages", existingImages);
-
       // Handle image updates: Upload new images if provided
       if (data.images && data.images.length > 0) {
         const uploadResponse = await BucketService.upload(
@@ -112,8 +108,6 @@ class ProductService {
 
         // Extract the new file IDs from the successful uploads
         newImageIDs = await Promise.all(uploadResponse.promises);
-
-        console.log("newImageIDs", newImageIDs);
 
         // Add the new image IDs to the existing images array
         existingImages = [
@@ -189,7 +183,6 @@ class ProductService {
       ];
 
       // Only add the status query if the status is not "all"
-      console.log("status", status);
       if (status !== "all") {
         queries.push(Query.equal("status", status));
       }
